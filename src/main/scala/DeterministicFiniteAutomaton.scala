@@ -61,7 +61,7 @@ case class DeterministicFiniteAutomaton(
   require(finals forall { states contains _ },
     "One of the final states is not a state.")
 
-  /** Returns the equivalent minimum DFA. */
+  /** Returns the equivalent [[http://en.wikipedia.org/wiki/DFA_minimization minimum DFA]]. */
   def minimize: DeterministicFiniteAutomaton = ???
 
 }
