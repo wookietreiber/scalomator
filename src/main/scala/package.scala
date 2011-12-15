@@ -39,5 +39,6 @@ package object automata {
   // -----------------------------------------------------------------------
 
   type DFA = scalax.automata.DeterministicFiniteAutomaton
+  val  DFA = scalax.automata.DeterministicFiniteAutomaton
 
 }
