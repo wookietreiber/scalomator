@@ -38,7 +38,7 @@ package object automata {
   // aliases
   // -----------------------------------------------------------------------
 
-  type DFA = scalax.automata.DeterministicFiniteAutomaton
-  val  DFA = scalax.automata.DeterministicFiniteAutomaton
+  type DFA[A,S] = scalax.automata.DeterministicFiniteAutomaton[A,S]
+  val  DFA      = scalax.automata.DeterministicFiniteAutomaton
 
 }

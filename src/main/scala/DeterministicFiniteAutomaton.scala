@@ -28,40 +28,68 @@
 
 package scalax.automata
 
+/** Factory for [[scalax.automata.DeterministicFiniteAutomaton]] instances. */
+object DeterministicFiniteAutomaton {
+
+  /** Returns a new deterministic finite automaton.
+    *
+    * @tparam A alphabet type
+    * @tparam S state type
+    *
+    * @param states       states
+    * @param alphabet     input alphabet
+    * @param initialState initial state
+    * @param finalStates  final states
+    * @param transitions  state-transition function
+    */
+  def apply[A,S](states: Set[S], alphabet: Set[A], initialState: S, finalStates: Set[S])
+                (transitions: PartialFunction[(S,A),S]) =
+    new DeterministicFiniteAutomaton(states, alphabet, initialState, finalStates, transitions)
+
+}
+
 /** Represents a deterministic finite automaton (DFA). For ease of use you may
-  * use it as `DFA` as well by importing the whole `scalax.automata` package:
+  * import the whole [[scalax.automata]] package and just need to type in the
+  * shorter alias `DFA`:
   *
   * {{{
   *   scala> import scalax.automata._
   *   import scalax.automata._
   *
-  *   scala> new DFA(...)
+  *   scala> DFA(Set(1,2), Set("a"), 1, Set(2)) {
+  *        |   case (1,"a") => 2
+  *        |   case (2,"a") => 2
+  *        | }
+  *   res0: scalax.automata.DeterministicFiniteAutomaton[java.lang.String,Int] = ...
   * }}}
   *
-  * @param states   states of this automaton, may not be empty
-  * @param alphabet input alphabet, may not be empty
-  * @param delta    state-transition function
-  * @param init     initial state, must be an element of `states`
-  * @param finals   final states, must be a subset of `states`
+  * @tparam A alphabet type
+  * @tparam S state type
+  *
+  * @param states       Returns the states of this automaton.
+  * @param alphabet     Returns the input alphabet of this automaton.
+  * @param initialState Returns the initial state of this automaton.
+  * @param finalStates  Returns the final states of this automaton.
+  * @param transitions  Returns the transition function of this automaton.
   */
-case class DeterministicFiniteAutomaton(
-    states: Set[String],
-    alphabet: Set[String],
-    delta: (String, String) => String,
-    init: String,
-    finals: Set[String]) {
+class DeterministicFiniteAutomaton[A,S] private (
+    val states: Set[S],
+    val alphabet: Set[A],
+    val initialState: S,
+    val finalStates: Set[S],
+    val transitions: PartialFunction[(S,A),S]) {
 
   require(states nonEmpty, "There are no states.")
 
   require(alphabet nonEmpty, "There is no input alphabet.")
 
-  require(states contains init,
-    "Start state (%s) not contained in states (%s)." format (init, states))
+  require(states contains initialState,
+    "Start state (%s) not contained in states (%s)." format (initialState, states))
 
-  require(finals forall { states contains _ },
+  require(finalStates forall { states contains _ },
     "One of the final states is not a state.")
 
   /** Returns the equivalent [[http://en.wikipedia.org/wiki/DFA_minimization minimum DFA]]. */
-  def minimize: DeterministicFiniteAutomaton = ???
+  def minimize: DeterministicFiniteAutomaton[A,S] = ???
 
 }
