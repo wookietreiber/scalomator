@@ -24,7 +24,8 @@ object ScalomatorBuild extends Build {
 
   lazy val root = Project ( "scalomator", file ("."),
     settings = buildSettings ++ Seq (
-      libraryDependencies ++= Seq ( specs2 )
+      libraryDependencies ++= Seq ( specs2 ),
+      initialCommands in Compile in console := "import scalax.automata._"
     )
   )
 
