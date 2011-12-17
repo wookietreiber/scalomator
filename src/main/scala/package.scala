@@ -38,6 +38,12 @@ package object automata {
   // aliases
   // -----------------------------------------------------------------------
 
+  type FSM[A,S] = scalax.automata.FiniteStateMachine[A,S]
+  val  FSM      = scalax.automata.FiniteStateMachine
+
+  type NFA[A,S] = scalax.automata.NondeterministicFiniteAutomaton[A,S]
+  val  NFA      = scalax.automata.NondeterministicFiniteAutomaton
+
   type DFA[A,S] = scalax.automata.DeterministicFiniteAutomaton[A,S]
   val  DFA      = scalax.automata.DeterministicFiniteAutomaton
 

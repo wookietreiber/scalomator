@@ -28,10 +28,10 @@
 
 package scalax.automata
 
-/** Factory for deterministic finite automata. */
-object DeterministicFiniteAutomaton {
+/** Factory for finite-state machines. */
+object FiniteStateMachine {
 
-  /** Returns a new deterministic finite automaton.
+  /** Returns a new finite-state machine.
     *
     * @tparam A alphabet type
     * @tparam S state type
@@ -39,38 +39,62 @@ object DeterministicFiniteAutomaton {
     * @param initialState initial state
     * @param finalStates  final states
     * @param transitions  state-transition function
+    *
+    * @todo improve, looks ugly
     */
-  def apply[A,S](initialState: S, finalStates: Set[S], transitions: Map[(S,A),S]) =
-    new DeterministicFiniteAutomaton(initialState, finalStates, transitions.mapValues { Set(_) })
+  def apply[A,S](initialState: S, finalStates: Set[S], transitions: Map[(S,A),Set[S]]) =
+    if (isDeterministic(transitions)) {
+      val deterministicTransitions = transitions map { t =>
+        (t._1, t._2.head)
+      }
+      DeterministicFiniteAutomaton(initialState, finalStates, deterministicTransitions)
+    } else
+      NondeterministicFiniteAutomaton(initialState, finalStates, transitions)
+
+  private def isDeterministic[A,S](transitions: Map[(S,A),Set[S]]) =
+    transitions.values.forall { _.size == 1 }
 
 }
 
-/** Represents deterministic finite automata (DFA). For ease of use you may
-  * import the whole [[scalax.automata]] package and just need to type in the
-  * shorter alias `DFA`:
+/** Represents finite-state machines (FSM). For ease of use you may import the
+  * whole [[scalax.automata]] package and just need to type in the shorter alias
+  * `FSM`:
   *
   * {{{
   *   scala> import scalax.automata._
   *   import scalax.automata._
   *
-  *   scala> DFA(1, Set(2), Map(
-  *        |   1 -> "a" -> 2,
-  *        |   2 -> "a" -> 2
+  *   scala> FSM(1, Set(2), Map(
+  *        |   1 -> "a" -> Set(2),
+  *        |   2 -> "a" -> Set(2)
   *        | ))
-  *   res0: scalax.automata.DeterministicFiniteAutomaton[java.lang.String,Int] = ...
+  *   res0: scalax.automata.FiniteStateMachine[java.lang.String,Int] = ...
   * }}}
   *
   * @tparam A alphabet type
   * @tparam S state type
   */
-class DeterministicFiniteAutomaton[A,S] private (
-    val initialState: S,
-    val finalStates: Set[S],
-    val transitions: Map[(S,A),Set[S]])
-  extends FiniteStateMachine[A,S] {
+abstract class FiniteStateMachine[A,S] {
 
-  override def toDFA = this
+  /** Returns the input alphabet of this automaton. */
+  def alphabet: Set[A] = transitions.keySet map { _._2 }
 
-  override def minimize: DeterministicFiniteAutomaton[A,S] = ???
+  /** Returns the states of this automaton. */
+  def states: Set[S] = finalStates ++ transitions.values.flatten.toSet + initialState
+
+  /** Returns the initial state of this automaton. */
+  def initialState: S
+
+  /** Returns the final states of this automaton. */
+  def finalStates: Set[S]
+
+  /** Returns the state-transition function of this automaton. */
+  def transitions: Map[(S,A),Set[S]]
+
+  /** Returns the equivalent [[scalax.automata.DeterministicFiniteAutomaton]]. */
+  def toDFA: DeterministicFiniteAutomaton[A,S]
+
+  /** Returns the equivalent [[http://en.wikipedia.org/wiki/DFA_minimization minimum DFA]]. */
+  def minimize: DeterministicFiniteAutomaton[A,S]
 
 }

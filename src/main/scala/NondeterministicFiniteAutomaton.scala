@@ -28,10 +28,10 @@
 
 package scalax.automata
 
-/** Factory for deterministic finite automata. */
-object DeterministicFiniteAutomaton {
+/** Factory for nondeterministic finite automata. */
+object NondeterministicFiniteAutomaton {
 
-  /** Returns a new deterministic finite automaton.
+  /** Returns a new nondeterministic finite automaton.
     *
     * @tparam A alphabet type
     * @tparam S state type
@@ -40,37 +40,37 @@ object DeterministicFiniteAutomaton {
     * @param finalStates  final states
     * @param transitions  state-transition function
     */
-  def apply[A,S](initialState: S, finalStates: Set[S], transitions: Map[(S,A),S]) =
-    new DeterministicFiniteAutomaton(initialState, finalStates, transitions.mapValues { Set(_) })
+  def apply[A,S](initialState: S, finalStates: Set[S], transitions: Map[(S,A),Set[S]]) =
+    new NondeterministicFiniteAutomaton(initialState, finalStates, transitions)
 
 }
 
-/** Represents deterministic finite automata (DFA). For ease of use you may
+/** Represents nondeterministic finite automata (NFA). For ease of use you may
   * import the whole [[scalax.automata]] package and just need to type in the
-  * shorter alias `DFA`:
+  * shorter alias `NFA`:
   *
   * {{{
   *   scala> import scalax.automata._
   *   import scalax.automata._
   *
-  *   scala> DFA(1, Set(2), Map(
-  *        |   1 -> "a" -> 2,
-  *        |   2 -> "a" -> 2
+  *   scala> NFA(1, Set(2), Map(
+  *        |   1 -> "a" -> Set(2),
+  *        |   2 -> "a" -> Set(2)
   *        | ))
-  *   res0: scalax.automata.DeterministicFiniteAutomaton[java.lang.String,Int] = ...
+  *   res0: scalax.automata.NondeterministicFiniteAutomaton[java.lang.String,Int] = ...
   * }}}
   *
   * @tparam A alphabet type
   * @tparam S state type
   */
-class DeterministicFiniteAutomaton[A,S] private (
+class NondeterministicFiniteAutomaton[A,S] private (
     val initialState: S,
     val finalStates: Set[S],
     val transitions: Map[(S,A),Set[S]])
   extends FiniteStateMachine[A,S] {
 
-  override def toDFA = this
+  override def toDFA: DeterministicFiniteAutomaton[A,S] = ???
 
-  override def minimize: DeterministicFiniteAutomaton[A,S] = ???
+  override def minimize = toDFA.minimize
 
 }
