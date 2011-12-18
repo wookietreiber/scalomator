@@ -29,8 +29,15 @@ object ScalomatorBuild extends Build {
     )
   )
 
+  lazy val clientSwing = Project ( "scalomator-client-swing", file ("client-swing"),
+    settings = buildSettings ++ Seq (
+      libraryDependencies ++= Seq ( swing, specs2 )
+    )
+  ) dependsOn ( root )
+
 }
 
 object Dependencies {
-  val specs2 = "org.specs2" %% "specs2" % "1.6.1" % "test"
+  lazy val swing  = "org.scala-lang" %  "scala-swing" % buildScalaVersion
+  lazy val specs2 = "org.specs2"     %% "specs2"      % "1.6.1" % "test"
 }
