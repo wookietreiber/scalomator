@@ -27,16 +27,15 @@
 
 package scalax.automata.gui
 
-import scala.swing.SimpleSwingApplication
-import scala.swing.MainFrame
-import java.awt.Dimension
-import scala.swing.BorderPanel
-import scala.swing.Label
-import scala.swing.BoxPanel
-import scala.swing.Orientation
-import scala.swing.Button
 import java.awt.Color
+import java.awt.Dimension
+
+import scala.swing.BorderPanel
+import scala.swing.Button
 import scala.swing.GridPanel
+import scala.swing.Label
+import scala.swing.MainFrame
+import scala.swing.SimpleSwingApplication
 
 /**
  * Main class for scalomator's GUI.
