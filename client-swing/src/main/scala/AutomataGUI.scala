@@ -29,16 +29,41 @@ package scalax.automata.gui
 
 import scala.swing.SimpleSwingApplication
 import scala.swing.MainFrame
-import java.awt.Toolkit
 import java.awt.Dimension
+import scala.swing.BorderPanel
+import scala.swing.Label
+import scala.swing.BoxPanel
+import scala.swing.Orientation
+import scala.swing.Button
+import java.awt.Color
+import scala.swing.GridPanel
 
 /**
  * Main class for scalomator's GUI.
+ * 
+ * To run this GUI type the following into the scala console:
+ * 		import scalax.automata.gui._
+ * 		AutomataGUI.main(null)
  */
 object AutomataGUI extends SimpleSwingApplication {
   def top = new MainFrame {
     title = "Scalomator"
     minimumSize = new Dimension(640,480)
     centerOnScreen()
+    contents = new BorderPanel {
+      val stateChart = new Label("Placeholder for state chart")
+      stateChart.background = Color.RED
+      add(stateChart,BorderPanel.Position.Center)
+      add(new GridPanel(6,1) {
+        contents += new Button("Add State")
+        contents += new Button("Edit State")
+        contents += new Button("Remove State")
+        
+        contents += new Button("Add Transition")
+        contents += new Button("Edit Transition")
+        contents += new Button("Remove Transition")
+        
+      },BorderPanel.Position.East)
+    }
   }
 }
