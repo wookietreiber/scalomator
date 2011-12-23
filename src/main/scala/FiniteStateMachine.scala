@@ -28,6 +28,8 @@
 
 package scalax.automata
 
+import scala.xml._
+
 /** Factory for finite-state machines. */
 object FiniteStateMachine {
 
@@ -50,6 +52,16 @@ object FiniteStateMachine {
       DeterministicFiniteAutomaton(initialState, finalStates, deterministicTransitions)
     } else
       NondeterministicFiniteAutomaton(initialState, finalStates, transitions)
+
+  /** Returns a new finite-state machine.
+    *
+    * @param xml the XML representation of an automaton
+    *
+    * @todo scaladoc contains information about the XML structure
+    */
+  def apply(xml: Elem) = {
+    ???
+  }
 
   private def isDeterministic[A,S](transitions: Map[(S,A),Set[S]]) =
     transitions.values.forall { _.size == 1 }
@@ -96,5 +108,12 @@ abstract class FiniteStateMachine[A,S] {
 
   /** Returns the equivalent [[http://en.wikipedia.org/wiki/DFA_minimization minimum DFA]]. */
   def minimize: DeterministicFiniteAutomaton[A,S]
+
+  // -----------------------------------------------------------------------
+  // serialization
+  // -----------------------------------------------------------------------
+
+  /** Returns the XML representation of this automaton. */
+  def toXML: Elem = ???
 
 }
