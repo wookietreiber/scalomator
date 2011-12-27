@@ -1,0 +1,108 @@
+﻿## This document is part of 'scalomator'.
+## It is a functional specification for the software project (german: Pflichtenheft)
+##
+## The template available at
+## http://www.stefan-baur.de/downloads/Pflichtenheft.pdf
+## was used to create this document stub
+
+
+1 Zielbestimmungen
+
+Scalomator ist ein Computerprogramm, das die Ausführung von deterministischen endlichen Automaten (DFA) auf eine Eingabe simuliert.
+
+1.1 Musskriterien
+
+
+1.2 Wunschkriterien
+
+
+1.3 Abgrenzungskriterien
+
+
+2 Produkteinsatz
+
+
+2.1 Anwendungsbereiche
+
+
+2.2 Zielgruppen
+
+
+2.3 Betriebsbedingungen
+
+
+3 Produktumgebung
+
+
+3.1 Software
+
+
+3.2 Hardware
+
+
+3.3 Orgware
+
+
+4 Produktfunktionen
+
+
+/F0010/ Funktion 1
+
+/F0020/ Funktion 2
+
+
+5 Produktdaten
+
+/D010/ Datensatz 1
+
+/D020/ Datensatz 2
+
+
+6 Produktleistungen
+
+/L100/ Leistung 1
+
+/L200/ Leistung 2
+
+
+7 Benutzeroberfläche
+
+
+8 Qualitätszielbestimmungen
+
+
+9 Globale Testszenarien und Testfälle
+
+/T0010/ Test für Funktion /F0010/
+...
+
+
+10 Entwicklungsumgebung
+
+10.1 Software
+
+ - Plattform
+   + Scala 2.9.1
+
+ - Tools
+   + Eclipse Indigo (IDE)
+   + Scala-IDE für Eclipse
+   + SBT
+
+ - Versionskontrolle
+   + git
+   + tortoiseGit
+
+10.2 Hardware
+
+ - Laptops/Desktops
+
+10.3 Orgware
+
+ - github
+
+
+11 Ergänzungen
+
+
+12 Glossar
