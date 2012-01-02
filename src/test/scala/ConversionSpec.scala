@@ -28,56 +28,64 @@
 
 package scalax.automata
 
-/** Factory for deterministic finite automata. */
-object DeterministicFiniteAutomaton {
+import org.specs2._
 
-  /** Returns a new deterministic finite automaton.
-    *
-    * @tparam A alphabet type
-    * @tparam S state type
-    *
-    * @param initialState initial state
-    * @param finalStates  final states
-    * @param transitions  state-transition function
-    */
-  def apply[A,S](initialState: S, finalStates: Set[S], transitions: Map[(S,A),S]) =
-    new DeterministicFiniteAutomaton(initialState, finalStates, transitions)
-
-}
-
-/** Represents deterministic finite automata (DFA). For ease of use you may
-  * import the whole [[scalax.automata]] package and just need to type in the
-  * shorter alias `DFA`:
-  *
-  * {{{
-  *   scala> import scalax.automata._
-  *   import scalax.automata._
-  *
-  *   scala> DFA(1, Set(2), Map(
-  *        |   1 -> "a" -> 2,
-  *        |   2 -> "a" -> 2
-  *        | ))
-  *   res0: scalax.automata.DeterministicFiniteAutomaton[java.lang.String,Int] = ...
-  * }}}
-  *
-  * @tparam A alphabet type
-  * @tparam S state type
-  */
-class DeterministicFiniteAutomaton[A,S] private (
-    val initialState: S,
-    val finalStates: Set[S],
-    val transitions: Map[(S,A),S])
-  extends FiniteStateMachine[A,S,S] {
-
-  override def states: Set[S] = finalStates ++ transitions.values.toSet + initialState
+class ConversionSpec extends Specification { def is =
 
   // -----------------------------------------------------------------------
-  // conversion within the domain
+  // fragments
   // -----------------------------------------------------------------------
 
-  override def toDFA = this
+  "Conversion Specification"                                                  ^
+                                                                             p^
+  "NFA to DFA examples"                                                       ^
+    "1st example"                 ! nfa2dfa1                                  ^
+    "2nd example"                 ! nfa2dfa2                                  ^
+                                                                            end
+  // -----------------------------------------------------------------------
+  // tests
+  // -----------------------------------------------------------------------
 
-  /** Returns the equivalent [[http://en.wikipedia.org/wiki/DFA_minimization minimum DFA]]. */
-  def minimize = ???
+  def nfa2dfa1 = NFA(0, Set(3), Map(
+    0 -> 0 -> Set(0,1),
+    0 -> 1 -> Set(0),
+    1 -> 0 -> Set(2),
+    1 -> 1 -> Set(2),
+    2 -> 0 -> Set(3),
+    2 -> 1 -> Set(3)
+  )).toDFA must_== DFA(Set(0), Set(Set(0,3), Set(0,1,3), Set(0,2,3), Set(0,1,2,3)), Map(
+    Set(0)       -> 0 -> Set(0,1),
+    Set(0)       -> 1 -> Set(0),
+    Set(0,1)     -> 0 -> Set(0,1,2),
+    Set(0,1)     -> 1 -> Set(0,2),
+    Set(0,2)     -> 0 -> Set(0,1,3),
+    Set(0,2)     -> 1 -> Set(0,3),
+    Set(0,3)     -> 0 -> Set(0,1),
+    Set(0,3)     -> 1 -> Set(0),
+    Set(0,1,2)   -> 0 -> Set(0,1,2,3),
+    Set(0,1,2)   -> 1 -> Set(0,2,3),
+    Set(0,1,3)   -> 0 -> Set(0,1,2),
+    Set(0,1,3)   -> 1 -> Set(0,2),
+    Set(0,2,3)   -> 0 -> Set(0,1,3),
+    Set(0,2,3)   -> 1 -> Set(0,3),
+    Set(0,1,2,3) -> 0 -> Set(0,1,2,3),
+    Set(0,1,2,3) -> 1 -> Set(0,2,3)
+  ))
+
+  def nfa2dfa2 = NFA(0, Set(3), Map(
+    0 -> "a" -> Set(0,1),
+    0 -> "b" -> Set(0),
+    1 -> "b" -> Set(2),
+    2 -> "a" -> Set(3)
+  )).toDFA must_== DFA(Set(0), Set(Set(0,1,3)), Map(
+    Set(0) -> "a" -> Set(0,1),
+    Set(0) -> "b" -> Set(0),
+    Set(0,1) -> "a" -> Set(0,1),
+    Set(0,1) -> "b" -> Set(0,2),
+    Set(0,2) -> "a" -> Set(0,1,3),
+    Set(0,2) -> "b" -> Set(0),
+    Set(0,1,3) -> "a" -> Set(0,1),
+    Set(0,1,3) -> "b" -> Set(0,2)
+  ))
 
 }

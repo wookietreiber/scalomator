@@ -1,6 +1,6 @@
 /* **************************************************************************
  *                                                                          *
- *  Copyright (C)  2011  Peter Kossek, Nils Foken, Christian Krause         *
+ *  Copyright (C)  2011-2012  Peter Kossek, Nils Foken, Christian Krause    *
  *                                                                          *
  *  Peter Kossek     <peter.kossek@it2009.ba-leipzig.de>                    *
  *  Nils Foken       <nils.foken@it2009.ba-leipzig.de>                      *
@@ -86,13 +86,13 @@ object FiniteStateMachine {
   * @tparam A alphabet type
   * @tparam S state type
   */
-abstract class FiniteStateMachine[A,S] {
+abstract class FiniteStateMachine[A,S,R] {
 
   /** Returns the input alphabet of this automaton. */
   def alphabet: Set[A] = transitions.keySet map { _._2 }
 
   /** Returns the states of this automaton. */
-  def states: Set[S] = finalStates ++ transitions.values.flatten.toSet + initialState
+  def states: Set[S]
 
   /** Returns the initial state of this automaton. */
   def initialState: S
@@ -101,13 +101,14 @@ abstract class FiniteStateMachine[A,S] {
   def finalStates: Set[S]
 
   /** Returns the state-transition function of this automaton. */
-  def transitions: Map[(S,A),Set[S]]
+  def transitions: Map[(S,A),R]
+
+  // -----------------------------------------------------------------------
+  // conversion within the domain
+  // -----------------------------------------------------------------------
 
   /** Returns the equivalent [[scalax.automata.DeterministicFiniteAutomaton]]. */
-  def toDFA: DeterministicFiniteAutomaton[A,S]
-
-  /** Returns the equivalent [[http://en.wikipedia.org/wiki/DFA_minimization minimum DFA]]. */
-  def minimize: DeterministicFiniteAutomaton[A,S]
+  def toDFA: DeterministicFiniteAutomaton[A,R]
 
   // -----------------------------------------------------------------------
   // serialization
@@ -115,5 +116,20 @@ abstract class FiniteStateMachine[A,S] {
 
   /** Returns the XML representation of this automaton. */
   def toXML: Elem = ???
+
+  // -----------------------------------------------------------------------
+  // equality / identity methods
+  // -----------------------------------------------------------------------
+
+  override def equals(a: Any) = a match {
+    case fsm: FiniteStateMachine[_,_,_] =>
+      (initialState == fsm.initialState) &&
+      (finalStates  == fsm.finalStates)  &&
+      (transitions  == fsm.transitions)
+    case _ => false
+  }
+
+  override def hashCode =
+    initialState.hashCode + finalStates.hashCode + transitions.hashCode
 
 }

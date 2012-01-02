@@ -1,6 +1,6 @@
 /* **************************************************************************
  *                                                                          *
- *  Copyright (C)  2011  Peter Kossek, Nils Foken, Christian Krause         *
+ *  Copyright (C)  2011-2012  Peter Kossek, Nils Foken, Christian Krause    *
  *                                                                          *
  *  Peter Kossek     <peter.kossek@it2009.ba-leipzig.de>                    *
  *  Nils Foken       <nils.foken@it2009.ba-leipzig.de>                      *
@@ -27,6 +27,8 @@
 
 
 package scalax.automata
+
+import scala.annotation.tailrec
 
 /** Factory for nondeterministic finite automata. */
 object NondeterministicFiniteAutomaton {
@@ -67,10 +69,37 @@ class NondeterministicFiniteAutomaton[A,S] private (
     val initialState: S,
     val finalStates: Set[S],
     val transitions: Map[(S,A),Set[S]])
-  extends FiniteStateMachine[A,S] {
+  extends FiniteStateMachine[A,S,Set[S]] {
 
-  override def toDFA: DeterministicFiniteAutomaton[A,S] = ???
+  override def states: Set[S] = finalStates ++ transitions.values.flatten.toSet + initialState
 
-  override def minimize = toDFA.minimize
+  // -----------------------------------------------------------------------
+  // conversion within the domain
+  // -----------------------------------------------------------------------
+
+  override def toDFA = {
+    /** Returns the ends of the combined state. */
+    def endsOf(ss: Set[S]) = for {
+      a <- alphabet
+      t <- Map(ss -> a -> ss.flatMap { s => transitions.getOrElse((s,a),Set()) })
+    } yield t
+
+    /** Returns the transitions of the powerset construction. */
+    @tailrec
+    def psc(ss: Set[Set[S]], ts: Map[(Set[S],A),Set[S]]): Map[(Set[S],A),Set[S]] = ss match {
+      case set if set.isEmpty => ts
+      case _ =>
+        val newts = endsOf(ss.head) toMap
+        val sumts = ts ++ newts
+        val newss = (newts.values.toSet) diff (sumts.keySet map { _._1 })
+        psc(ss.tail ++ newss, sumts)
+    }
+
+    val init = Set(initialState)
+    val ts   = psc(Set(init), Map())
+    val fs   = ts.values.toSet filter { _ exists { finalStates contains } }
+
+    DeterministicFiniteAutomaton(init, fs, ts)
+  }
 
 }

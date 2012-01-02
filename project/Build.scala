@@ -39,5 +39,5 @@ object ScalomatorBuild extends Build {
 
 object Dependencies {
   lazy val swing  = "org.scala-lang" %  "scala-swing" % buildScalaVersion
-  lazy val specs2 = "org.specs2"     %% "specs2"      % "1.7" % "test"
+  lazy val specs2 = "org.specs2"     %% "specs2"      % "1.7.1" % "test"
 }

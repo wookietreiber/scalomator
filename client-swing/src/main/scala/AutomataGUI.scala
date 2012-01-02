@@ -1,6 +1,6 @@
 /* **************************************************************************
  *                                                                          *
- *  Copyright (C)  2011  Peter Kossek, Nils Foken, Christian Krause         *
+ *  Copyright (C)  2011-2012  Peter Kossek, Nils Foken, Christian Krause    *
  *                                                                          *
  *  Peter Kossek     <peter.kossek@it2009.ba-leipzig.de>                    *
  *  Nils Foken       <nils.foken@it2009.ba-leipzig.de>                      *
@@ -37,13 +37,12 @@ import scala.swing.Label
 import scala.swing.MainFrame
 import scala.swing.SimpleSwingApplication
 
-/**
- * Main class for scalomator's GUI.
- * 
- * To run this GUI type the following into the scala console:
- * 		import scalax.automata.gui._
- * 		AutomataGUI.main(null)
- */
+/** Main class for scalomator's GUI.
+  *
+  * To run this GUI type the following into the scala console:
+  * 		import scalax.automata.gui._
+  * 		AutomataGUI.main(null)
+  */
 object AutomataGUI extends SimpleSwingApplication {
   def top = new MainFrame {
     title = "Scalomator"
@@ -57,11 +56,11 @@ object AutomataGUI extends SimpleSwingApplication {
         contents += new Button("Add State")
         contents += new Button("Edit State")
         contents += new Button("Remove State")
-        
+
         contents += new Button("Add Transition")
         contents += new Button("Edit Transition")
         contents += new Button("Remove Transition")
-        
+
       },BorderPanel.Position.East)
     }
   }

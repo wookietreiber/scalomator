@@ -1,6 +1,6 @@
 /* **************************************************************************
  *                                                                          *
- *  Copyright (C)  2011  Peter Kossek, Nils Foken, Christian Krause         *
+ *  Copyright (C)  2011-2012  Peter Kossek, Nils Foken, Christian Krause    *
  *                                                                          *
  *  Peter Kossek     <peter.kossek@it2009.ba-leipzig.de>                    *
  *  Nils Foken       <nils.foken@it2009.ba-leipzig.de>                      *
@@ -38,8 +38,8 @@ package object automata {
   // aliases
   // -----------------------------------------------------------------------
 
-  type FSM[A,S] = scalax.automata.FiniteStateMachine[A,S]
-  val  FSM      = scalax.automata.FiniteStateMachine
+  type FSM[A,S,R] = scalax.automata.FiniteStateMachine[A,S,R]
+  val  FSM        = scalax.automata.FiniteStateMachine
 
   type NFA[A,S] = scalax.automata.NondeterministicFiniteAutomaton[A,S]
   val  NFA      = scalax.automata.NondeterministicFiniteAutomaton
