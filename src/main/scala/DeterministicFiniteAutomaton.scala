@@ -28,6 +28,9 @@
 
 package scalax.automata
 
+import scala.annotation.tailrec
+import scala.collection.immutable.Queue
+
 /** Factory for deterministic finite automata. */
 object DeterministicFiniteAutomaton {
 
@@ -42,6 +45,10 @@ object DeterministicFiniteAutomaton {
     */
   def apply[A,S](initialState: S, finalStates: Set[S], transitions: Map[(S,A),S]) =
     new DeterministicFiniteAutomaton(initialState, finalStates, transitions)
+
+  object setsize extends Ordering[Set[_]] {
+    def compare(x: Set[_], y: Set[_]) = x.size compare y.size
+  }
 
 }
 
@@ -78,6 +85,36 @@ class DeterministicFiniteAutomaton[A,S] private (
   override def toDFA = this
 
   /** Returns the equivalent [[http://en.wikipedia.org/wiki/DFA_minimization minimum DFA]]. */
-  def minimize = ???
+  def minimize: DFA[A,Set[S]] = {
+    @tailrec
+    def pr(p: Set[Set[S]], q: Queue[Set[S]]): DFA[A,Set[S]] = q match {
+      case Queue()      =>
+        val init = p filter { _ contains initialState } head
+        val fs   = p filter { _ exists { finalStates contains } }
+        val ts   = p flatMap { x => alphabet map { a =>
+          (x -> a -> p.filter(_ contains transitions(x.head -> a)).head)
+        } } toMap
+
+        DeterministicFiniteAutomaton(init,fs,ts)
+
+      case Dequeue(h,q) =>
+
+        val (toberemoved,additions) = alphabet map { a =>
+          h flatMap { s =>
+            transitions withFilter { t => t._1 == (s,a) } map { _._2 }
+          }
+        } flatMap { s =>
+          p map { p => (p,p & s) }
+        } filter { _._2 nonEmpty } filterNot { p contains _._2 } map { x =>
+          (x._1 -> Set(x._2, x._1 diff x._2))
+        } unzip
+
+        val newqs = additions map { _ min DFA.setsize } filterNot { _.size <= 1 }
+
+        pr(p -- toberemoved ++ additions.flatten, q enqueue newqs)
+    }
+
+    pr(Set(finalStates, states diff finalStates), Queue(finalStates))
+  }
 
 }
