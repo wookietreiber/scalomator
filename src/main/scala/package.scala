@@ -28,11 +28,20 @@
 
 package scalax
 
+import scala.collection.immutable.Queue
+
 /** A scala API for automata simulation. */
 package object automata {
 
   /** @todo remove as soon as in Predef */
   def ??? = throw new RuntimeException("not yet implemented")
+
+  object Dequeue {
+    def unapply[A](q: Queue[A]) = q match {
+      case Queue() => None
+      case q       => Some(q dequeue)
+    }
+  }
 
   // -----------------------------------------------------------------------
   // aliases

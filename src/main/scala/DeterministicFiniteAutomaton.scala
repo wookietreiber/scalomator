@@ -64,9 +64,9 @@ object DeterministicFiniteAutomaton {
   * @tparam S state type
   */
 class DeterministicFiniteAutomaton[A,S] private (
-    val initialState: S,
-    val finalStates: Set[S],
-    val transitions: Map[(S,A),S])
+    override val initialState: S,
+    override val finalStates: Set[S],
+    override val transitions: Map[(S,A),S])
   extends FiniteStateMachine[A,S,S] {
 
   override def states: Set[S] = finalStates ++ transitions.values.toSet + initialState

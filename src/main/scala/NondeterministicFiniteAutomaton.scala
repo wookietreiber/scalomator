@@ -29,6 +29,7 @@
 package scalax.automata
 
 import scala.annotation.tailrec
+import scala.collection.immutable.Queue
 
 /** Factory for nondeterministic finite automata. */
 object NondeterministicFiniteAutomaton {
@@ -66,9 +67,9 @@ object NondeterministicFiniteAutomaton {
   * @tparam S state type
   */
 class NondeterministicFiniteAutomaton[A,S] private (
-    val initialState: S,
-    val finalStates: Set[S],
-    val transitions: Map[(S,A),Set[S]])
+    override val initialState: S,
+    override val finalStates: Set[S],
+    override val transitions: Map[(S,A),Set[S]])
   extends FiniteStateMachine[A,S,Set[S]] {
 
   override def states: Set[S] = finalStates ++ transitions.values.flatten.toSet + initialState
@@ -78,25 +79,24 @@ class NondeterministicFiniteAutomaton[A,S] private (
   // -----------------------------------------------------------------------
 
   override def toDFA = {
-    /** Returns the ends of the combined state. */
-    def endsOf(ss: Set[S]) = for {
-      a <- alphabet
-      t <- Map(ss -> a -> ss.flatMap { s => transitions.getOrElse((s,a),Set()) })
-    } yield t
-
-    /** Returns the transitions of the powerset construction. */
     @tailrec
-    def psc(ss: Set[Set[S]], ts: Map[(Set[S],A),Set[S]]): Map[(Set[S],A),Set[S]] = ss match {
-      case set if set.isEmpty => ts
-      case _ =>
-        val newts = endsOf(ss.head) toMap
+    def psc(ts: Map[(Set[S],A),Set[S]], q: Queue[Set[S]]): Map[(Set[S],A),Set[S]] = q match {
+      case Queue()      => ts
+      case Dequeue(s,q) =>
+        val newts = alphabet flatMap { a =>
+          List(s -> a -> s.flatMap { s => transitions.getOrElse((s,a),Set()) })
+        } toMap // this flatMap gave us the new transitions
         val sumts = ts ++ newts
-        val newss = (newts.values.toSet) diff (sumts.keySet map { _._1 })
-        psc(ss.tail ++ newss, sumts)
+
+        val newss = newts.values.toSet diff {
+          sumts.keySet map { _._1 }
+        } // this diff found unhandled states
+
+        psc(sumts, q enqueue newss)
     }
 
     val init = Set(initialState)
-    val ts   = psc(Set(init), Map())
+    val ts   = psc(Map(), Queue(init))
     val fs   = ts.values.toSet filter { _ exists { finalStates contains } }
 
     DeterministicFiniteAutomaton(init, fs, ts)
