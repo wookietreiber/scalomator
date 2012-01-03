@@ -88,17 +88,24 @@ class DeterministicFiniteAutomaton[A,S] private (
   def minimize: DFA[A,Set[S]] = {
     @tailrec
     def pr(p: Set[Set[S]], q: Queue[Set[S]]): DFA[A,Set[S]] = q match {
-      case Queue()      =>
+      case Queue() => { // nothing more to do but to set up the minimized DFA
         val init = p filter { _ contains initialState } head
         val fs   = p filter { _ exists { finalStates contains } }
-        val ts   = p flatMap { x => alphabet map { a =>
-          (x -> a -> p.filter(_ contains transitions(x.head -> a)).head)
-        } } toMap
+        val ts   = for {
+          s <- p
+          a <- alphabet
 
-        DeterministicFiniteAutomaton(init,fs,ts)
+          ends = p filter {
+            _ contains transitions ( s.head -> a )
+          } head
 
-      case Dequeue(h,q) =>
+          y <- List(s -> a -> ends)
+        } yield y
 
+        DeterministicFiniteAutomaton(init,fs,ts.toMap)
+      }
+
+      case Dequeue(h,q) => {
         val (toberemoved,additions) = alphabet map { a =>
           h flatMap { s =>
             transitions withFilter { t => t._1 == (s,a) } map { _._2 }
@@ -112,6 +119,7 @@ class DeterministicFiniteAutomaton[A,S] private (
         val newqs = additions map { _ min DFA.setsize } filterNot { _.size <= 1 }
 
         pr(p -- toberemoved ++ additions.flatten, q enqueue newqs)
+      }
     }
 
     pr(Set(finalStates, states diff finalStates), Queue(finalStates))
