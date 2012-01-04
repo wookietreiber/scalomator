@@ -98,9 +98,7 @@ class NondeterministicFiniteAutomaton[A,S] private (
               nfaState <- dfaState
               end      <- transitions.getOrElse((nfaState,a),Set())
             } yield end
-
-            transition <- Map(dfaState -> a -> end)
-          } yield transition
+          } yield ( dfaState -> a -> end )
         ) toMap
 
         val sumts = ts ++ newts

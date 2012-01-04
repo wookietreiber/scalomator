@@ -87,42 +87,58 @@ class DeterministicFiniteAutomaton[A,S] private (
   /** Returns the equivalent [[http://en.wikipedia.org/wiki/DFA_minimization minimum DFA]]. */
   def minimize: DFA[A,Set[S]] = {
     @tailrec
-    def pr(p: Set[Set[S]], q: Queue[Set[S]]): DFA[A,Set[S]] = q match {
+    def refine(partition: Set[Set[S]], q: Queue[Set[S]]): DFA[A,Set[S]] = q match {
       case Queue() => { // nothing more to do but to set up the minimized DFA
-        val init = p filter { _ contains initialState } head
-        val fs   = p filter { _ exists { finalStates contains } }
+        val init = partition filter { _ contains initialState } head
+        val fs   = partition filter { _ exists { finalStates contains _ } }
         val ts   = for {
-          s <- p
-          a <- alphabet
+          start <- partition
+          input <- alphabet
 
-          ends = p filter {
-            _ contains transitions ( s.head -> a )
+          end = partition filter {
+            _ contains transitions ( start.head -> input )
           } head
+        } yield ( start -> input -> end )
 
-          y <- List(s -> a -> ends)
-        } yield y
-
-        DeterministicFiniteAutomaton(init,fs,ts.toMap)
+        DeterministicFiniteAutomaton(init, fs, ts.toMap)
       }
 
-      case Dequeue(h,q) => {
-        val (toberemoved,additions) = alphabet map { a =>
-          h flatMap { s =>
-            transitions withFilter { t => t._1 == (s,a) } map { _._2 }
-          }
-        } flatMap { s =>
-          p map { p => (p,p & s) }
-        } filter { _._2 nonEmpty } filterNot { p contains _._2 } map { x =>
-          (x._1 -> Set(x._2, x._1 diff x._2))
-        } unzip
+      case Dequeue(partitionSubset,q) => {
+        val (removals,additions) = (
+          for {
+            start <- for {
+              input <- alphabet
+
+              starts = for { // ? -> input -> end
+                end <- partitionSubset
+                t   <- transitions if (t._2 == end) && (t._1._2 == input)
+              } yield t._1._1
+
+              if starts nonEmpty
+            } yield starts
+
+            changes <- for {
+              part <- partition
+
+              isect = part & start
+
+              if isect nonEmpty
+
+              if ! ( partition contains isect )
+
+            } yield ( part, Set(isect, part diff isect) )
+          } yield changes
+        ) unzip
 
         val newqs = additions map { _ min DFA.setsize } filterNot { _.size <= 1 }
 
-        pr(p -- toberemoved ++ additions.flatten, q enqueue newqs)
+        refine(partition -- removals ++ additions.flatten, q enqueue newqs)
       }
     }
 
-    pr(Set(finalStates, states diff finalStates), Queue(finalStates))
+    val partition = Set(finalStates, states diff finalStates)
+
+    refine(partition, Queue(finalStates))
   }
 
 }
