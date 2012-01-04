@@ -79,27 +79,41 @@ class NondeterministicFiniteAutomaton[A,S] private (
   // -----------------------------------------------------------------------
 
   override def toDFA = {
-    @tailrec
-    def psc(ts: Map[(Set[S],A),Set[S]], q: Queue[Set[S]]): Map[(Set[S],A),Set[S]] = q match {
-      case Queue()      => ts
-      case Dequeue(s,q) =>
-        val newts = alphabet flatMap { a =>
-          List(s -> a -> s.flatMap { s => transitions.getOrElse((s,a),Set()) })
-        } toMap // this flatMap gave us the new transitions
+    val init = Set(initialState)
+
+    @tailrec // recursive powerset construction
+    def psc(ts: Map[(Set[S],A),Set[S]], q: Queue[Set[S]]): DFA[A,Set[S]] = q match {
+      case Queue() => { // nothing more to do but to set up the DFA
+        val fs = ts.values.toSet filter { _ exists { finalStates contains } }
+
+        DeterministicFiniteAutomaton(init, fs, ts)
+      }
+
+      case Dequeue(dfaState,q) => {
+        val newts = (
+          for {
+            a <- alphabet
+
+            end = for {
+              nfaState <- dfaState
+              end      <- transitions.getOrElse((nfaState,a),Set())
+            } yield end
+
+            transition <- Map(dfaState -> a -> end)
+          } yield transition
+        ) toMap
+
         val sumts = ts ++ newts
 
-        val newss = newts.values.toSet diff {
+        val unhandledStates = newts.values.toSet diff {
           sumts.keySet map { _._1 }
-        } // this diff found unhandled states
+        }
 
-        psc(sumts, q enqueue newss)
+        psc(sumts, q enqueue unhandledStates)
+      }
     }
 
-    val init = Set(initialState)
-    val ts   = psc(Map(), Queue(init))
-    val fs   = ts.values.toSet filter { _ exists { finalStates contains } }
-
-    DeterministicFiniteAutomaton(init, fs, ts)
+    psc(Map(), Queue(init))
   }
 
 }
