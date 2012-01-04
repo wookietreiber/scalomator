@@ -44,6 +44,7 @@ class ConversionSpec extends Specification { def is =
                                                                              p^
   "DFA minimization examples"                                                 ^
     "1st example"                 ! dfa2min1                                  ^
+    "2nd example"                 ! dfa2min2                                  ^
                                                                             end
   // -----------------------------------------------------------------------
   // tests
@@ -55,6 +56,18 @@ class ConversionSpec extends Specification { def is =
            2 -> 0 -> 2,                      2 -> 1 -> 4,
            3 -> 0 -> 2,                      3 -> 1 -> 4,
            4 -> 0 -> 1,                      4 -> 1 -> 3
+  )).minimize must_== DFA(Set(0), Set(Set(3,4)), Map(
+    Set(0)   -> 0 -> Set(1,2),        Set(0)   -> 1 -> Set(1,2),
+    Set(1,2) -> 0 -> Set(1,2),        Set(1,2) -> 1 -> Set(3,4),
+    Set(3,4) -> 0 -> Set(1,2),        Set(3,4) -> 1 -> Set(3,4)
+  ))
+
+  def dfa2min2 = DFA(0, Set(3,4), Map(
+           0 -> 0 -> 1,                      0 -> 1 -> 2,
+           1 -> 0 -> 2,                      1 -> 1 -> 3,
+           2 -> 0 -> 1,                      2 -> 1 -> 3,
+           3 -> 0 -> 1,                      3 -> 1 -> 4,
+           4 -> 0 -> 2,                      4 -> 1 -> 4
   )).minimize must_== DFA(Set(0), Set(Set(3,4)), Map(
     Set(0)   -> 0 -> Set(1,2),        Set(0)   -> 1 -> Set(1,2),
     Set(1,2) -> 0 -> Set(1,2),        Set(1,2) -> 1 -> Set(3,4),
