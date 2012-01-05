@@ -1,0 +1,38 @@
+\documentclass[a4paper, 11pt, ngerman, fleqn]{article}
+\usepackage[latin1]{inputenc}
+\usepackage{babel}
+\usepackage{ngerman}
+\usepackage{coordsys,logsys,color}
+\usepackage{german,fancyhdr}
+\usepackage{hyperref}
+\usepackage{texdraw}
+\usepackage{listings}
+\usepackage{graphicx}
+\input{txdtools}
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{hyperref}
+\definecolor{darkblue}{rgb}{0,0,.6}
+\hypersetup{pdftex=false, colorlinks=true, breaklinks=true, linkcolor=darkblue, menucolor=darkblue, pagecolor=darkblue, urlcolor=darkblue, citecolor=darkblue}
+
+\pagestyle{fancy}
+
+\input{_Pflichtenheft.tex}
+
+\begin{document}
+  \input{PH00-Titelblatt} \newpage
+  \tableofcontents \newpage
+  \input{PH01-Zielbestimmungen} \newpage
+  \input{PH02-Produkteinsatz} \newpage
+  \input{PH03-Produktumgebung} \newpage
+  \input{PH04-Produktfunktionen} \newpage
+  \input{PH05-Produktdaten} \newpage
+%  \input{PH06-Produktleistungen} \newpage %Produktleistungen erstmal rauslassen?
+  \input{PH07-Benutzungsoberflaeche} \newpage
+  \input{PH13-Diagramme} \newpage
+  \input{PH08-Qualitaetszielbestimmungen} \newpage
+  \input{PH09-Testszenarien} \newpage
+  \input{PH10-Entwicklungsumgebung} \newpage
+%  \input{PH11-Ergaenzungen} \newpage %erstmal keine Ergänzungen
+%  \input{PH12-Glossar}
+\end{document}
