@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<finalstatemachine name="foobar">
+<!DOCTYPE finitestatemachine PUBLIC "http://github.com/downloads/wookietreiber/scalomator/FiniteStateMachine.dtd">
+<finitestatemachine
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://github.com/downloads/wookietreiber/scalomator/FiniteStateMachine.xsd"
+  name="foo-o-mat">
+
   <initialstate>0</initialstate>
 
   <finalstates>
@@ -38,4 +43,4 @@
     </transition>
   </transitions>
 
-</finalstatemachine>
+</finitestatemachine>

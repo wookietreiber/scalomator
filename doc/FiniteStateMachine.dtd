@@ -1,0 +1,31 @@
+<?xml encoding="UTF-8"?>
+
+<!ELEMENT finitestatemachine (initialstate,finalstates,transitions)>
+<!ATTLIST finitestatemachine name  CDATA #IMPLIED>
+
+<!ELEMENT initialstate (#PCDATA)>
+<!ATTLIST initialstate>
+
+<!ELEMENT finalstates (finalstate)+>
+<!ATTLIST finalstates>
+
+<!ELEMENT transitions (transition)+>
+<!ATTLIST transitions>
+
+<!ELEMENT finalstate (#PCDATA)>
+<!ATTLIST finalstate>
+
+<!ELEMENT transition (start,input,ends)>
+<!ATTLIST transition>
+
+<!ELEMENT start (#PCDATA)>
+<!ATTLIST start>
+
+<!ELEMENT input (#PCDATA)>
+<!ATTLIST input>
+
+<!ELEMENT ends (end)+>
+<!ATTLIST ends>
+
+<!ELEMENT end (#PCDATA)>
+<!ATTLIST end>

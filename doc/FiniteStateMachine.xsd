@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
 
-  <xs:element name="finalstatemachine">
+  <xs:element name="finitestatemachine">
     <xs:complexType>
       <xs:sequence>
         <xs:element ref="initialstate"/>
         <xs:element ref="finalstates"/>
         <xs:element ref="transitions"/>
       </xs:sequence>
-      <xs:attribute name="name" use="optional" type="xs:normalizedString"/>
+      <xs:attribute name="name" type="xs:normalizedString"/>
     </xs:complexType>
   </xs:element>
 
@@ -16,8 +16,8 @@
 
   <xs:element name="finalstates">
     <xs:complexType>
-      <xs:sequence >
-        <xs:element ref="finalstate" minOccurs="1"/>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="finalstate"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
