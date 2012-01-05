@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+  <xs:element name="finalstatemachine">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="initialstate"/>
+        <xs:element ref="finalstates"/>
+        <xs:element ref="transitions"/>
+      </xs:sequence>
+      <xs:attribute name="name" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="initialstate" type="xs:normalizedString"/>
+
+  <xs:element name="finalstates">
+    <xs:complexType>
+      <xs:sequence >
+        <xs:element ref="finalstate" minOccurs="1"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="finalstate" type="xs:normalizedString"/>
+
+  <xs:element name="transitions">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="transition"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="transition">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="start"/>
+        <xs:element ref="input"/>
+        <xs:element ref="ends"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="start" type="xs:normalizedString"/>
+
+  <xs:element name="input" type="xs:normalizedString"/>
+
+  <xs:element name="ends">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="end"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="end" type="xs:normalizedString"/>
+
+</xs:schema>
