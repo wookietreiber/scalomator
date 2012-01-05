@@ -1,0 +1,363 @@
+\section{Produktfunktionen}
+
+%\comment{Was leistet das Produkt aus Benutzersicht?}
+
+
+\subsection{Grafische Benutzeroberfläche}
+
+Die grafische Benutzeroberfläche dient der komfortablen Erzeugung von Automatendefinitionen.
+
+\subsubsection{Zeichnen von Graphen}
+
+\begin{description}
+\item[/F0010/]
+	\textit{Zustand erstellen:} Der Benutzer legt einen neuen Zustand im Graphen an, welcher ihm als ein Kreis angezeigt wird.
+	Der Kreis beinhaltet einen Text, der dem Namen des Zustands entspricht.
+\item[/F0020/]
+	\textit{Zustand löschen:} Bereits erstellte Zustände können vom Benutzer gelöscht werden.
+\item[/F0030/]
+	\textit{Zustand umbenennen:} Der Name eines Zustandes muss änderbar sein.
+\item[/F0040/]
+	\textit{Zustand verschieben:} Die Position des Zustands kann durch Verschieben angepasst werden.
+\item[/F0100/]
+	\textit{Übergang erstellen:} Zustandsübergange stellen 
+\item[/F0110/]
+	\textit{Übergang löschen}
+\item[/F0120/]
+	\textit{Übergang bearbeiten}
+\item[/F0200/]
+	\textit{Zustand zu Startzustand erklären}
+\item[/F0200/]
+	\textit{Zustand zu Endzustand erklären}
+\item[/F0200/]
+	\textit{Startzustand oder Endzustand zu normalen Zustand erklären}
+\end{description}
+
+\subsubsection{Dateioperationen}
+
+\begin{description}
+\item[/F0300/]
+	\textit{Automatendefinition speichern}
+\item[/F0310/]
+	\textit{Automatendefinition laden}
+\item[/F0320/]
+	\textit{Neue Automatendefinition erstellen}
+\end{description}
+
+\subsubsection{Simulation}
+
+\begin{description}
+\item[/F0400/]
+	\textit{Simulation ausführen}
+\item[/F0410/]
+	\textit{Simulationsergebnis anzeigen}
+\end{description}
+
+
+\subsection{Berechnungsprogramm}
+
+Das Berechnungsprogramm ist eine separate Komponente, die unabhängig von der grafischen Benutzeroberfläche operiert.
+Es bietet auch die Möglichkeit, über die Kommandozeile gestartet zu werden und dort das Ergebnis der Simulation anzuzeigen.
+
+\subsubsection{Hilfe}
+
+\begin{description}
+\item[/F1000/]
+	\textit{Ausgabe einer Beschreibung der Programmparameter:} Um auf der Kommandozeile ausgeführt werden zu können benötigt das Simulationsprogramm eine Reihe von Parametern (Eingabewort, Automatendefinition, evtl. aus Datei gelesen). Diese Parameter werden mitsamt einer Beschreibung auf der Konsole ausgegeben.
+\end{description}
+
+\subsubsection{Hilfe}
+
+\begin{description}
+\item[/F1100/]
+	\textit{Simulation eines endlichen Automaten}
+\item[/F1110/]
+	\textit{Ausgabe der Akzeptanz des Automaten für das eingegebene Wort}
+\end{description}
+
+%\subsection{Benutzerfunktionen}
+%
+%\subsubsection{Benutzer-Kennung}
+%
+%Ein im System registrierter Benutzer kann das System erst nutzen, wenn er angemeldet ist.
+%
+%\begin{description}
+%  \item[/F0010/]
+%    \textit{Registrieren:} Ein beliebiger Internet-Benutzer kann sich über die Start- bzw. Login-Seite des Systems
+%    schnell und bequem registrieren lassen. Zum Registrieren sind mindestens folgende Angaben erforderlich:
+%    \begin{itemize}
+%      \item gewünschte \textbf{Kennung}
+%        \begin{itemize}
+%          \item gewünschter \textbf{Benutzername}
+%          \item gewünschtes \textbf{Passwort}
+%        \end{itemize}
+%      \item eigene bzw. private \textbf{eMail-Adresse}
+%    \end{itemize}
+%    Die Registrierung ist erfolgreich, wenn der \textit{Benutzername} und die \textit{eMail-Adresse}
+%    innerhalb des Systems jeweils eindeutig sind. Die \textit{eMail-Adresse} wird auf ihre Gültigkeit geprüft.\\
+%    Mit dem erfolgreichen Abschießen des Registrierungsvorgangs ist der neue Benutzer am System angemeldet,
+%    zudem erhält der Benutzer automatisch via \textit{eMail} vom System seine aktuelle Kennung.
+%  \item[/F0020/]
+%    \textit{Anmelden:} Ein bereits registrierter Benutzer kann sich über die Start- bzw. Login-Seite des Systems
+%    schnell und bequem anmelden \textit{(login)}. Dazu ist seine Kennung erforderlich:
+%    \begin{itemize}
+%      \item sein \textbf{Benutzername}
+%      \item sein \textbf{Passwort}
+%    \end{itemize}
+%    Alternativ zum \textit{Benutzernamen} kann der Benutzer seine \textit{eMail-Adresse} angeben.
+%  \item[/F0030/]
+%    \textit{Abmelden:} Der angemeldete Benutzer kann sich jeder Zeit wieder vom System \textbf{abmelden} \textit{(logout)}.
+%  \item[/F0040/]
+%    \textit{Kennung anfordern:} Falls ein bereits registrierter Benutzer seine Kennung oder sein \textbf{Passwort vergessen}
+%    haben sollte, so kann er seine korrekte Kennung über die Start- bzw. Login-Seite des Systems anfordern.
+%    Dem Benutzer wird unter Angabe
+%    \begin{itemize}
+%      \item seines \textbf{Benutzernamens} oder
+%      \item seiner \textbf{eMail-Adresse}
+%    \end{itemize}
+%    seine vollständige Kennung automatisch via \textit{eMail} vom System zugesendet.
+%  \item[/F0050/]
+%    \textit{Passwort ändern:} Der angemeldete Benutzer kann das Passwort seiner Kennung ändern.
+%    Das neue Passwort muss zweimal angegeben werden, wobei sich diese Angaben nicht unterscheiden dürfen.
+%    Nach erfolgreicher Änderung des Passwortes erhält der Benutzer automatisch via \textit{eMail} vom System seine aktuelle Kennung.
+%\end{description}
+%
+%Der Benutzer kann seinen \textit{Benutzernamen} nicht änderen.\\
+%\\
+%Im Folgenden sei der Benutzer stets am System angemeldet.
+%
+%\subsubsection{Persönliche Daten}
+%
+%Der Benutzer verfügt über persönliche Daten \textit{(siehe /D010/)}, die er frei gestalten kann.
+%
+%\begin{description}
+%  \item[/F0110/]
+%    \textit{Anzeige der eigenen, persönlichen Daten:}
+%    Der Benutzer kann sich seine persönlichen Daten vom System \textbf{vollständig anzeigen} lassen.
+%  \item[/F0120/]
+%    \textit{Ändern der eigenen, persönlichen Daten:}
+%    Der Benutzer kann seine persönlichen Daten aktualisieren bzw. \textbf{ändern}.
+%  \item[/F0130/]
+%    \textit{Sichtbarkeit der eigenen, persönlichen Daten:}
+%    Der Benutzer kann jeden einzelnen Eintrag seiner persönlichen Daten für die Spielgemeinschaft auf \textbf{sichtbar} bzw.
+%    \textbf{unsichtbar} setzen.
+%  \item[/F0140/]
+%    \textit{Anzeige der persönlichen Daten anderer Benutzer:}
+%    Der Benutzer kann sich von anderen Benutzern die persönlichen Daten anzeigen lassen,
+%    dabei können auf unsichtbar gesetzte Einträge nicht gesehen werden.\\
+%    Im Gegensatz zu \textit{/F0110/} kann der Benutzer seine eigenen, persönlichen Daten auch auf diese Weise anzeigen lassen.
+%\end{description}
+%
+%
+%\subsubsection{Persönliche Konfiguration}
+%
+%Die Nutzungsumgebung eines Benutzers ist das Layout, das Design, aber auch diverse logische Einstellungen,
+%die die individuelle Handhabung des Systems vereinfachen können.\\
+%Individuell einstellbar für den Benutzer sind:
+%\begin{itemize}
+%  \item die Farbgebung
+%  \item die Gliederung seiner Hauptseite \textit{(Anordnung von Menü, Spielfläche und Spieleliste)}
+%\end{itemize}
+%Zudem kann der Benutzer noch einstellen, welche Informationen direkt nach dem \textit{Login} auf der Hauptseite angezeigt werden sollen.
+%Persönliche Konfigurationen können verwaltet werden \textit{(siehe Portfolio)}.
+%
+%\begin{description}
+%  \item[/F0210/]
+%    \textit{Anzeige der persönlichen Konfiguration:}
+%    Der Benutzer kann sich alle einstellbaren Werte seiner persönlichen Konfiguration seiner Nutzungsumgebung vom System \textbf{anzeigen} lassen.
+%  \item[/F0220/]
+%    \textit{Ändern der persönlichen Konfiguration:}
+%    Der Benutzer kann alle einstellbaren Werte seiner persönlichen Konfiguration \textbf{ändern}
+%    oder die voreingestellte Konfiguration wiederherstellen.
+%  \item[/F0230/]
+%    \textit{Speichern der persönlichen Konfiguration:}
+%    Der Benutzer kann seine persönliche Konfiguration \textbf{speichern} bzw. in seiner \textit{Portfolio} \textbf{sichern}.
+%  \item[/F0240/]
+%    \textit{Löschen der persönlichen Konfiguration:}
+%    Der Benutzer kann bereits gesicherte Konfigurationen aus seiner \textit{Portfolio} \textbf{entfernen}.
+%  \item[/F0250/]
+%    \textit{Wiederverwenden der persönlichen Konfiguration:}
+%    Der Benutzer kann bereits gesicherte Konfigurationen seiner \textit{Portfolio} \textbf{wiederverwenden}.
+%    Beim Wechseln der Konfiguration wird das gleichzeitige Sichern der aktuellen Konfiguration angeboten.
+%\end{description}
+%
+%\subsubsection{Persönliches Profil}
+%
+%Der Benutzer bzw. der Spieler verfügt über ein persönliches Profil.
+%Dieses kann man in zwei Teile gliederen:
+%\begin{itemize}
+%  \item allgemeines Profil
+%    \begin{itemize}
+%      \item die Häufigkeit des Erscheinens \textit{(Treue)}
+%    \end{itemize}
+%  \item Profil zu jedem Spieltyp \textit{(Mühle, Dame und Schach)}
+%    \begin{itemize}
+%      \item die Wertung \textit{(aktuelle Spielstärke in Form einer Zahl)}
+%      \item die Anzahl der gespielten, gewonnenen, verlorenen und unentschiedenen Spiele
+%      \item die Anzahl der noch offenen Spiele
+%      \item die Auflistung von Auszeichnungen
+%        \begin{itemize}
+%          \item der beste
+%          \item der schlechteste
+%          \item der schnellste
+%          \item der langsamste
+%          \item der treueste
+%          \item der bekannteste Spieler \textit{(der Woche, des Monats und des Jahres)}
+%        \end{itemize}
+%    \end{itemize}
+%\end{itemize}
+%
+%Das persönliche Profil wird je nach Bedarf vom System automatisch aktualisiert, die Wertung wird z.B. nach dem Beenden einer Partie aktualisiert.
+%
+%\begin{description}
+%  \item[/F0310/]
+%    \textit{Anzeige des eigenen, persönlichen Profils:}
+%    Der Benutzer kann sich sein persönliches Profil für jeden Spieltyp \textbf{anzeigen} lassen.
+%  \item[/F0320/]
+%    \textit{Sichtbarkeit des eigenen, persönlichen Profils:}
+%    Der Benutzer kann jeden einzelnen Eintrag seines persönlichen Profils für die Spielgemeinschaft auf \textbf{sichtbar} bzw.
+%    \textbf{unsichtbar} setzen.
+%    Jedoch die Wertungen bleiben immer öffentlich sichtbar.
+%  \item[/F0330/]
+%    \textit{Anzeige der persönlichen Profile anderer Benutzer:}
+%    Der Benutzer kann sich von anderen Benutzern die persönlichen Profile anzeigen lassen,
+%    dabei können auf unsichtbar gesetzte Einträge nicht gesehen werden.\\
+%    Im Gegensatz zu \textit{/F0310/} kann der Benutzer sein eigenes, persönliches Profil auch auf diese Weise anzeigen lassen.
+%\end{description}
+%
+%
+%\subsection{Spielfunktionen}
+%
+%Der angemeldete Benutzer ist in erster Linie ein Spieler.
+%Dieser Spieler hat stets eine Liste von eigenen, laufenden Spielen zur Verfügung.\\
+%Ein Spieler kann nicht gegen sich selbst antreten.
+%
+%\subsubsection{Initialisierung}
+%
+%\begin{description}
+%  \item[/F0410/]
+%    \textit{Eröffnung eines Spieles:}
+%    Der angemeldete Benutzer kann Spiele \textbf{eröffnen}, ohne dabei einen anderen Spieler als Gegner angeben zu müssen.
+%    Ein eröffnetes Spiel kann von anderen Spieleren unter dem Menüpunkt \textbf{neue Spiele} angenommen werden \textit{/F0420/}.
+%  \item[/F0420/]
+%    \textit{Aufnahme eines Spieles:}
+%    Der angemeldete Benutzer kann bereits eröffnete Spiele \textbf{aufnehmen} \textit{/F0410/}.
+%  \item[/F0430/]
+%    \textit{Herausfordern eines Gegners:}
+%    Der angemeldete Benutzer kann unter Angabe eines gültigen Benutzernamens einen anderen Benutzer zum Spiel \textbf{herausfordern}.
+%  \item[/F0440/]
+%    \textit{Annahme einer Herausforderung:}
+%    Der angemeldete Benutzer kann eine Herausforderung zum Spiel \textit{/F0430/} \textbf{annehmen}.
+%  \item[/F0450/]
+%    \textit{Ablehnen einer Herausforderung:}
+%    Der angemeldete Benutzer kann eine Herausforderung zum Spiel \textit{/F0430/} \textbf{ablehnen}.
+%\end{description}
+%
+%\subsubsection{Spielverlauf}
+%
+%\begin{description}
+%  \item[/F0510/]
+%    \textit{Zugmöglichkeit:}
+%    Der angemeldete Benutzer kann zu jedem Spiel einen Zug seiner Wahl gemäß der Spielregeln \textbf{ziehen}, vorausgesetzt er ist am Zug.
+%  \item[/F0520/]
+%    \textit{Gebot eines Unentschieden:}
+%    Der angemeldete Benutzer kann gemäß den Spielregeln ein Unentschieden \textit{(remis)} \textbf{anbieten}, vorausgesetzt er ist am Zug.
+%  \item[/F0530/]
+%    \textit{Annahme eines Unentschieden:}
+%    Der angemeldete Benutzer kann, wenn ihm ein Unentschieden angeboten wurde \textit{/F0520/}, das Unentschieden \textbf{annehmen}.
+%  \item[/F0540/]
+%    \textit{Ablehnen eines Unentschieden:}
+%    Der angemeldete Benutzer kann, wenn ihm ein Unentschieden angeboten wurde \textit{/F0520/}, das Unentschieden \textbf{ablehnen}.
+%  \item[/F0550/]
+%    \textit{Aufgabe eines Spieles:}
+%    Der angemeldete Benutzer kann ein laufendes Spiel \textbf{mit Aufgabe beenden}, vorausgesetzt er ist am Zug.
+%  \item[/F0560/]
+%    \textit{Zugbedingter Nachrichtenaustausch:}
+%    Der angemeldete Benutzer kann zu jedem Zug \textbf{eine Nachricht übermitteln}.
+%\end{description}
+%
+%\subsection{Portfolio-Funktionen}
+%
+%Der Benutzer verfügt über eine persönliche Sammel- und Dokumentenmappe,
+%die mit Such-, Sortier- und Dokumentationsfunktionen versehen ist.
+%Dieses Portfolio ist rein zur privaten Verwendung und deshalb nicht für die Spielgemeinschaft sichtbar.
+%Das Portfolio ermöglicht das individuelle Dokumentieren und Sammeln im System.\\
+%Der Benutzer kann grundsätzlich alles Sammelbare in sein Portfolio aufnehmen.\\
+%Zum Sammelbaren zählen:
+%\begin{itemize}
+%  \item persönliche Konfigurationen
+%  \item andere Benutzer bzw. Spieler
+%  \item bereits beendete Spiele
+%  \item Nachrichten
+%  \item Notizen
+%\end{itemize}
+%
+%\begin{description}
+%  \item[/F0610/]
+%    \textit{Anzeige des Portfolios:}
+%    Der Benutzer kann sich den Inhalt des persönlichen Portfolios \textbf{anzeigen} lassen.
+%  \item[/F0620/]
+%    \textit{Suche nach Benutzern:}
+%    Der Benutzer kann mit der Suchfunktion des Portfolios nach anderen Benutzern des Systems anhand einer beliebigen Kombination
+%    der folgenden Kriterien suchen:
+%    \begin{itemize}
+%      \item Benutzername
+%      \item Bereichsangabe der Wertungen zu gegebenen Spieltyp
+%    \end{itemize}
+%  \item[/F0630/]
+%    \textit{Suche nach Spielen:}
+%    Der Benutzer kann mit der Suchfunktion des Portfolios nach bereits gespielten Spielen des Systems anhand einer beliebigen Kombination
+%    der folgenden Kriterien suchen:
+%    \begin{itemize}
+%      \item Spieltyp \textit{(Mühle, Dame, Schach oder alle)}
+%      \item Anzahl der Spielzüge
+%      \item Gewinnfarbe \textit{(Weiss, Schwarz oder unentschieden)}
+%    \end{itemize}
+%\end{description}
+%
+%\subsection{Administratorfunktionen}
+%
+%Der Administrator verfügt über alle Benutzerfunktionen, und kann darüberhinaus die Eigenschaften des Systems konfigurieren.
+%Zudem kann der Administrator Benutzer aus dem System verbannen,
+%sowie den Informationsaustausch \textit{(Instant-Messaging)} zwischen zwei Benutzern völlig unterbinden,
+%sofern diese kein Spiel am Laufen haben.
+%
+%\subsubsection{Systemverwaltung}
+%
+%\begin{description}
+%  \item[/F1010/]
+%    \textit{Konfiguration:}
+%    Der angemeldete Administrator kann die Eigenschaften des Systems
+%    \begin{itemize}
+%      \item Sessiondauer eines Benutzers \textit{(Autologout)}
+%      \item Welche Werbebanner auf welchen Seiten angezeigt werden sollen
+%    \end{itemize}
+%    konfigurieren.
+%  \item[/F1020/]
+%    \textit{Statistiken:}
+%    Der angemeldete Administrator kann sich Statistiken
+%    \begin{itemize}
+%      \item Welcher Spieltyp wird am häufigsten verwendet
+%      \item Wieviele Benutzer registrieren sich pro Tag
+%      \item Wieviele Benutzer sind bzw. waren am System angemeldet
+%    \end{itemize}
+%    zur Benutzung des Systems anzeigen lassen.
+%\end{description}
+%
+%\subsubsection{Benutzerverwaltung}
+%
+%\begin{description}
+%  \item[/F1110/]
+%    \textit{Einschänkung der Benutzer:}
+%    Der angemeldete Administrator kann die Eigenschaften einzelner Benutzer unter Angabe einer zeitlichen Begrenzung einschränken.
+%    \begin{itemize}
+%      \item Er kann die Möglichkeit zum Nachrichtenaustausch \textit{(Instant-Messaging)} zweier Benutzer unterbinden.
+%      \item Er kann jeglichen Kontakt zwischen zwei Benutzer unterbinden, wobei bereits eröffnete Spiele zu Ende gespielt werden müssen.
+%    \end{itemize}
+%    Eine völlige Einschränkung eines Benutzers bedeutet die Verbannung eines Benutzers aus dem System.
+%    Dies ist besonders sinnvoll, wenn ein Benutzer bei einem kostenpflichtigen Account seinen Zahlungen nicht nachkommen sollte
+%    \textit{(Ausblick auf Folgeversion)}.
+%  \item[/F1120/]
+%    \textit{Einschränkungen restaurieren:}
+%    Der angemeldete Administrator kann die Eigenschaften einzelner Benutzer auch wieder manuell restaurieren.
+%\end{description}
