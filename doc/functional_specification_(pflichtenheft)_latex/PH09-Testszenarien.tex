@@ -4,22 +4,43 @@ Jede Produktfunktion \textit{/F????/} wird anhand von konkreten Testfällen \text
 Die dabei verwendeten Namen werden rein zufällig gewählt.
 
 \begin{description}
-  \item[/T0010/]
-    \textit{Registrieren:}
-    Herr Tim Testmann registriert sich mit dem gewünschten Benutzernamen \textit{testmann}
-    und dem Passwort \textit{testtest} und der EMailadresse \textit{tim@testmann.de} am System.\\
-    Frau Beate Betamuster registriert sich ebenfall mit dem gewünschten Benutzernamen \textit{betamuster}
-    und dem Passwort \textit{betabeta} und der EMailadresse \textit{info@stefan-baur.de} am System.
-  \item[/T0020/]
-    \textit{Anmelden:}
-    Tim Testmann meldet sich am System unter Benutzung seines Benutzernamens und Passwortes am System an.
-  \item[/T0030/]
-    \textit{Abmelden:}
-    Tim Testmann meldet sich vom System wieder ab.
-  \item[/T0040/]
-    \textit{Kennung anfordern:}
-    Beate Betamuster hat ihre Kennung vergessen und fordert unter Angabe ihrer EMailadresse ihre Kennung an.
-  \item[/T0050/]
-    \textit{Passwort ändern:}
-    Beate Betamuster ändert sodann ihr Passwort \textit{betabeta} in \textit{testbeta} ab.
+\item[/T0010/]
+	\textit{Zustand erstellen:} Es werden Zustände mit den Namen "`0"', "`1"', "`2"', "`4"' und "`5"' erstellt.
+\item[/T0020/]
+	\textit{Zustand löschen:} Der Zustand "`4"' wird gelöscht.
+\item[/T0030/]
+	\textit{Zustand umbenennen:} Der Zustand "`5"' wird in "`3"' umbenannt.
+\item[/T0040/]
+	\textit{Zustand verschieben:} Der Zustand "`0"' wird verschoben.
+\item[/T0100/]
+	\textit{Übergang erstellen:} Ein Übergang vom Zustand "`0"' zum Zustand "`1"' wird erstellt mit dem Eingabezeichen "`a"'.
+	Ein weiterer Zustandsübergang von "`1"' nach "`2"' mit dem Eingabezeichen "`b"' wird erstellt.
+\item[/T0110/]
+	\textit{Übergang löschen:} Der Übergang von "`1"' nach "`2"' wird gelöscht.
+\item[/T0120/]
+	\textit{Übergang bearbeiten:} Beim Übergang von "`0"' nach "`1"' wird das Eingabezeichen auf "`b"' geändert.
+\item[/T0200/]
+	\textit{Zustand zu Startzustand erklären:} Der Zustand "`0"' wird zum Startzustand erklärt.
+\item[/T0200/]
+	\textit{Zustand zu Endzustand erklären:} Die Zustände "`1"' und "`2"' werden zu Endzuständen erklärt.
+\item[/T0200/]
+	\textit{Startzustand oder Endzustand zu normalen Zustand erklären:} Der Zustand "`2"' wird wieder zum normalen Zustand erklärt.
+
+\item[/T0300/]
+	\textit{Automatendefinition speichern:} Die Automatendefinition wird gespeichert.
+\item[/T0320/]
+	\textit{Neue Automatendefinition erstellen:} Der aktuell bearbeitete Graph wird verworfen.
+\item[/T0310/]
+	\textit{Automatendefinition laden:} Der zuvor gespeicherte Automat wird geladen.
+
+\item[/T0400/]
+	\textit{Simulation ausführen:} Starten der Simulation mit dem geladenen Automaten mit dem Eingabewort "`b"'.
+\item[/T0410/]
+	\textit{Simulationsergebnis anzeigen:} Anzeige des Ergebnisses. Der Automat sollte das Eingabewort akzeptieren.
+
+\item[/T1000/]
+	\textit{Ausgabe einer Beschreibung der Programmparameter:} Aufruf der Kommandozeilenapplikation mit dem Parameter "`-help"'.
+\item[/T1010/]
+	\textit{Ausführung der Simulation:} Start der Konsolenapplikation, so dass diese den zuvor gespeicherten Automaten lädt und für das Eingabewort "`a"'.
+	Das Ergebnis sollte lauten, dass der Automat das Eingabewort nicht akzeptiert.
 \end{description}
