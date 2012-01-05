@@ -19,13 +19,13 @@ Die grafische Benutzeroberfläche dient der komfortablen Erzeugung von Automatend
 \item[/F0040/]
 	\textit{Zustand verschieben:} Die Position des Zustands kann durch Verschieben angepasst werden.
 \item[/F0100/]
-	\textit{Übergang erstellen:} Zustandsübergange stellen die Aktionsmöglichkeiten 
+	\textit{Übergang erstellen:} Zustandsübergange stellen die Aktionsmöglichkeiten des Automaten dar. Sie sind als Pfeile von einem Zustand zu einem anderen Zustand dargestellt.
 \item[/F0110/]
 	\textit{Übergang löschen}
 \item[/F0120/]
 	\textit{Übergang bearbeiten}
 \item[/F0200/]
-	\textit{Zustand zu Startzustand erklären}
+	\textit{Zustand zu Startzustand erklären:} Jeder Automat benötigt mindestens einen Startzustand, deterministische Automaten sogar genau einen. Dazu muss ein zuvor erzeugter Zustand in einen Startzustand umgewandelt werden können.
 \item[/F0200/]
 	\textit{Zustand zu Endzustand erklären}
 \item[/F0200/]
@@ -36,20 +36,20 @@ Die grafische Benutzeroberfläche dient der komfortablen Erzeugung von Automatend
 
 \begin{description}
 \item[/F0300/]
-	\textit{Automatendefinition speichern}
+	\textit{Automatendefinition speichern:} Um später wieder auf eine bereits erstellte Automatendefinition zurückgreifen zu können, wird diese im XML-Format abgespeichert.
 \item[/F0310/]
-	\textit{Automatendefinition laden}
+	\textit{Automatendefinition laden:} Aus einer existierenden XML-Datei wird ein Automatengraph erzeugt.
 \item[/F0320/]
-	\textit{Neue Automatendefinition erstellen}
+	\textit{Neue Automatendefinition erstellen:} Der aktuell bearbeitete Graph wird verworfen.
 \end{description}
 
 \subsubsection{Simulation}
 
 \begin{description}
 \item[/F0400/]
-	\textit{Simulation ausführen}
+	\textit{Simulation ausführen:} Die Benutzeroberfläche ruft mit dem aktuell angezeigten Automaten und dem Eingabewort die Simulationsfunktion der Bibliothek auf.
 \item[/F0410/]
-	\textit{Simulationsergebnis anzeigen}
+	\textit{Simulationsergebnis anzeigen:} Nach erfolgter Simulation wird das Ergebnis der Simulation, insbesondere das Ergebnis des Akzeptanztests, angezeigt.
 \end{description}
 
 
@@ -61,7 +61,7 @@ Neben der grafischen Benutzeroberfläche existiert ebenfalls ein Kommandozeilenpr
 \item[/F1000/]
 	\textit{Ausgabe einer Beschreibung der Programmparameter:} Um auf der Kommandozeile ausgeführt werden zu können benötigt das Simulationsprogramm eine Reihe von Parametern (Eingabewort, Automatendefinition, evtl. aus Datei gelesen). Diese Parameter werden mitsamt einer Beschreibung auf der Konsole ausgegeben.
 \item[/F1010/]
-	\textit{Ausführung der Simulation:} 	
+	\textit{Ausführung der Simulation:} Nach Eingabe der erforderlichen Parameter ruft das Kommandozeilenprogramm die Bibliotheksfunktion zur Simulation des Automaten auf und zeigt das Ergebnis an.	
 \end{description}
 
 \subsection{Bibliothek}
@@ -71,7 +71,7 @@ Es bietet auch die Möglichkeit, über die Kommandozeile gestartet zu werden und d
 
 \begin{description}
 \item[/F2000/]
-	\textit{Simulation eines endlichen Automaten}
+	\textit{Simulation eines endlichen Automaten:} Simuliert einen Automaten auf eine Eingabe.
 \end{description}
 
 %\subsection{Benutzerfunktionen}
