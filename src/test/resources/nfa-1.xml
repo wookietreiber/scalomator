@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<finalstatemachine name="foobar">
+  <initialstate>0</initialstate>
+
+  <finalstates>
+    <finalstate>3</finalstate>
+  </finalstates>
+
+  <transitions>
+    <transition>
+      <start>0</start>
+      <input>a</input>
+      <ends>
+        <end>0</end>
+        <end>1</end>
+      </ends>
+    </transition>
+    <transition>
+      <start>0</start>
+      <input>b</input>
+      <ends>
+        <end>0</end>
+      </ends>
+    </transition>
+    <transition>
+      <start>1</start>
+      <input>b</input>
+      <ends>
+        <end>2</end>
+      </ends>
+    </transition>
+    <transition>
+      <start>2</start>
+      <input>a</input>
+      <ends>
+        <end>3</end>
+      </ends>
+    </transition>
+  </transitions>
+
+</finalstatemachine>
