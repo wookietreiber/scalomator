@@ -52,6 +52,8 @@ object DeterministicFiniteAutomaton {
 
 }
 
+import DeterministicFiniteAutomaton._
+
 /** Represents deterministic finite automata (DFA). For ease of use you may
   * import the whole [[scalax.automata]] package and just need to type in the
   * shorter alias `DFA`:
@@ -103,36 +105,33 @@ class DeterministicFiniteAutomaton[A,S] private (
         DeterministicFiniteAutomaton(init, fs, ts.toMap)
       }
 
-      case Dequeue(partitionSubset,q) => {
+      case Dequeue(current,q) => {
         val (removals,additions) = (
           for {
             start <- for {
               input <- alphabet
 
               starts = for { // ? -> input -> end
-                end <- partitionSubset
-                t   <- transitions if (t._2 == end) && (t._1._2 == input)
-              } yield t._1._1
+                end       <- current
+                ((s,i),e) <- transitions if ( e == end ) && ( i == input )
+              } yield s
 
               if starts nonEmpty
             } yield starts
 
             changes <- for {
-              part <- partition
-
-              isect = part & start
-
-              if isect nonEmpty
-
-              if ! ( partition contains isect )
-
-            } yield ( part, Set(isect, part diff isect) )
+              part  <- partition
+              isect =  part & start if ( isect nonEmpty ) && ! ( partition contains isect )
+            } yield part -> List(isect, part diff isect)
           } yield changes
         ) unzip
 
-        val newqs = additions map { _ min DFA.setsize } filterNot { _.size <= 1 }
+        val newparts = for {
+          add  <- additions
+          part =  add min setsize if ! ( part.size <= 1 )
+        } yield part
 
-        refine(partition -- removals ++ additions.flatten, q enqueue newqs)
+        refine(partition -- removals ++ additions.flatten, q enqueue newparts)
       }
     }
 
