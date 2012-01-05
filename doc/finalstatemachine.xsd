@@ -8,7 +8,7 @@
         <xs:element ref="finalstates"/>
         <xs:element ref="transitions"/>
       </xs:sequence>
-      <xs:attribute name="name" use="optional" type="xs:normalizedString"/>
+      <xs:attribute name="name" type="xs:normalizedString"/>
     </xs:complexType>
   </xs:element>
 
@@ -16,7 +16,7 @@
 
   <xs:element name="finalstates">
     <xs:complexType>
-      <xs:sequence >
+      <xs:sequence>
         <xs:element maxOccurs="unbounded" ref="finalstate"/>
       </xs:sequence>
     </xs:complexType>

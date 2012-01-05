@@ -1,0 +1,42 @@
+<?xml encoding="UTF-8"?>
+
+<!ELEMENT finalstatemachine (initialstate,finalstates,transitions)>
+<!ATTLIST finalstatemachine
+  xmlns CDATA #FIXED ''
+  name  CDATA #IMPLIED>
+
+<!ELEMENT initialstate (#PCDATA)>
+<!ATTLIST initialstate
+  xmlns CDATA #FIXED ''>
+
+<!ELEMENT finalstates (finalstate)+>
+<!ATTLIST finalstates
+  xmlns CDATA #FIXED ''>
+
+<!ELEMENT transitions (transition)+>
+<!ATTLIST transitions
+  xmlns CDATA #FIXED ''>
+
+<!ELEMENT finalstate (#PCDATA)>
+<!ATTLIST finalstate
+  xmlns CDATA #FIXED ''>
+
+<!ELEMENT transition (start,input,ends)>
+<!ATTLIST transition
+  xmlns CDATA #FIXED ''>
+
+<!ELEMENT start (#PCDATA)>
+<!ATTLIST start
+  xmlns CDATA #FIXED ''>
+
+<!ELEMENT input (#PCDATA)>
+<!ATTLIST input
+  xmlns CDATA #FIXED ''>
+
+<!ELEMENT ends (end)+>
+<!ATTLIST ends
+  xmlns CDATA #FIXED ''>
+
+<!ELEMENT end (#PCDATA)>
+<!ATTLIST end
+  xmlns CDATA #FIXED ''>
