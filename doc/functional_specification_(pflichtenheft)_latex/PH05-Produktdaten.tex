@@ -4,7 +4,7 @@
 
 \begin{description}
   \item[/D010/]
-    \textit{Automatendefinition:} Die Struktur eines endlichen Automaten, bestehend aus Zuständen und Übergangen, wird in einer XML-Datei gespeichert, die der folgenden Definition genügt.
+    \textit{Automatendefinition:} Die Struktur eines endlichen Automaten, bestehend aus Zuständen und Übergangen, wird in einer XML-Datei gespeichert, die der folgenden Definition (Listing \ref{xsd}) genügt.
     
     \lstset{ %
   language=XML,                % the language of the code
@@ -30,7 +30,7 @@
   morekeywords={*,...}               % if you want to add more keywords to the set
 }
 
-\begin{lstlisting}[caption=XSD]
+\begin{lstlisting}[caption=XSD,label=xsd]
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
     elementFormDefault="qualified">
@@ -93,13 +93,16 @@
 </xs:schema>
 \end{lstlisting}
 
-	Im Nachfolgenden sind ein beispielhafter Automat und die hierzu erzeugte XML-Datei aufgeführt.
+	Im Nachfolgenden sind ein beispielhafter Automat (Abbildung \ref{example_automaton}) und die hierzu erzeugte XML-Datei (Listing \ref{example_xml}) aufgeführt.
 
-\begin{center}
+\begin{figure}[h!]
+	\centering
 	\includegraphics[width=8cm]{images/NFA-1.eps}
-\end{center}
+	\caption{Ein beispielhafter Automat}
+	\label{example_automaton}
+\end{figure}
 
-\begin{lstlisting}[caption=Erzeugte XML-Datei]
+\begin{lstlisting}[caption=Erzeugte XML-Datei,label=example_xml]
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE finitestatemachine PUBLIC
   "http://github.com/downloads/wookietreiber
