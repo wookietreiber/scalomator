@@ -1,7 +1,7 @@
 <?xml encoding="UTF-8"?>
 
-<!ELEMENT finalstatemachine (initialstate,finalstates,transitions)>
-<!ATTLIST finalstatemachine name  CDATA #IMPLIED>
+<!ELEMENT finitestatemachine (initialstate,finalstates,transitions)>
+<!ATTLIST finitestatemachine name  CDATA #IMPLIED>
 
 <!ELEMENT initialstate (#PCDATA)>
 <!ATTLIST initialstate>
