@@ -2,7 +2,6 @@
 
 %\comment{Was leistet das Produkt aus Benutzersicht?}
 
-
 \subsection{Grafische Benutzeroberfläche}
 
 Die grafische Benutzeroberfläche dient der komfortablen Erzeugung von Automatendefinitionen.
@@ -20,7 +19,7 @@ Die grafische Benutzeroberfläche dient der komfortablen Erzeugung von Automatend
 \item[/F0040/]
 	\textit{Zustand verschieben:} Die Position des Zustands kann durch Verschieben angepasst werden.
 \item[/F0100/]
-	\textit{Übergang erstellen:} Zustandsübergange stellen 
+	\textit{Übergang erstellen:} Zustandsübergange stellen die Aktionsmöglichkeiten 
 \item[/F0110/]
 	\textit{Übergang löschen}
 \item[/F0120/]
@@ -54,25 +53,25 @@ Die grafische Benutzeroberfläche dient der komfortablen Erzeugung von Automatend
 \end{description}
 
 
-\subsection{Berechnungsprogramm}
+\subsection{Kommandozeilenprogramm}
 
-Das Berechnungsprogramm ist eine separate Komponente, die unabhängig von der grafischen Benutzeroberfläche operiert.
-Es bietet auch die Möglichkeit, über die Kommandozeile gestartet zu werden und dort das Ergebnis der Simulation anzuzeigen.
-
-\subsubsection{Hilfe}
+Neben der grafischen Benutzeroberfläche existiert ebenfalls ein Kommandozeilenprogramm, das über Parameter die Simulation eines Automaten anstößt.
 
 \begin{description}
 \item[/F1000/]
 	\textit{Ausgabe einer Beschreibung der Programmparameter:} Um auf der Kommandozeile ausgeführt werden zu können benötigt das Simulationsprogramm eine Reihe von Parametern (Eingabewort, Automatendefinition, evtl. aus Datei gelesen). Diese Parameter werden mitsamt einer Beschreibung auf der Konsole ausgegeben.
+\item[/F1010/]
+	\textit{Ausführung der Simulation:} 	
 \end{description}
 
-\subsubsection{Hilfe}
+\subsection{Bibliothek}
+
+Die Bibliothek ist eine separate Komponente, die unabhängig von der grafischen Benutzeroberfläche operiert.
+Es bietet auch die Möglichkeit, über die Kommandozeile gestartet zu werden und dort das Ergebnis der Simulation anzuzeigen.
 
 \begin{description}
-\item[/F1100/]
+\item[/F2000/]
 	\textit{Simulation eines endlichen Automaten}
-\item[/F1110/]
-	\textit{Ausgabe der Akzeptanz des Automaten für das eingegebene Wort}
 \end{description}
 
 %\subsection{Benutzerfunktionen}
