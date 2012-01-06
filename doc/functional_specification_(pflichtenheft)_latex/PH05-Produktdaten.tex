@@ -27,7 +27,7 @@
                                   % also try caption instead of title
   numberstyle=\tiny,        % line number style
   escapeinside={\%*}{*)},            % if you want to add a comment within your code
-  morekeywords={*,...}               % if you want to add more keywords to the set
+  morekeywords={xs:schema,xs:complexType,xs:sequence,xs:element,xs:attribute}               % if you want to add more keywords to the set
 }
 
 \begin{lstlisting}[caption=XSD,label=xsd]
@@ -93,7 +93,7 @@
 </xs:schema>
 \end{lstlisting}
 
-	Im Nachfolgenden sind ein beispielhafter Automat (Abbildung \ref{example_automaton}) und die hierzu erzeugte XML-Datei (Listing \ref{example_xml}) aufgeführt.
+	Im Nachfolgenden sind ein beispielhafter Automat (Abbildung \ref{example_automaton}) und diedie ihn beschreibende XML-Datei (Listing \ref{example_xml}) aufgeführt.
 
 \begin{figure}[h!]
 	\centering
@@ -102,7 +102,8 @@
 	\label{example_automaton}
 \end{figure}
 
-\begin{lstlisting}[caption=Erzeugte XML-Datei,label=example_xml]
+\lstset{morekeywords={finitestatemachine,initialstate,finalstates,finalstate,transitions,transition,start,input,ends,end}}
+\begin{lstlisting}[caption=Den Automaten beschreibende XML-Datei,label=example_xml]
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE finitestatemachine PUBLIC
   "http://github.com/downloads/wookietreiber

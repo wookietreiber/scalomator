@@ -11,13 +11,13 @@ Die grafische Benutzeroberfläche dient der komfortablen Erzeugung von Automatend
 \begin{description}
 \item[/F0010/]
 	\textit{Zustand erstellen:} Der Benutzer legt einen neuen Zustand im Graphen an, welcher ihm als ein Kreis angezeigt wird.
-	Der Kreis beinhaltet einen Text, der dem Namen des Zustands entspricht.
+	Der Kreis beinhaltet einen Text, der dem Namen des Zustandes entspricht.
 \item[/F0020/]
 	\textit{Zustand löschen:} Bereits erstellte Zustände können vom Benutzer gelöscht werden.
 \item[/F0030/]
-	\textit{Zustand umbenennen:} Der Name eines Zustandes muss änderbar sein.
+	\textit{Zustand umbenennen:} Der Name eines Zustandes muss sich ändern lassen können.
 \item[/F0040/]
-	\textit{Zustand verschieben:} Die Position des Zustands kann durch Verschieben angepasst werden.
+	\textit{Zustand verschieben:} Die Position des Zustandes kann durch Verschieben angepasst werden.
 \item[/F0100/]
 	\textit{Übergang erstellen:} Zustandsübergange stellen die Aktionsmöglichkeiten des Automaten dar. Sie sind als Pfeile von einem Zustand zu einem anderen Zustand dargestellt.
 \item[/F0110/]
@@ -66,13 +66,14 @@ Neben der grafischen Benutzeroberfläche existiert ebenfalls ein Kommandozeilenpr
 
 \subsection{Bibliothek}
 
-Die Bibliothek ist eine separate Komponente, die unabhängig von der grafischen Benutzeroberfläche operiert.
-Es bietet auch die Möglichkeit, über die Kommandozeile gestartet zu werden und dort das Ergebnis der Simulation anzuzeigen.
+Die Bibliothek ist eine separate Komponente, die unabhängig von der grafischen Benutzeroberfläche operiert. Sie führt die Simulation aus, tritt für den Benutzer jedoch selbst nicht in Erscheinung, da die Ergebnisse der Simulation an aufrufende Programme weitergereicht werden, damit diese das Ergebnis ihrerseits in gewünschter Form darstellen.
+\\\\
+Die Auslagerung des Simulationsvorgangs in eine Bibliothek wird gewählt, um anderen Projekten die Funktionalität zur Verfügung zu stellen.
 
-\begin{description}
-\item[/F2000/]
-	\textit{Simulation eines endlichen Automaten:} Simuliert einen Automaten auf eine Eingabe.
-\end{description}
+%\begin{description}
+%\item[/F2000/]
+%	\textit{Simulation eines endlichen Automaten:} Simuliert einen Automaten auf eine Eingabe.
+%\end{description}
 
 %\subsection{Benutzerfunktionen}
 %

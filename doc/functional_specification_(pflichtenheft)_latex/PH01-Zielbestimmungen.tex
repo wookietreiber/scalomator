@@ -7,16 +7,16 @@ Das Programm soll der Unterstützung der Ausbildung von Studenten der Studienrich
 
 Ein \textbf{Automat} ist in der Informatik das Modell eines digitalen, zeitdiskreten Rechners. Ob es möglich oder sinnvoll ist, eine solche Maschine tatsächlich zu bauen, ist dabei zunächst unerheblich. Die Vereinfachung der Fähigkeiten erlaubt es, das Verhalten eines Automaten leichter zu verstehen und zu vergleichen.
 \\\\
-Das grundsätzliche Verhalten eines Automaten ist immer gleich: Dem Automaten wird von außen eine Eingabe als Folge von Zeichen vorgelegt. Der Automat befindet sich in einem Zustand. Jedes Mal, wenn ein Eingabezeichen eintrifft, kann sich abhängig vom Eingabezeichen und dem gegenwärtigen Zustand ein neuer Zustand, der Folgezustand, einstellen (Zustandsübergang oder Transition). Man kann die Menge der möglichen Zustandsübergänge, die das Verhalten des Automaten definiert, als das Programm des Automaten verstehen.
+Das grundsätzliche Verhalten eines Automaten ist immer gleich: Dem Automaten wird von außen eine Eingabe als Folge von Zeichen vorgelegt. Der Automat befindet sich in einem Zustand. Jedes Mal, wenn ein Eingabezeichen eintrifft, kann sich abhängig vom Eingabezeichen und dem gegenwärtigen Zustand ein neuer Zustand, der Folgezustand, einstellen (Zustandsübergang oder Transition). Man kann die Menge der möglichen Zustandsübergänge, die das Verhalten des Automaten definieren, als das Programm des Automaten verstehen.
 \\\\
-Wenn der Folgezustand durch den gegenwärtigen Zustand und das Eingabezeichen immer eindeutig gegeben ist, dann spricht man von einem \textbf{deterministischen Automaten}. Allgemein aber kann man auch einen Spielraum (Freiheitsgrade) für die Zustandsübergänge zulassen. Der Automat darf dann auf dasselbe Paar von Zustand und Eingabezeichen unter mehreren möglichen Kandidaten einen Folgezustand willkürlich wählen. Dann spricht man von einem \textbf{nichtdeterministischen Automaten}. Der Nichtdeterminismus ist dann willkommen, wenn man das Verhalten der Umgebung modellieren möchte, das man nicht völlig genau kennt (don't know), oder wenn man Möglichkeiten für verschiedene Implementierungen offenlassen möchte (don't care).
+Wenn der Folgezustand durch den gegenwärtigen Zustand und das Eingabezeichen immer eindeutig gegeben ist, dann spricht man von einem \textbf{deterministischen Automaten}. Allgemein aber kann man auch einen Spielraum (Freiheitsgrade) für die Zustandsübergänge zulassen. Der Automat darf dann auf dasselbe Paar von Zustand und Eingabezeichen unter mehreren möglichen Kandidaten einen Folgezustand willkürlich wählen. Dann spricht man von einem \textbf{nichtdeterministischen Automaten}. Der Nichtdeterminismus ist dann willkommen, wenn man das Verhalten der Umgebung modellieren möchte, das man nicht völlig genau kennt (don't know), oder wenn man Möglichkeiten für verschiedene Implementierungen offen lassen möchte (don't care).
 \\\\
 Ein Automat heißt endlich, wenn die Menge der Zustände, die er annehmen kann, endlich ist. Ein \textbf{endlicher Automat} ist ein Spezialfall aus der Menge der Automaten. Ein Zustand speichert die Information über die Vergangenheit, d.h. er reflektiert die Änderungen der Eingabe seit dem Systemstart bis zum aktuellen Zeitpunkt. Ein Zustandsübergang zeigt eine Änderung des Zustandes des endlichen Automaten und wird durch logische Bedingungen beschrieben, die erfüllt sein müssen, um den Übergang zu ermöglichen. Eine Aktion ist die Ausgabe des endlichen Automaten, die in einer bestimmten Situation erfolgt. 
 \\\\
-Ein endlicher Automat wird definiert durch ein 5-Tupel $(\Sigma, S, s_0, \delta, E)$, wobei:
+Ein endlicher Automat wird definiert durch ein 5-Tupel $(\Sigma, S, s_0, \delta, E)$. Dabei gilt:
 \begin{itemize}
-\item[$\Sigma$] ist das Eingabealphabet (eine endliche nicht leere Menge von Symbolen),
-\item[$S$] ist eine endliche nicht leere Menge von Zuständen,
+\item[$\Sigma$] ist das Eingabealphabet (eine endliche, nicht leere Menge von Symbolen),
+\item[$S$] ist eine endliche, nicht leere Menge von Zuständen,
 \item[$s_0$] ist der Anfangszustand, $s_0\in S$,
 \item[$\delta$] ist die Zustandsübergangsfunktion: $\delta: S \times \Sigma \rightarrow S$,
 \item[$E$] ist die Menge von Endzuständen, $E \subseteq S$
