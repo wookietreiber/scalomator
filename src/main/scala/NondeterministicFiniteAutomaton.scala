@@ -74,6 +74,22 @@ class NondeterministicFiniteAutomaton[A,S] private (
 
   override def states: Set[S] = finalStates ++ transitions.values.flatten.toSet + initialState
 
+  override def accepts(word: Seq[A]) = {
+    def traverse(word: Seq[A], state: S): Boolean = {
+      if ( word isEmpty )
+        if ( finalStates contains state ) true else false
+      else {
+        val move = state -> word.head
+        if ( transitions isDefinedAt move )
+          transitions(move).map(traverse(word.tail,_)).foldLeft(false)(_ || _)
+        else
+          false
+      }
+    }
+
+    traverse(word, initialState)
+  }
+
   // -----------------------------------------------------------------------
   // conversion within the domain
   // -----------------------------------------------------------------------

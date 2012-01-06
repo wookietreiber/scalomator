@@ -80,6 +80,23 @@ class DeterministicFiniteAutomaton[A,S] private (
 
   override def states: Set[S] = finalStates ++ transitions.values.toSet + initialState
 
+  override def accepts(word: Seq[A]) = {
+    @tailrec
+    def traverse(word: Seq[A], state: S): Boolean = {
+      if ( word isEmpty )
+        if ( finalStates contains state ) true else false
+      else {
+        val move = state -> word.head
+        if ( transitions isDefinedAt move )
+          traverse(word.tail, transitions(move))
+        else
+          false
+      }
+    }
+
+    traverse(word, initialState)
+  }
+
   // -----------------------------------------------------------------------
   // conversion within the domain
   // -----------------------------------------------------------------------
