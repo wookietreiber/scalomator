@@ -86,7 +86,13 @@ class DeterministicFiniteAutomaton[A,S] private (
 
   override def toDFA = this
 
-  /** Returns the equivalent [[http://en.wikipedia.org/wiki/DFA_minimization minimum DFA]]. */
+  /** Returns the equivalent [[http://en.wikipedia.org/wiki/DFA_minimization minimum DFA]].
+    *
+    * The used algorithm is called
+    * [[http://en.wikipedia.org/wiki/Dfa_minimization#Hopcroft.27s_algorithm Hopcroft's algorithm]]
+    * which is based on
+    * [[http://en.wikipedia.org/wiki/Partition_refinement partition refinement]].
+    */
   def minimize: DFA[A,Set[S]] = {
     @tailrec
     def refine(partition: Set[Set[S]], q: Queue[Set[S]]): DFA[A,Set[S]] = q match {

@@ -60,7 +60,7 @@ object FiniteStateMachine {
     * respectively the corresponding
     * [[http://github.com/downloads/wookietreiber/scalomator/FiniteStateMachine.xsd XML Schema]].
     *
-    * @param xml the XML representation of a final-state machine
+    * @param xml the XML representation of a finite-state machine
     */
   def apply(xml: Elem): FiniteStateMachine[String,String,Set[String]] = {
     val init =  xml \\ "initialstate" text
@@ -120,7 +120,11 @@ abstract class FiniteStateMachine[A,S,R] {
   // conversion within the domain
   // -----------------------------------------------------------------------
 
-  /** Returns the equivalent [[scalax.automata.DeterministicFiniteAutomaton]]. */
+  /** Returns the equivalent deterministic finite automaton.
+    *
+    * The algorithm uses
+    * [[http://en.wikipedia.org/wiki/Powerset_construction powerset construction]].
+    */
   def toDFA: DeterministicFiniteAutomaton[A,R]
 
   // -----------------------------------------------------------------------
