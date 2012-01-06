@@ -55,12 +55,25 @@ object FiniteStateMachine {
 
   /** Returns a new finite-state machine.
     *
-    * @param xml the XML representation of an automaton
+    * The XML must be valid according to the finite-state machine
+    * [[http://github.com/downloads/wookietreiber/scalomator/FiniteStateMachine.dtd Document Type Definition]]
+    * respectively the corresponding
+    * [[http://github.com/downloads/wookietreiber/scalomator/FiniteStateMachine.xsd XML Schema]].
     *
-    * @todo scaladoc contains information about the XML structure
+    * @param xml the XML representation of a final-state machine
     */
-  def apply(xml: Elem) = {
-    ???
+  def apply(xml: Elem): FiniteStateMachine[String,String,Set[String]] = {
+    val init =  xml \\ "initialstate" text
+    val fs   = (xml \\ "finalstate") map { _ text } toSet
+    val ts   = (xml \\ "transition") map { t =>
+      val start =  t \  "start" text
+      val input =  t \  "input" text
+      val ends  = (t \\ "end") map { _ text } toSet
+
+      start -> input -> ends
+    } toMap
+
+    NFA(init, fs, ts)
   }
 
   private def isDeterministic[A,S](transitions: Map[(S,A),Set[S]]) =
