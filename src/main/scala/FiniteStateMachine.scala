@@ -132,7 +132,28 @@ abstract class FiniteStateMachine[A,S,R] {
   // -----------------------------------------------------------------------
 
   /** Returns the XML representation of this automaton. */
-  def toXML: Elem = ???
+  def toXML: Elem =
+    <finitestatemachine>
+      <initialstate>{initialState}</initialstate>
+      <finalstates>
+        {for (f <- finalStates) yield <finalstate>{f}</finalstate>}
+      </finalstates>
+      <transitions> {
+        for (((start,input),ends) <- transitions) yield
+        <transition>
+          <start>{start}</start>
+          <input>{input}</input>
+          <ends> {
+            if (ends.isInstanceOf[Set[_]])
+              for (e <- ends.asInstanceOf[Set[_]]) yield <end>{e}</end>
+            else
+              <end>{ends}</end>
+          }
+          </ends>
+        </transition>
+      }
+      </transitions>
+    </finitestatemachine>
 
   // -----------------------------------------------------------------------
   // equality / identity methods

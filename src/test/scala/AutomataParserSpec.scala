@@ -42,16 +42,23 @@ class AutomataParserSpec extends Specification { def is =
                                                                              p^
   "XML to FSM examples"                                                       ^
     "1st example"                 ! xml2fsm1                                  ^
+                                                                             p^
+  "FSM to XML examples"                                                       ^
+    "1st example"                 ! fsm2xml1                                  ^
                                                                             end
   // -----------------------------------------------------------------------
   // tests
   // -----------------------------------------------------------------------
 
-  def xml2fsm1 = NFA("0", Set("3"), Map(
+  def xml2fsm1 = nfa must_== FiniteStateMachine(fetch("/nfa-1.xml"))
+
+  def fsm2xml1 = nfa.toXML must beEqualToIgnoringSpace(fetch("/nfa-1.xml"))
+
+  def nfa = NFA("0", Set("3"), Map(
     "0" -> "a" -> Set("0","1"),   "0" -> "b" -> Set("0"),
                                   "1" -> "b" -> Set("2"),
     "2" -> "a" -> Set("3")
-  )) must_== FiniteStateMachine(fetch("/nfa-1.xml"))
+  ))
 
   def fetch(res: String) = XML.load(getClass.getResource(res))
 
