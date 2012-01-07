@@ -31,7 +31,8 @@ object ScalomatorBuild extends Build {
 
   lazy val clientSwing = Project ( "scalomator-client-swing", file ("client-swing"),
     settings = buildSettings ++ Seq (
-      libraryDependencies ++= Seq ( swing, specs2 )
+      libraryDependencies ++= Seq ( swing, specs2 ),
+      mainClass := Some("scalax.automata.gui.AutomataGUI")
     )
   ) dependsOn ( root )
 
