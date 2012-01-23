@@ -1,7 +1,10 @@
 package main.java.scalax.automata.gui;
 
 import java.awt.BorderLayout;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import java.util.Arrays;
 
@@ -18,8 +21,13 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import com.mxgraph.model.mxGraphModel;
 import com.mxgraph.swing.mxGraphComponent;
+import com.mxgraph.util.mxEvent;
+import com.mxgraph.util.mxEventObject;
+import com.mxgraph.util.mxEventSource.mxIEventListener;
 import com.mxgraph.view.mxGraph;
+import com.mxgraph.view.mxGraphSelectionModel;
 
 
 public class GUI extends JFrame {
@@ -91,6 +99,7 @@ public class GUI extends JFrame {
 		infoPanel = new JPanel();
 		
 		sidePanel.setLayout(new BorderLayout());
+		sidePanel.setBorder(BorderFactory.createLoweredBevelBorder());
 		subPanel.setLayout(new BoxLayout(subPanel, BoxLayout.Y_AXIS));
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 		statesPanel.setLayout(new BorderLayout());
@@ -131,7 +140,44 @@ public class GUI extends JFrame {
 	
 	public JComponent initGraph() {
 		graph = new mxGraph();
+		final mxGraphComponent graphComponent = new mxGraphComponent(graph);
+		
+		// dangling edges are bad and result in all kinds of nasty things
+		graph.setAllowDanglingEdges(false);
 		root = graph.getDefaultParent();
+		
+		// a movement listener for any amount of selected cells
+	    graph.addListener(mxEvent.CELLS_MOVED, new mxIEventListener() {
+	        @Override
+	        public void invoke(Object sender, mxEventObject evt) {
+	            if (sender instanceof mxGraph) {
+	            	System.out.println("Movement happened for:");
+	                for (Object cell : ((mxGraph)sender).getSelectionCells()) {
+	                	// TODO: update cell geometry attributes in lists 
+	                    System.out.println("cell=" + graph.getLabel(cell));
+	                }
+	            }
+	        }
+	    });
+
+	    // handle mouse right-click events for adding cells or changing cells
+	    graphComponent.getGraphControl().addMouseListener(new MouseAdapter() {
+	    	@Override
+	    	public void mousePressed(MouseEvent e) {
+	    		if ((e.getModifiers() & InputEvent.BUTTON3_MASK) == InputEvent.BUTTON3_MASK) {
+	    			Object cell = graphComponent.getCellAt(e.getX(), e.getY());
+	    			System.out.println("Right mouse click in:");
+	    			if (cell != null) {
+	    				// TODO: offer right-click menu for changing attributes
+	    				System.out.println("cell=" + graph.getLabel(cell));
+	    			}
+	    			else {
+	    				// TODO: offer right-click menu for new cells
+	    				System.out.println("in empty space");
+	    			}
+	    		}
+	    	}
+	    });
 		
 		graph.getModel().beginUpdate();
 		try
@@ -147,7 +193,7 @@ public class GUI extends JFrame {
 			graph.getModel().endUpdate();
 		}
 		
-		return new mxGraphComponent(graph);
+		return graphComponent;
 	}
 	
 	/**
@@ -161,8 +207,8 @@ public class GUI extends JFrame {
 		gui.setVisible(true);
 		
 		// some test for vertex and edge grabbing
-		System.out.println(Arrays.toString(gui.graph.getChildCells(gui.root, true, false)));
-		System.out.println(Arrays.toString(gui.graph.getChildCells(gui.root, false, true)));
+//		System.out.println(Arrays.toString(gui.graph.getChildCells(gui.root, true, false)));
+//		System.out.println(Arrays.toString(gui.graph.getChildCells(gui.root, false, true)));
 	}
 
 }
