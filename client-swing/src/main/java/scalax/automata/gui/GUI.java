@@ -1,4 +1,4 @@
-package main.scala;
+package main.java.scalax.automata.gui;
 
 import java.awt.BorderLayout;
 import java.awt.event.KeyEvent;
