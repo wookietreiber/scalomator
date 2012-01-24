@@ -6,8 +6,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import java.util.Arrays;
-
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -21,21 +19,21 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import com.mxgraph.model.mxGraphModel;
+import com.mxgraph.canvas.mxGraphics2DCanvas;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.util.mxEvent;
 import com.mxgraph.util.mxEventObject;
 import com.mxgraph.util.mxEventSource.mxIEventListener;
 import com.mxgraph.view.mxGraph;
-import com.mxgraph.view.mxGraphSelectionModel;
 
-
+@SuppressWarnings("serial")
 public class GUI extends JFrame {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6921400848602068156L;
+	private final static int INITIAL_STATE = 0;
+	private final static int NORMAL_STATE = 1;
+	private final static int END_STATE = 2;
 
 	public mxGraph graph;
 	Object root;
@@ -99,7 +97,7 @@ public class GUI extends JFrame {
 		infoPanel = new JPanel();
 		
 		sidePanel.setLayout(new BorderLayout());
-		sidePanel.setBorder(BorderFactory.createLoweredBevelBorder());
+		sidePanel.setBorder(BorderFactory.createEtchedBorder());
 		subPanel.setLayout(new BoxLayout(subPanel, BoxLayout.Y_AXIS));
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 		statesPanel.setLayout(new BorderLayout());
@@ -144,6 +142,9 @@ public class GUI extends JFrame {
 		
 		// dangling edges are bad and result in all kinds of nasty things
 		graph.setAllowDanglingEdges(false);
+		graph.setAllowLoops(true);
+		graph.setCellsResizable(false);
+
 		root = graph.getDefaultParent();
 		
 		// a movement listener for any amount of selected cells
@@ -169,7 +170,8 @@ public class GUI extends JFrame {
 	    			System.out.println("Right mouse click in:");
 	    			if (cell != null) {
 	    				// TODO: offer right-click menu for changing attributes
-	    				System.out.println("cell=" + graph.getLabel(cell));
+	    				System.out.println("cell=" + graph.getLabel(cell) + " " + 
+	    						graph.getCellStyle(cell).get("shape"));
 	    			}
 	    			else {
 	    				// TODO: offer right-click menu for new cells
@@ -178,22 +180,64 @@ public class GUI extends JFrame {
 	    		}
 	    	}
 	    });
-		
+	    
+	    // add customized shape to list of available shapes
+	    mxGraphics2DCanvas.putShape("initialShape", new initialStateShape());
+
+		return graphComponent;
+	}
+	
+	Object addState(String name, int x, int y, int radius, int type) {
+		Object state = null;
 		graph.getModel().beginUpdate();
 		try
 		{
-			Object v1 = graph.insertVertex(root, null, "Hello", 20, 20, 80,
-					30, "shape=ellipse;perimeter=ellipsePerimeter");
-			Object v2 = graph.insertVertex(root, null, "World!", 240, 150,
-					80, 30);
-			graph.insertEdge(root, null, "Edge", v1, v2);
+			switch (type) {
+			case INITIAL_STATE:
+				state = graph.insertVertex(root, null, name, x, y, radius,
+						radius, "shape=initialShape;perimeter=ellipsePerimeter");
+				break;
+			case NORMAL_STATE:
+				state = graph.insertVertex(root, null, name, x, y, radius,
+						radius, "shape=ellipse;perimeter=ellipsePerimeter");
+				break;
+			case END_STATE:
+				state = graph.insertVertex(root, null, name, x, y, radius,
+						radius, "shape=doubleEllipse;perimeter=ellipsePerimeter");
+				break;
+			}
 		}
 		finally
 		{
 			graph.getModel().endUpdate();
 		}
+		// TODO: add state to appropriate list
+		return state;
+	}
+	
+	public void addTransition(String name, Object source, Object target) {
+		graph.getModel().beginUpdate();
+		try
+		{
+			graph.insertEdge(root, null, name, source, target);
+		}
+		finally
+		{
+			graph.getModel().endUpdate();
+		}
+		// TODO: add transition to appropriate list
+	}
+	
+	public void loadAutomata() {
+		// TODO: loading from file ore scala here
 		
-		return graphComponent;
+		// FIXME: remove test automata
+		Object v1 = addState("first", 50, 50, 80, INITIAL_STATE);
+		Object v2 = addState("second", 350, 50, 80, NORMAL_STATE);
+		Object v3 = addState("third", 200, 200, 80, END_STATE);
+		addTransition("E1", v1, v2);
+		addTransition("E1", v2, v3);
+		addTransition("E1", v3, v3);
 	}
 	
 	/**
@@ -202,6 +246,8 @@ public class GUI extends JFrame {
 	public static void main(String[] args) {
 		GUI gui = new GUI("Scalomator - Simulate finite-state machines");
 		gui.initGUI(gui);
+		// FIXME: remove test load
+		gui.loadAutomata();
 		gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		gui.setSize(640, 480);
 		gui.setVisible(true);
