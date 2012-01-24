@@ -5,6 +5,7 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Set;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -17,9 +18,12 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
+import javax.swing.MenuElement;
 
 import com.mxgraph.canvas.mxGraphics2DCanvas;
+import com.mxgraph.model.mxCell;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.util.mxEvent;
 import com.mxgraph.util.mxEventObject;
@@ -36,7 +40,8 @@ public class GUI extends JFrame {
 	private final static int END_STATE = 2;
 
 	public mxGraph graph;
-	Object root;
+	public Object root;
+	public JPopupMenu popup;
 	
 	public GUI (String name) {
 		super(name);
@@ -44,12 +49,22 @@ public class GUI extends JFrame {
 	
 	public void initGUI(JFrame gui) {
 		JMenu menu;
+		
 		JMenuItem menuItem;
 		JMenuBar menuBar = new JMenuBar();
 		JPanel sidePanel, statusBar, subPanel, statesPanel, transitionsPanel, infoPanel, buttonPanel;
 		JButton runButton, quitButton;
 		JTextField alphabetField, testField;
 
+	    //Create the popup menu.
+	    popup = new JPopupMenu();
+	    menuItem = new JMenuItem("Add state");
+	    popup.add(menuItem);
+	    menuItem = new JMenuItem("Remove");
+	    popup.add(menuItem);
+	    menuItem = new JMenuItem("Change state");
+	    popup.add(menuItem);
+		
 		// menus
 		menu = new JMenu("File");
 		menu.setMnemonic(KeyEvent.VK_F);
@@ -142,8 +157,12 @@ public class GUI extends JFrame {
 		
 		// dangling edges are bad and result in all kinds of nasty things
 		graph.setAllowDanglingEdges(false);
+		// edge source and target are the same
 		graph.setAllowLoops(true);
+		// don't need this
 		graph.setCellsResizable(false);
+		// dragging edge to empty space creates a new shape
+		graphComponent.getConnectionHandler().setCreateTarget(true);
 
 		root = graph.getDefaultParent();
 		
@@ -160,6 +179,33 @@ public class GUI extends JFrame {
 	            }
 	        }
 	    });
+	    
+	    // a cell add listener
+	    graph.addListener(mxEvent.CELLS_ADDED, new mxIEventListener() {
+	        @Override
+	        public void invoke(Object sender, mxEventObject evt) {
+	            if (sender instanceof mxGraph) {
+	            	Object[] cells=(Object[]) evt.getProperty("cells");
+					for (Object cell : cells) {
+						if (cell instanceof mxCell) {
+							Object shape = graph.getCellStyle(cell).get("shape");
+//							if (shape.toString().equals("initialShape")) {
+//								System.out.println("init");
+//							}
+//							else if (shape.toString().equals("ellipse")) {
+//								System.out.println("normal");
+//							}
+//							else if (shape.toString().equals("doubleEllipse")) {
+//								System.out.println("end");
+//							}
+//							else if (shape.toString().equals("connector")) {
+//								System.out.println("connector");
+//							}
+						}
+	                }
+	            }
+	        }
+	    });
 
 	    // handle mouse right-click events for adding cells or changing cells
 	    graphComponent.getGraphControl().addMouseListener(new MouseAdapter() {
@@ -167,16 +213,26 @@ public class GUI extends JFrame {
 	    	public void mousePressed(MouseEvent e) {
 	    		if ((e.getModifiers() & InputEvent.BUTTON3_MASK) == InputEvent.BUTTON3_MASK) {
 	    			Object cell = graphComponent.getCellAt(e.getX(), e.getY());
-	    			System.out.println("Right mouse click in:");
 	    			if (cell != null) {
-	    				// TODO: offer right-click menu for changing attributes
-	    				System.out.println("cell=" + graph.getLabel(cell) + " " + 
-	    						graph.getCellStyle(cell).get("shape"));
+	    				Object shape = graph.getCellStyle(cell).get("shape");
+	    				
+	    				if (shape.toString().equals("connector")) {
+	    					popup.getComponent(0).setEnabled(false);
+	    					popup.getComponent(1).setEnabled(true);
+	    					popup.getComponent(2).setEnabled(false);
+	    				}
+	    				else {
+	    					popup.getComponent(0).setEnabled(false);
+	    					popup.getComponent(1).setEnabled(true);
+	    					popup.getComponent(2).setEnabled(true);
+	    				}
 	    			}
 	    			else {
-	    				// TODO: offer right-click menu for new cells
-	    				System.out.println("in empty space");
+	    				popup.getComponent(0).setEnabled(true);
+	    				popup.getComponent(1).setEnabled(false);
+	    				popup.getComponent(2).setEnabled(false);
 	    			}
+    				popup.show(e.getComponent(), e.getX(), e.getY());
 	    		}
 	    	}
 	    });
