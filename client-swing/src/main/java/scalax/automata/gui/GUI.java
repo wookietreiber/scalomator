@@ -1,12 +1,13 @@
 package main.java.scalax.automata.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Set;
-
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -17,11 +18,10 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
-import javax.swing.MenuElement;
-
 import com.mxgraph.canvas.mxGraphics2DCanvas;
 import com.mxgraph.model.mxCell;
 import com.mxgraph.swing.mxGraphComponent;
@@ -43,26 +43,47 @@ public class GUI extends JFrame {
 	public Object root;
 	public JPopupMenu popup;
 	
+	private Point popupPosition = new Point();
+	private mxGraphComponent graphComponent = null;
+	private JTextField alphabetField, testField;
+	
 	public GUI (String name) {
 		super(name);
 	}
 	
 	public void initGUI(JFrame gui) {
 		JMenu menu;
-		
 		JMenuItem menuItem;
 		JMenuBar menuBar = new JMenuBar();
 		JPanel sidePanel, statusBar, subPanel, statesPanel, transitionsPanel, infoPanel, buttonPanel;
 		JButton runButton, quitButton;
-		JTextField alphabetField, testField;
 
 	    //Create the popup menu.
 	    popup = new JPopupMenu();
-	    menuItem = new JMenuItem("Add state");
+		// TODO: create image for icon
+	    menuItem = new JMenuItem("Add state", new ImageIcon());
+	    menuItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				addState("new state", popupPosition.x, popupPosition.y, 80, NORMAL_STATE);
+			}
+	    });
 	    popup.add(menuItem);
-	    menuItem = new JMenuItem("Remove");
+	    
+		// TODO: create image for icon
+	    menuItem = new JMenuItem("Remove", new ImageIcon());
+	    menuItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				Object cell[] = {graphComponent.getCellAt(popupPosition.x, popupPosition.y)};
+				graph.removeCells(cell, true);
+			}
+	    });
 	    popup.add(menuItem);
-	    menuItem = new JMenuItem("Change state");
+	    
+		// TODO: create image for icon
+	    menuItem = new JMenuItem("Change state", new ImageIcon());
+	    // TODO: implement change state
 	    popup.add(menuItem);
 		
 		// menus
@@ -72,35 +93,76 @@ public class GUI extends JFrame {
 		// TODO: create image for icon
 		menuItem = new JMenuItem("New", new ImageIcon());
 		menuItem.setMnemonic(KeyEvent.VK_N);
+	    menuItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				removeAllCells();
+			}
+	    });
 		menu.add(menuItem);
+		
 		// TODO: create image for icon
 		menuItem = new JMenuItem("Open", new ImageIcon());
 		menuItem.setMnemonic(KeyEvent.VK_O);
+	    menuItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				loadAutomata();
+			}
+	    });
 		menu.add(menuItem);
+		
 		// TODO: create image for icon
 		menuItem = new JMenuItem("Save", new ImageIcon());
 		menuItem.setMnemonic(KeyEvent.VK_S);
+	    menuItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				saveAutomata();
+			}
+	    });
 		menu.add(menuItem);
 		menu.addSeparator();
+		
 		// TODO: create image for icon
 		menuItem = new JMenuItem("Quit", new ImageIcon());
 		menuItem.setMnemonic(KeyEvent.VK_Q);
+	    menuItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				quit();
+			}
+	    });
 		menu.add(menuItem);
 		
 		menu = new JMenu("Simulation");
 		menu.setMnemonic(KeyEvent.VK_S);
 		menuBar.add(menu);
+		
 		// TODO: create image for icon
 		menuItem = new JMenuItem("Run", new ImageIcon());
 		menuItem.setMnemonic(KeyEvent.VK_R);
+	    menuItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				runSimulation();
+			}
+	    });
 		menu.add(menuItem);
 		
 		menu = new JMenu("Info");
 		menu.setMnemonic(KeyEvent.VK_I);
 		menuBar.add(menu);
+		
 		// TODO: create image for icon
 		menuItem = new JMenuItem("About", new ImageIcon());
 		menuItem.setMnemonic(KeyEvent.VK_A);
+	    menuItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				displayAbout();
+			}
+	    });
 		menu.add(menuItem);
 		
 		statusBar = new JPanel();
@@ -130,7 +192,19 @@ public class GUI extends JFrame {
 		infoPanel.add(testField);
 		
 		runButton = new JButton("Run");
+	    runButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				runSimulation();
+			}
+	    });
 		quitButton = new JButton("Quit");
+	    quitButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				quit();
+			}
+	    });
 		buttonPanel.add(runButton);
 		buttonPanel.add(quitButton);
 		
@@ -153,7 +227,7 @@ public class GUI extends JFrame {
 	
 	public JComponent initGraph() {
 		graph = new mxGraph();
-		final mxGraphComponent graphComponent = new mxGraphComponent(graph);
+		graphComponent = new mxGraphComponent(graph);
 		
 		// dangling edges are bad and result in all kinds of nasty things
 		graph.setAllowDanglingEdges(false);
@@ -171,9 +245,9 @@ public class GUI extends JFrame {
 	        @Override
 	        public void invoke(Object sender, mxEventObject evt) {
 	            if (sender instanceof mxGraph) {
-	            	System.out.println("Movement happened for:");
+	            	System.out.print("Movement happened for: ");
 	                for (Object cell : ((mxGraph)sender).getSelectionCells()) {
-	                	// TODO: update cell geometry attributes in lists 
+	                	// TODO: update cell geometry attributes in appropriate lists 
 	                    System.out.println("cell=" + graph.getLabel(cell));
 	                }
 	            }
@@ -188,19 +262,48 @@ public class GUI extends JFrame {
 	            	Object[] cells=(Object[]) evt.getProperty("cells");
 					for (Object cell : cells) {
 						if (cell instanceof mxCell) {
+							// TODO: add cells to appropriate lists
 							Object shape = graph.getCellStyle(cell).get("shape");
-//							if (shape.toString().equals("initialShape")) {
-//								System.out.println("init");
-//							}
-//							else if (shape.toString().equals("ellipse")) {
-//								System.out.println("normal");
-//							}
-//							else if (shape.toString().equals("doubleEllipse")) {
-//								System.out.println("end");
-//							}
-//							else if (shape.toString().equals("connector")) {
-//								System.out.println("connector");
-//							}
+							if (shape.toString().equals("initialShape")) {
+								System.out.println("init added");
+							}
+							else if (shape.toString().equals("ellipse")) {
+								System.out.println("normal added");
+							}
+							else if (shape.toString().equals("doubleEllipse")) {
+								System.out.println("end added");
+							}
+							else if (shape.toString().equals("connector")) {
+								System.out.println("connector added");
+							}
+						}
+	                }
+	            }
+	        }
+	    });
+	    
+	    // a cell remove listener
+	    graph.addListener(mxEvent.CELLS_REMOVED, new mxIEventListener() {
+	        @Override
+	        public void invoke(Object sender, mxEventObject evt) {
+	            if (sender instanceof mxGraph) {
+	            	Object[] cells=(Object[]) evt.getProperty("cells");
+					for (Object cell : cells) {
+						if (cell instanceof mxCell) {
+							// TODO: remove cells from appropriate lists
+							Object shape = graph.getCellStyle(cell).get("shape");
+							if (shape.toString().equals("initialShape")) {
+								System.out.println("init removed");
+							}
+							else if (shape.toString().equals("ellipse")) {
+								System.out.println("normal removed");
+							}
+							else if (shape.toString().equals("doubleEllipse")) {
+								System.out.println("end removed");
+							}
+							else if (shape.toString().equals("connector")) {
+								System.out.println("connector removed");
+							}
 						}
 	                }
 	            }
@@ -214,6 +317,7 @@ public class GUI extends JFrame {
 	    		if ((e.getModifiers() & InputEvent.BUTTON3_MASK) == InputEvent.BUTTON3_MASK) {
 	    			Object cell = graphComponent.getCellAt(e.getX(), e.getY());
 	    			if (cell != null) {
+	    				
 	    				Object shape = graph.getCellStyle(cell).get("shape");
 	    				
 	    				if (shape.toString().equals("connector")) {
@@ -232,6 +336,7 @@ public class GUI extends JFrame {
 	    				popup.getComponent(1).setEnabled(false);
 	    				popup.getComponent(2).setEnabled(false);
 	    			}
+	    			popupPosition = e.getPoint();
     				popup.show(e.getComponent(), e.getX(), e.getY());
 	    		}
 	    	}
@@ -267,7 +372,6 @@ public class GUI extends JFrame {
 		{
 			graph.getModel().endUpdate();
 		}
-		// TODO: add state to appropriate list
 		return state;
 	}
 	
@@ -281,12 +385,15 @@ public class GUI extends JFrame {
 		{
 			graph.getModel().endUpdate();
 		}
-		// TODO: add transition to appropriate list
+	}
+	
+	public void removeAllCells() {
+		graph.removeCells(graph.getChildVertices(root), true);
 	}
 	
 	public void loadAutomata() {
-		// TODO: loading from file ore scala here
-		
+		// TODO: loading from file or scala here
+		System.out.println("some loading happens here");
 		// FIXME: remove test automata
 		Object v1 = addState("first", 50, 50, 80, INITIAL_STATE);
 		Object v2 = addState("second", 350, 50, 80, NORMAL_STATE);
@@ -294,6 +401,33 @@ public class GUI extends JFrame {
 		addTransition("E1", v1, v2);
 		addTransition("E1", v2, v3);
 		addTransition("E1", v3, v3);
+	}
+	
+	public void saveAutomata() {
+		// TODO: grab states and transitions from list or graph
+		System.out.println("some saving happens here");
+	}
+	
+	public void runSimulation() {
+		// TODO: run the simulation
+		System.out.println("some simulation running happens here");
+	}
+	
+	public void displayAbout() {
+		JOptionPane.showMessageDialog(this, "Some About message", "About", JOptionPane.INFORMATION_MESSAGE);
+	}
+	
+	public void quit() {
+		setVisible(false);
+		dispose();
+	}
+	
+	public void setAlphabet(String alphabet) {
+		alphabetField.setText(alphabet);
+	}
+	
+	public void setTestString(String test) {
+		testField.setText(test);
 	}
 	
 	/**
