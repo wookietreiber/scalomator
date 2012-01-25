@@ -32,20 +32,20 @@ import com.mxgraph.view.mxGraph;
 
 @SuppressWarnings("serial")
 public class GUI extends JFrame {
-	/**
-	 * 
-	 */
+	private static final int CELL_RADIUS = 80;
 	private final static int INITIAL_STATE = 0;
 	private final static int NORMAL_STATE = 1;
 	private final static int END_STATE = 2;
 
 	public mxGraph graph;
 	public Object root;
-	public JPopupMenu popup;
-	
+
+	private int nextInt = 1;
+	private JPopupMenu popup;	
 	private Point popupPosition = new Point();
 	private mxGraphComponent graphComponent = null;
 	private JTextField alphabetField, testField;
+	private JLabel status;
 	
 	public GUI (String name) {
 		super(name);
@@ -58,20 +58,22 @@ public class GUI extends JFrame {
 		JPanel sidePanel, statusBar, subPanel, statesPanel, transitionsPanel, infoPanel, buttonPanel;
 		JButton runButton, quitButton;
 
-	    //Create the popup menu.
+	    //Create the pop-up menu.
 	    popup = new JPopupMenu();
 		// TODO: create image for icon
-	    menuItem = new JMenuItem("Add state", new ImageIcon());
+	    menuItem = new JMenuItem("Add state");
 	    menuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				addState("new state", popupPosition.x, popupPosition.y, 80, NORMAL_STATE);
+				// generate a new name for the cell
+				StringBuilder value = new StringBuilder("S_").append(nextInt);
+				addState(value.toString(), popupPosition.x, popupPosition.y, CELL_RADIUS, NORMAL_STATE);
 			}
 	    });
 	    popup.add(menuItem);
 	    
 		// TODO: create image for icon
-	    menuItem = new JMenuItem("Remove", new ImageIcon());
+	    menuItem = new JMenuItem("Remove");
 	    menuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -82,7 +84,7 @@ public class GUI extends JFrame {
 	    popup.add(menuItem);
 	    
 		// TODO: create image for icon
-	    menuItem = new JMenuItem("Change state", new ImageIcon());
+	    menuItem = new JMenuItem("Change state");
 	    // TODO: implement change state
 	    popup.add(menuItem);
 		
@@ -214,8 +216,7 @@ public class GUI extends JFrame {
 		subPanel.add(transitionsPanel);
 		subPanel.add(infoPanel);
 		
-		// TODO: remove status stub
-		JLabel status = new JLabel("StatusBar");
+		status = new JLabel();
 		statusBar.add(status);	
 		
 		gui.setJMenuBar(menuBar);
@@ -259,9 +260,23 @@ public class GUI extends JFrame {
 	        @Override
 	        public void invoke(Object sender, mxEventObject evt) {
 	            if (sender instanceof mxGraph) {
+	            	// all cells concerning the add event
 	            	Object[] cells=(Object[]) evt.getProperty("cells");
 					for (Object cell : cells) {
 						if (cell instanceof mxCell) {
+							// iterate over all cells in the graph
+							Object[] allCells = graph.getChildCells(root, true, false);
+							for (Object other : allCells) {
+								// don't check the same cells
+								// don't check connectors
+								// check whether they share a name
+								if ((cell != other) && (graph.getCellStyle(cell).get("shape") != "connector") 
+										&& graph.getLabel(other).equals(graph.getLabel(cell))) {
+									// generate a new name for the new cell
+									graph.getModel().setValue(cell, new StringBuilder("S_").append(nextInt++));
+								}
+							}
+
 							// TODO: add cells to appropriate lists
 							Object shape = graph.getCellStyle(cell).get("shape");
 							if (shape.toString().equals("initialShape")) {
@@ -367,11 +382,14 @@ public class GUI extends JFrame {
 						radius, "shape=doubleEllipse;perimeter=ellipsePerimeter");
 				break;
 			}
+			System.out.println(nextInt);
+			nextInt++;
 		}
 		finally
 		{
 			graph.getModel().endUpdate();
 		}
+		
 		return state;
 	}
 	
@@ -389,15 +407,17 @@ public class GUI extends JFrame {
 	
 	public void removeAllCells() {
 		graph.removeCells(graph.getChildVertices(root), true);
+		// reset next integer available
+		nextInt = 1;
 	}
 	
 	public void loadAutomata() {
 		// TODO: loading from file or scala here
 		System.out.println("some loading happens here");
 		// FIXME: remove test automata
-		Object v1 = addState("first", 50, 50, 80, INITIAL_STATE);
-		Object v2 = addState("second", 350, 50, 80, NORMAL_STATE);
-		Object v3 = addState("third", 200, 200, 80, END_STATE);
+		Object v1 = addState("first", 50, 50, CELL_RADIUS, INITIAL_STATE);
+		Object v2 = addState("second", 350, 50, CELL_RADIUS, NORMAL_STATE);
+		Object v3 = addState("third", 200, 200, CELL_RADIUS, END_STATE);
 		addTransition("E1", v1, v2);
 		addTransition("E1", v2, v3);
 		addTransition("E1", v3, v3);
@@ -428,6 +448,10 @@ public class GUI extends JFrame {
 	
 	public void setTestString(String test) {
 		testField.setText(test);
+	}
+	
+	public void setStatusMessage(String status) {
+		this.status.setText(status);
 	}
 	
 	/**
