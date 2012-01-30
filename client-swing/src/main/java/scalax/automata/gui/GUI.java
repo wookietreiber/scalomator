@@ -330,6 +330,7 @@ public class GUI extends JFrame {
 								}
 								else {
 									// add an initial state to list
+									hasInitialState = true;
 								}
 							}
 							else if (shape.toString().equals("ellipse")) {
@@ -441,7 +442,6 @@ public class GUI extends JFrame {
 			case INITIAL_STATE:
 				state = graph.insertVertex(root, null, name, x, y, radius,
 						radius, "shape=initialShape;perimeter=ellipsePerimeter");
-				hasInitialState = true;
 				break;
 			case NORMAL_STATE:
 				state = graph.insertVertex(root, null, name, x, y, radius,
