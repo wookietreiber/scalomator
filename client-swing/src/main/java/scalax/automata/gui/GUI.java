@@ -24,7 +24,11 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.table.AbstractTableModel;
+
 import com.mxgraph.canvas.mxGraphics2DCanvas;
 import com.mxgraph.model.mxCell;
 import com.mxgraph.swing.mxGraphComponent;
@@ -56,6 +60,8 @@ public class GUI extends JFrame {
 	private mxGraphComponent graphComponent = null;
 	private JTextField alphabetField, testField;
 	private JLabel status;
+	private StateTableModel stateDataModel = new StateTableModel();
+	private TransitionTableModel transitionDataModel = new TransitionTableModel();
 	
 	public GUI (String name) {
 		super(name);
@@ -88,6 +94,12 @@ public class GUI extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				Object cell[] = {graphComponent.getCellAt(popupPosition.x, popupPosition.y)};
 				graph.removeCells(cell, true);
+				for (Object c : cell) {
+					if (c instanceof mxCell) {
+						System.out.println("remove cell "+((mxCell)c).getValue());
+						stateDataModel.removeValue((String) ((mxCell)c).getValue());
+					}
+				}
 			}
 	    });
 	    popup.add(menuItem);
@@ -254,9 +266,11 @@ public class GUI extends JFrame {
 		
 		sidePanel.add(subPanel, BorderLayout.NORTH);
 		sidePanel.add(buttonPanel, BorderLayout.SOUTH);
-		// TODO: add a JTree (for example) for the states and their data (label, x, y)
+		JTable stateTable = new JTable(stateDataModel);
+		statesPanel.add(stateTable);
 		subPanel.add(statesPanel);
-		// TODO: add a JTree (for example) for the edges and their data (input, source, target)
+		JTable transitionTable = new JTable(transitionDataModel);
+		transitionsPanel.add(transitionTable);
 		subPanel.add(transitionsPanel);
 		subPanel.add(infoPanel);
 		
@@ -369,7 +383,7 @@ public class GUI extends JFrame {
 								// remove end state from list
 							}
 							else if (shape.toString().equals("connector")) {
-								// remove edge from list
+								transitionDataModel.removeValue((mxCell) cell);
 							}
 						}
 	                }
@@ -459,6 +473,8 @@ public class GUI extends JFrame {
 			graph.getModel().endUpdate();
 		}
 		
+		stateDataModel.appendValue(name);
+		
 		return state;
 	}
 	
@@ -466,7 +482,8 @@ public class GUI extends JFrame {
 		graph.getModel().beginUpdate();
 		try
 		{
-			graph.insertEdge(root, null, name, source, target);
+			mxCell edge = (mxCell) graph.insertEdge(root, null, name, source, target);
+			transitionDataModel.appendValue(edge, (mxCell)source, (mxCell)target);
 		}
 		finally
 		{
@@ -605,6 +622,105 @@ public class GUI extends JFrame {
 		gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		gui.setSize(640, 480);
 		gui.setVisible(true);
+	}
+	
+	/**
+	 * A table model that simply contains the names of the states in
+	 * a single column
+	 */
+	private class StateTableModel extends AbstractTableModel {
+
+		private ArrayList<String> data = new ArrayList<String>();
+		
+		@Override
+		public int getColumnCount() {
+			return 1;
+		}
+
+		@Override
+		public int getRowCount() {
+			return data.size();
+		}
+
+		@Override
+		public Object getValueAt(int rowIndex, int columnIndex) {
+			return data.get(rowIndex);
+		}
+		
+		public String getValueAt(int rowIndex) {
+			return data.get(rowIndex);
+		}
+		
+		public void appendValue(String value) {
+			data.add(value);
+			fireTableDataChanged();
+		}
+		
+		public String removeValueAt(int rowIndex) {
+			String removed = data.remove(rowIndex);
+			fireTableDataChanged();
+			return removed;
+		}
+		
+		public boolean removeValue(String value) {
+			boolean removed = data.remove(value);
+			fireTableDataChanged();
+			return removed;
+		}
+		
+	}
+	
+	/**
+	 * A table model that contains the names of the source and target states
+	 * as well as the name of the transition
+	 */
+	private class TransitionTableModel extends AbstractTableModel {
+		
+		private ArrayList<mxCell> fromState = new ArrayList<mxCell>();
+		private ArrayList<mxCell> toState = new ArrayList<mxCell>();
+		private ArrayList<mxCell> edge = new ArrayList<mxCell>();
+		
+		@Override
+		public int getColumnCount() {
+			// TODO Auto-generated method stub
+			return 3;
+		}
+
+		@Override
+		public int getRowCount() {
+			// TODO Auto-generated method stub
+			return edge.size();
+		}
+
+		@Override
+		public Object getValueAt(int rowIndex, int columnIndex) {
+			if (columnIndex == 0) {
+				return fromState.get(rowIndex).getValue();
+			} else if (columnIndex == 1) {
+				return edge.get(rowIndex).getValue();
+			} else {
+				return toState.get(rowIndex).getValue();
+			}
+			
+		}
+		
+		public void appendValue(mxCell edge, mxCell from, mxCell to) {
+			this.edge.add(edge);
+			this.fromState.add(from);
+			this.toState.add(to);
+			fireTableDataChanged();
+		}
+		
+		public void removeValue(mxCell edge) {
+			int index = this.edge.indexOf(edge);
+			if (index > -1) {
+				this.edge.remove(index);
+				this.fromState.remove(index);
+				this.toState.remove(index);
+				fireTableDataChanged();
+			}
+		}
+		
 	}
 
 }
