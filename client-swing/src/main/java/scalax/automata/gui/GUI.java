@@ -94,12 +94,6 @@ public class GUI extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				Object cell[] = {graphComponent.getCellAt(popupPosition.x, popupPosition.y)};
 				graph.removeCells(cell, true);
-				for (Object c : cell) {
-					if (c instanceof mxCell) {
-						System.out.println("remove cell "+((mxCell)c).getValue());
-						stateDataModel.removeValue((String) ((mxCell)c).getValue());
-					}
-				}
 			}
 	    });
 	    popup.add(menuItem);
@@ -341,20 +335,27 @@ public class GUI extends JFrame {
 									// change potential initial state to a normal state
 									graph.getModel().setStyle(cell, "shape=ellipse;perimeter=ellipsePerimeter");
 									// add a normal state to list
+									stateDataModel.appendValue((mxCell) cell);
 								}
 								else {
 									// add an initial state to list
 									hasInitialState = true;
+									stateDataModel.appendValue((mxCell) cell);
 								}
 							}
 							else if (shape.toString().equals("ellipse")) {
 								// add a normal state to list
+								stateDataModel.appendValue((mxCell) cell);
 							}
 							else if (shape.toString().equals("doubleEllipse")) {
 								// add an end state to list
+								stateDataModel.appendValue((mxCell) cell);
 							}
 							else if (shape.toString().equals("connector")) {
 								// add an edge to list
+								transitionDataModel.appendValue((mxCell) cell,
+										(mxCell) ((mxCell)cell).getSource(),
+										(mxCell) ((mxCell)cell).getTarget());
 							}
 						}
 	                }
@@ -375,12 +376,15 @@ public class GUI extends JFrame {
 							if (shape.toString().equals("initialShape")) {
 								hasInitialState = false;
 								// remove initial state from list
+								stateDataModel.removeValue((mxCell) cell);
 							}
 							else if (shape.toString().equals("ellipse")) {
 								// remove normal state from list
+								stateDataModel.removeValue((mxCell) cell);
 							}
 							else if (shape.toString().equals("doubleEllipse")) {
 								// remove end state from list
+								stateDataModel.removeValue((mxCell) cell);
 							}
 							else if (shape.toString().equals("connector")) {
 								transitionDataModel.removeValue((mxCell) cell);
@@ -473,8 +477,6 @@ public class GUI extends JFrame {
 			graph.getModel().endUpdate();
 		}
 		
-		stateDataModel.appendValue(name);
-		
 		return state;
 	}
 	
@@ -483,7 +485,6 @@ public class GUI extends JFrame {
 		try
 		{
 			mxCell edge = (mxCell) graph.insertEdge(root, null, name, source, target);
-			transitionDataModel.appendValue(edge, (mxCell)source, (mxCell)target);
 		}
 		finally
 		{
@@ -630,7 +631,7 @@ public class GUI extends JFrame {
 	 */
 	private class StateTableModel extends AbstractTableModel {
 
-		private ArrayList<String> data = new ArrayList<String>();
+		private ArrayList<mxCell> data = new ArrayList<mxCell>();
 		
 		@Override
 		public int getColumnCount() {
@@ -644,25 +645,25 @@ public class GUI extends JFrame {
 
 		@Override
 		public Object getValueAt(int rowIndex, int columnIndex) {
-			return data.get(rowIndex);
+			return data.get(rowIndex).getValue();
 		}
 		
 		public String getValueAt(int rowIndex) {
-			return data.get(rowIndex);
+			return (String) data.get(rowIndex).getValue();
 		}
 		
-		public void appendValue(String value) {
+		public void appendValue(mxCell value) {
 			data.add(value);
 			fireTableDataChanged();
 		}
 		
-		public String removeValueAt(int rowIndex) {
-			String removed = data.remove(rowIndex);
+		public mxCell removeValueAt(int rowIndex) {
+			mxCell removed = data.remove(rowIndex);
 			fireTableDataChanged();
 			return removed;
 		}
 		
-		public boolean removeValue(String value) {
+		public boolean removeValue(mxCell value) {
 			boolean removed = data.remove(value);
 			fireTableDataChanged();
 			return removed;
