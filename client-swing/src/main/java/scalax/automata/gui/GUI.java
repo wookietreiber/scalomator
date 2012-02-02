@@ -11,7 +11,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -25,7 +24,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.AbstractTableModel;
@@ -40,11 +38,11 @@ import com.mxgraph.view.mxGraph;
 
 @SuppressWarnings("serial")
 public class GUI extends JFrame {
+	private static final String EDGE = "connector";
+	public static final String END_STATE = "doubleEllipse";
+	public static final String NORMAL_STATE = "ellipse";
+	public static final String INITIAL_STATE = "initialShape";
 	private static final int CELL_RADIUS = 80;
-	private final static int INITIAL_STATE = 1;
-	private final static int NORMAL_STATE = 2;
-	private final static int END_STATE = 4;
-
 	public mxGraph graph;
 	public Object root;
 	
@@ -113,6 +111,7 @@ public class GUI extends JFrame {
 					Object cell = graphComponent.getCellAt(popupPosition.x, popupPosition.y);
 					graph.getModel().setStyle(cell, "shape=initialShape;perimeter=ellipsePerimeter");
 					graphComponent.refresh();
+					stateDataModel.fireTableDataChanged();
 				}
 			}
 	    });
@@ -122,10 +121,12 @@ public class GUI extends JFrame {
 	    menuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				// FIXME: check if initial state
 				hasInitialState = false;
 				Object cell = graphComponent.getCellAt(popupPosition.x, popupPosition.y);
 				graph.getModel().setStyle(cell, "shape=ellipse;perimeter=ellipsePerimeter");
 				graphComponent.refresh();
+				stateDataModel.fireTableDataChanged();
 			}
 	    });
 	    popup.add(menuItem);
@@ -134,9 +135,11 @@ public class GUI extends JFrame {
 	    menuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				// FIXME: check if initial state
 				Object cell = graphComponent.getCellAt(popupPosition.x, popupPosition.y);
 				graph.getModel().setStyle(cell, "shape=doubleEllipse;perimeter=ellipsePerimeter");
 				graphComponent.refresh();
+				stateDataModel.fireTableDataChanged();
 			}
 	    });
 	    popup.add(menuItem);
@@ -298,18 +301,18 @@ public class GUI extends JFrame {
 	    
 		root = graph.getDefaultParent();
 		
-		// a movement listener for any amount of selected cells
-	    graph.addListener(mxEvent.CELLS_MOVED, new mxIEventListener() {
-	        @Override
-	        public void invoke(Object sender, mxEventObject evt) {
-	            if (sender instanceof mxGraph) {
-	                for (Object cell : ((mxGraph)sender).getSelectionCells()) {
-	                	// TODO: update cell geometry attributes in appropriate list
-	                	// (if at all displayed in the list, but should if it is a JTree as proposed)
-	                }
-	            }
-	        }
-	    });
+//		// a movement listener for any amount of selected cells
+//	    graph.addListener(mxEvent.CELLS_MOVED, new mxIEventListener() {
+//	        @Override
+//	        public void invoke(Object sender, mxEventObject evt) {
+//	            if (sender instanceof mxGraph) {
+//	                for (Object cell : ((mxGraph)sender).getSelectionCells()) {
+//	                	// TODO: update cell geometry attributes in appropriate list
+//	                	// (if at all displayed in the list, but should if it is a JTree as proposed)
+//	                }
+//	            }
+//	        }
+//	    });
 	    
 	    // a cell add listener
 	    graph.addListener(mxEvent.CELLS_ADDED, new mxIEventListener() {
@@ -326,16 +329,15 @@ public class GUI extends JFrame {
 								// don't check the same cells
 								// don't check connectors
 								// check whether they share a name
-								if ((cell != other) && (graph.getCellStyle(cell).get("shape") != "connector") 
+								if ((cell != other) && (graph.getCellStyle(cell).get("shape") != EDGE) 
 										&& graph.getLabel(other).equals(graph.getLabel(cell))) {
 									// generate a new name for the new cell
 									graph.getModel().setValue(cell, new StringBuilder("S_").append(nextInt++));
 								}
 							}
 							
-							// TODO: add cells to appropriate lists
 							Object shape = graph.getCellStyle(cell).get("shape");
-							if (shape.toString().equals("initialShape")) {
+							if (shape.toString().equals(INITIAL_STATE)) {
 								if (hasInitialState) {
 									// change potential initial state to a normal state
 									graph.getModel().setStyle(cell, "shape=ellipse;perimeter=ellipsePerimeter");
@@ -348,15 +350,15 @@ public class GUI extends JFrame {
 									stateDataModel.appendValue((mxCell) cell);
 								}
 							}
-							else if (shape.toString().equals("ellipse")) {
+							else if (shape.toString().equals(NORMAL_STATE)) {
 								// add a normal state to list
 								stateDataModel.appendValue((mxCell) cell);
 							}
-							else if (shape.toString().equals("doubleEllipse")) {
+							else if (shape.toString().equals(END_STATE)) {
 								// add an end state to list
 								stateDataModel.appendValue((mxCell) cell);
 							}
-							else if (shape.toString().equals("connector")) {
+							else if (shape.toString().equals(EDGE)) {
 								// add an edge to list
 								transitionDataModel.appendValue((mxCell) cell);
 							}
@@ -374,22 +376,21 @@ public class GUI extends JFrame {
 	            	Object[] cells=(Object[]) evt.getProperty("cells");
 					for (Object cell : cells) {
 						if (cell instanceof mxCell) {
-							// TODO: remove cells from appropriate lists
 							Object shape = graph.getCellStyle(cell).get("shape");
-							if (shape.toString().equals("initialShape")) {
+							if (shape.toString().equals(INITIAL_STATE)) {
 								hasInitialState = false;
 								// remove initial state from list
 								stateDataModel.removeValue((mxCell) cell);
 							}
-							else if (shape.toString().equals("ellipse")) {
+							else if (shape.toString().equals(NORMAL_STATE)) {
 								// remove normal state from list
 								stateDataModel.removeValue((mxCell) cell);
 							}
-							else if (shape.toString().equals("doubleEllipse")) {
+							else if (shape.toString().equals(END_STATE)) {
 								// remove end state from list
 								stateDataModel.removeValue((mxCell) cell);
 							}
-							else if (shape.toString().equals("connector")) {
+							else if (shape.toString().equals(EDGE)) {
 								transitionDataModel.removeValue((mxCell) cell);
 							}
 						}
@@ -425,7 +426,7 @@ public class GUI extends JFrame {
 	    				
 	    				Object shape = graph.getCellStyle(cell).get("shape");
 	    				
-	    				if (shape.toString().equals("connector")) {
+	    				if (shape.toString().equals(EDGE)) {
 	    					popup.getComponent(0).setEnabled(false);
 	    					popup.getComponent(1).setEnabled(true);
 	    					popup.getComponent(2).setEnabled(false);
@@ -437,15 +438,15 @@ public class GUI extends JFrame {
 	    					popup.getComponent(0).setEnabled(false);
 	    					popup.getComponent(1).setEnabled(true);
 	    					popup.getComponent(2).setEnabled(true);
-	    					if (shape.toString().equals("initialShape"))
+	    					if (shape.toString().equals(INITIAL_STATE))
 	    						popup.getComponent(3).setEnabled(false);
 	    					else
 	    						popup.getComponent(3).setEnabled(true);
-	    					if (shape.toString().equals("ellipse"))
+	    					if (shape.toString().equals(NORMAL_STATE))
 	    						popup.getComponent(4).setEnabled(false);
 	    					else
 	    						popup.getComponent(4).setEnabled(true);
-	    					if (shape.toString().equals("doubleEllipse"))
+	    					if (shape.toString().equals(END_STATE))
 	    						popup.getComponent(5).setEnabled(false);
 	    					else
 	    						popup.getComponent(5).setEnabled(true);
@@ -466,29 +467,25 @@ public class GUI extends JFrame {
 	    });
 	    
 	    // add customized shape to list of available shapes
-	    mxGraphics2DCanvas.putShape("initialShape", new initialStateShape());
+	    mxGraphics2DCanvas.putShape(INITIAL_STATE, new initialStateShape());
 
 		return graphComponent;
 	}
 	
-	Object addState(String name, int x, int y, int radius, int type) {
+	Object addState(String name, int x, int y, int radius, String type) {
 		Object state = null;
 		graph.getModel().beginUpdate();
 		try
 		{
-			switch (type) {
-			case INITIAL_STATE:
+			if (type.equals(INITIAL_STATE)) {
 				state = graph.insertVertex(root, null, name, x, y, radius,
 						radius, "shape=initialShape;perimeter=ellipsePerimeter");
-				break;
-			case NORMAL_STATE:
+			} else if (type.equals(NORMAL_STATE)) {
 				state = graph.insertVertex(root, null, name, x, y, radius,
 						radius, "shape=ellipse;perimeter=ellipsePerimeter");
-				break;
-			case END_STATE:
+			} else {
 				state = graph.insertVertex(root, null, name, x, y, radius,
 						radius, "shape=doubleEllipse;perimeter=ellipsePerimeter");
-				break;
 			}
 			nextInt++;
 		}
@@ -504,7 +501,7 @@ public class GUI extends JFrame {
 		graph.getModel().beginUpdate();
 		try
 		{
-			mxCell edge = (mxCell) graph.insertEdge(root, null, name, source, target);
+			graph.insertEdge(root, null, name, source, target);
 		}
 		finally
 		{
@@ -562,19 +559,19 @@ public class GUI extends JFrame {
 		
 		for (Object vertex : vertices) {
 			Object cell = graph.getCellStyle(vertex).get("shape");
-			if (cell.toString().equals("initialShape")) {
+			if (cell.toString().equals(INITIAL_STATE)) {
 				initialState.put("x", String.valueOf(graph.getCellGeometry(vertex).getX()));
 				initialState.put("y", String.valueOf(graph.getCellGeometry(vertex).getY()));
 				initialState.put("name", String.valueOf(graph.getLabel(vertex)));
 			}
-			else if (cell.toString().equals("doubleEllipse")) {
+			else if (cell.toString().equals(END_STATE)) {
 				HashMap<String, String> endState = new HashMap<String, String>();
 				endState.put("x", String.valueOf(graph.getCellGeometry(vertex).getX()));
 				endState.put("y", String.valueOf(graph.getCellGeometry(vertex).getY()));
 				endState.put("name", String.valueOf(graph.getLabel(vertex)));
 				endStates.add(endState);
 			}
-			else if (cell.toString().equals("ellipse")) {
+			else if (cell.toString().equals(NORMAL_STATE)) {
 				HashMap<String, String> state = new HashMap<String, String>();
 				state.put("x", String.valueOf(graph.getCellGeometry(vertex).getX()));
 				state.put("y", String.valueOf(graph.getCellGeometry(vertex).getY()));
@@ -651,11 +648,12 @@ public class GUI extends JFrame {
 	 */
 	private class StateTableModel extends AbstractTableModel {
 
+		private static final String SHAPE_STYLE = "shape";
 		private ArrayList<mxCell> data = new ArrayList<mxCell>();
 		
 		@Override
 		public int getColumnCount() {
-			return 1;
+			return 2;
 		}
 
 		@Override
@@ -665,22 +663,32 @@ public class GUI extends JFrame {
 
 		@Override
 		public Object getValueAt(int rowIndex, int columnIndex) {
-			return data.get(rowIndex).getValue();
-		}
-		
-		public String getValueAt(int rowIndex) {
-			return (String) data.get(rowIndex).getValue();
+			if (columnIndex == 0) {
+				mxCell cell = data.get(rowIndex);
+				String[] style = cell.getStyle().split(";|=");
+				for (int i=0; i<style.length; i++) {
+					if (style[i].equals(SHAPE_STYLE)) {
+						if (style[i+1].equals(GUI.INITIAL_STATE)) {
+							return "inital state";
+						} else if (style[i+1].equals(GUI.END_STATE)) {
+							return "end state";
+						} else {
+							return "";
+						}
+						
+					}
+				}
+				return "";
+				
+			}
+			else {
+				return data.get(rowIndex).getValue();
+			}
 		}
 		
 		public void appendValue(mxCell value) {
 			data.add(value);
 			fireTableDataChanged();
-		}
-		
-		public mxCell removeValueAt(int rowIndex) {
-			mxCell removed = data.remove(rowIndex);
-			fireTableDataChanged();
-			return removed;
 		}
 		
 		public boolean removeValue(mxCell value) {
@@ -701,13 +709,11 @@ public class GUI extends JFrame {
 		
 		@Override
 		public int getColumnCount() {
-			// TODO Auto-generated method stub
 			return 3;
 		}
 
 		@Override
 		public int getRowCount() {
-			// TODO Auto-generated method stub
 			return edge.size();
 		}
 
