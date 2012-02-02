@@ -394,6 +394,15 @@ public class GUI extends JFrame {
 	            }
 	        }
 	    });
+	    
+	    
+	    graphComponent.addListener(mxEvent.LABEL_CHANGED, new mxIEventListener() {
+			@Override
+			public void invoke(Object sender, mxEventObject evt) {
+				stateDataModel.fireTableDataChanged();
+				transitionDataModel.fireTableDataChanged();
+			}
+		});
 
 	    // handle mouse right-click events for adding cells or changing cells
 	    graphComponent.getGraphControl().addMouseListener(new MouseAdapter() {
