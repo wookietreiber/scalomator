@@ -291,7 +291,11 @@ public class GUI extends JFrame {
 		graph.setCellsResizable(false);
 		// dragging edge to empty space creates a new shape
 		graphComponent.getConnectionHandler().setCreateTarget(true);
+		// make editing labels more comfortable
 	    graphComponent.setEnterStopsCellEditing(true);
+	    // antialias \o/
+	    graphComponent.setAntiAlias(true);
+	    
 		root = graph.getDefaultParent();
 		
 		// a movement listener for any amount of selected cells
