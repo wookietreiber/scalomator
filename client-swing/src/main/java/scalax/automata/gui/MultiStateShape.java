@@ -4,13 +4,13 @@ import java.awt.BasicStroke;
 import java.awt.Rectangle;
 
 import com.mxgraph.canvas.mxGraphics2DCanvas;
-import com.mxgraph.shape.mxEllipseShape;
+import com.mxgraph.shape.mxDoubleEllipseShape;
 import com.mxgraph.util.mxConstants;
 import com.mxgraph.util.mxRectangle;
 import com.mxgraph.util.mxUtils;
 import com.mxgraph.view.mxCellState;
 
-public class InitialStateShape extends mxEllipseShape {
+public class MultiStateShape extends mxDoubleEllipseShape {
 
 	@Override
 	public void paintShape(mxGraphics2DCanvas canvas, mxCellState state) {
@@ -37,7 +37,7 @@ public class InitialStateShape extends mxEllipseShape {
 		bound.setX(bound.getX() - 4*offset);
 		bound.setWidth(bound.getWidth() + 4*offset);
 		state.setBoundingBox(bound);
-		
+
 		// draw an arrow
 		int[] xPoints = {xMax, xArrowMax, xArrowMin, xArrowMax};
 		int[] yPoints = {y, yMax, y, yMin};
