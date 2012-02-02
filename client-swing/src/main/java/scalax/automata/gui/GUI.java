@@ -11,6 +11,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -353,9 +354,7 @@ public class GUI extends JFrame {
 							}
 							else if (shape.toString().equals("connector")) {
 								// add an edge to list
-								transitionDataModel.appendValue((mxCell) cell,
-										(mxCell) ((mxCell)cell).getSource(),
-										(mxCell) ((mxCell)cell).getTarget());
+								transitionDataModel.appendValue((mxCell) cell);
 							}
 						}
 	                }
@@ -395,11 +394,19 @@ public class GUI extends JFrame {
 	        }
 	    });
 	    
-	    
+	    // update tables if a label is changed
 	    graphComponent.addListener(mxEvent.LABEL_CHANGED, new mxIEventListener() {
 			@Override
 			public void invoke(Object sender, mxEventObject evt) {
 				stateDataModel.fireTableDataChanged();
+				transitionDataModel.fireTableDataChanged();
+			}
+		});
+	    
+	    // update tables if edge is connected or realigned
+	    graph.addListener(mxEvent.CONNECT_CELL, new mxIEventListener() {
+			@Override
+			public void invoke(Object sender, mxEventObject evt) {
 				transitionDataModel.fireTableDataChanged();
 			}
 		});
@@ -686,8 +693,6 @@ public class GUI extends JFrame {
 	 */
 	private class TransitionTableModel extends AbstractTableModel {
 		
-		private ArrayList<mxCell> fromState = new ArrayList<mxCell>();
-		private ArrayList<mxCell> toState = new ArrayList<mxCell>();
 		private ArrayList<mxCell> edge = new ArrayList<mxCell>();
 		
 		@Override
@@ -705,30 +710,23 @@ public class GUI extends JFrame {
 		@Override
 		public Object getValueAt(int rowIndex, int columnIndex) {
 			if (columnIndex == 0) {
-				return fromState.get(rowIndex).getValue();
+				return ((mxCell)edge.get(rowIndex).getSource()).getValue();
 			} else if (columnIndex == 1) {
 				return edge.get(rowIndex).getValue();
 			} else {
-				return toState.get(rowIndex).getValue();
+				return ((mxCell)edge.get(rowIndex).getTarget()).getValue();
 			}
 			
 		}
 		
-		public void appendValue(mxCell edge, mxCell from, mxCell to) {
+		public void appendValue(mxCell edge) {
 			this.edge.add(edge);
-			this.fromState.add(from);
-			this.toState.add(to);
 			fireTableDataChanged();
 		}
 		
 		public void removeValue(mxCell edge) {
-			int index = this.edge.indexOf(edge);
-			if (index > -1) {
-				this.edge.remove(index);
-				this.fromState.remove(index);
-				this.toState.remove(index);
-				fireTableDataChanged();
-			}
+			this.edge.remove(edge);
+			fireTableDataChanged();
 		}
 		
 	}
