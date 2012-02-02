@@ -291,7 +291,7 @@ public class GUI extends JFrame {
 		graph.setCellsResizable(false);
 		// dragging edge to empty space creates a new shape
 		graphComponent.getConnectionHandler().setCreateTarget(true);
-
+	    graphComponent.setEnterStopsCellEditing(true);
 		root = graph.getDefaultParent();
 		
 		// a movement listener for any amount of selected cells
@@ -410,7 +410,7 @@ public class GUI extends JFrame {
 				transitionDataModel.fireTableDataChanged();
 			}
 		});
-
+	    
 	    // handle mouse right-click events for adding cells or changing cells
 	    graphComponent.getGraphControl().addMouseListener(new MouseAdapter() {
 	    	@Override
