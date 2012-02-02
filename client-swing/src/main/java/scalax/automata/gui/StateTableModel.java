@@ -35,6 +35,8 @@ public class StateTableModel extends AbstractTableModel {
 						return "inital state";
 					} else if (style[i+1].equals(GUI.END_STATE)) {
 						return "end state";
+					} else if (style[i+1].equals(GUI.MULTI_STATE)) {
+						return "initial + end state";
 					} else {
 						return "";
 					}

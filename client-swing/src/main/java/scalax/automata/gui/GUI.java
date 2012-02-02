@@ -171,7 +171,6 @@ public class GUI extends JFrame {
 					hasInitialState = true;
 					graph.getModel().setStyle(cell, "shape=multiShape;perimeter=ellipsePerimeter");
 					graphComponent.refresh();
-					// FIXME: change the table accordingly
 					stateDataModel.fireTableDataChanged();
 				}
 			}
@@ -380,7 +379,6 @@ public class GUI extends JFrame {
 								else {
 									// add a multi state to list
 									hasInitialState = true;
-									// FIXME: add a new multi state
 									stateDataModel.appendValue((mxCell) cell);
 								}
 							}
@@ -428,7 +426,7 @@ public class GUI extends JFrame {
 								transitionDataModel.removeValue((mxCell) cell);
 							}
 							else if (shape.toString().equals(MULTI_STATE)) {
-								// FIXME: remove a multi-state somewhere in the table
+								stateDataModel.removeValue((mxCell) cell);
 							}
 						}
 	                }
