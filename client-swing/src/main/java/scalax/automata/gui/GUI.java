@@ -26,6 +26,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
 
 import com.mxgraph.canvas.mxGraphics2DCanvas;
 import com.mxgraph.model.mxCell;
@@ -67,6 +68,11 @@ public class GUI extends JFrame {
 	public GUI (String name) {
 		super(name);
 		top = getContentPane();
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (Exception e) {
+			// ignore if not successful 
+		}
 	}
 	
 	public void initGUI(JFrame gui) {
