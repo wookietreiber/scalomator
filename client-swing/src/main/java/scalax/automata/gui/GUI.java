@@ -2,6 +2,7 @@ package main.java.scalax.automata.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,6 +25,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
@@ -72,6 +74,8 @@ public class GUI extends JFrame {
 		super(name);
 		top = getContentPane();
 		
+		setMinimumSize(new Dimension(700, 550));
+		
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (Exception e) {
@@ -83,7 +87,8 @@ public class GUI extends JFrame {
 		JMenu menu;
 		JMenuItem menuItem;
 		JMenuBar menuBar = new JMenuBar();
-		JPanel sidePanel, statusBar, subPanel, statesPanel, transitionsPanel, infoPanel, buttonPanel;
+		JPanel sidePanel, statusBar, topSubPanel, statesPanel, transitionsPanel, 
+			alphabetPanel, testwordPanel, buttonPanel, bottomSubPanel;
 		JButton runButton, quitButton;
 
 	    //Create the pop-up menu.
@@ -264,29 +269,36 @@ public class GUI extends JFrame {
 		
 		statusBar = new JPanel();
 		sidePanel = new JPanel();
-		subPanel = new JPanel();
+		topSubPanel = new JPanel();
+		bottomSubPanel = new JPanel();
 		buttonPanel = new JPanel();
 		statesPanel = new JPanel();
 		transitionsPanel = new JPanel();
-		infoPanel = new JPanel();
+		alphabetPanel = new JPanel();
+		testwordPanel = new JPanel();
 		
 		sidePanel.setLayout(new BorderLayout());
 		sidePanel.setBorder(BorderFactory.createEtchedBorder());
-		subPanel.setLayout(new BoxLayout(subPanel, BoxLayout.Y_AXIS));
+		topSubPanel.setLayout(new BoxLayout(topSubPanel, BoxLayout.Y_AXIS));
+		bottomSubPanel.setLayout(new BoxLayout(bottomSubPanel, BoxLayout.Y_AXIS));
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 		statesPanel.setLayout(new BorderLayout());
 		statesPanel.setBorder(BorderFactory.createTitledBorder("States:"));
 		transitionsPanel.setLayout(new BorderLayout());
 		transitionsPanel.setBorder(BorderFactory.createTitledBorder("Transitions:"));
-		infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
+		alphabetPanel.setLayout(new BoxLayout(alphabetPanel, BoxLayout.Y_AXIS));
+		alphabetPanel.setBorder(BorderFactory.createTitledBorder("Alphabet:"));
+		testwordPanel.setLayout(new BoxLayout(testwordPanel, BoxLayout.Y_AXIS));
+		testwordPanel.setBorder(BorderFactory.createTitledBorder("Word to test:"));
 		
 		alphabetField = new JTextField();
 		alphabetField.setEditable(false);
 		testField = new JTextField();
-		infoPanel.add(new JLabel("Alphabet:"));
-		infoPanel.add(alphabetField);
-		infoPanel.add(new JLabel("Word to test:"));
-		infoPanel.add(testField);
+
+		alphabetPanel.setBorder(BorderFactory.createTitledBorder("Alphabet:"));
+		alphabetPanel.add(alphabetField);
+		testwordPanel.setBorder(BorderFactory.createTitledBorder("Word to test:"));
+		testwordPanel.add(testField);
 		
 		runButton = new JButton("Run");
 	    runButton.addActionListener(new ActionListener() {
@@ -305,12 +317,29 @@ public class GUI extends JFrame {
 		buttonPanel.add(runButton);
 		buttonPanel.add(quitButton);
 		
-		sidePanel.add(subPanel, BorderLayout.NORTH);
-		sidePanel.add(buttonPanel, BorderLayout.SOUTH);
+		bottomSubPanel.add(alphabetPanel);
+		bottomSubPanel.add(testwordPanel);
+		bottomSubPanel.add(buttonPanel);
+		
+		sidePanel.add(topSubPanel, BorderLayout.CENTER);
+		sidePanel.add(bottomSubPanel, BorderLayout.SOUTH);
+		
 		JTable stateTable = new JTable(stateDataModel);
-		statesPanel.add(stateTable);
-		subPanel.add(statesPanel);
+		stateTable.getColumnModel().getColumn(0).setHeaderValue("Type");
+		stateTable.getColumnModel().getColumn(1).setHeaderValue("Name");
+		
+		JScrollPane stateScrollPane = new JScrollPane(stateTable);
+		stateScrollPane.setPreferredSize(new Dimension(200, 150));
+		statesPanel.add(stateScrollPane);
+		topSubPanel.add(statesPanel);
+		
 		JTable transitionTable = new JTable(transitionDataModel);
+		transitionTable.getColumnModel().getColumn(0).setHeaderValue("Source");
+		transitionTable.getColumnModel().getColumn(1).setHeaderValue("Input");
+		transitionTable.getColumnModel().getColumn(2).setHeaderValue("Target");
+		
+		JScrollPane transitionScrollPane = new JScrollPane(transitionTable);
+		transitionScrollPane.setPreferredSize(new Dimension(200, 150));
 		transitionDataModel.addTableModelListener(new TableModelListener() {
 			@Override
 			public void tableChanged(TableModelEvent e) {
@@ -318,10 +347,9 @@ public class GUI extends JFrame {
 			}
 		});
 		
-		transitionsPanel.add(transitionTable);
-		subPanel.add(transitionsPanel);
-		subPanel.add(infoPanel);
-		
+		transitionsPanel.add(transitionScrollPane);
+		topSubPanel.add(transitionsPanel);
+
 		status = new JLabel("");
 		statusBar.add(status);	
 		
@@ -718,7 +746,7 @@ public class GUI extends JFrame {
 		gui.setStatusMessage("This is some status message.");
 
 		gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		gui.setSize(640, 480);
+		gui.setSize(700, 550);
 		gui.setVisible(true);
 	}
 }
