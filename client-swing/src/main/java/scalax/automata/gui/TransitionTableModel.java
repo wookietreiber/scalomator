@@ -1,6 +1,9 @@
 package main.java.scalax.automata.gui;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import javax.swing.table.AbstractTableModel;
 import com.mxgraph.model.mxCell;
 
@@ -43,6 +46,19 @@ public class TransitionTableModel extends AbstractTableModel {
 	public void removeValue(mxCell edge) {
 		this.edge.remove(edge);
 		fireTableDataChanged();
+	}
+	
+	public String getTransitionValues() {
+		HashSet<String> transitionValues = new HashSet<String>();
+		for (mxCell cell : edge) {
+			transitionValues.add(cell.getValue().toString());
+		}
+		ArrayList<String> stringValues = new ArrayList<String>(transitionValues);
+		Collections.sort(stringValues);
+		String[] strings = new String[stringValues.size()];
+		stringValues.toArray(strings);
+		String oneString = Arrays.toString(strings); 
+		return oneString.substring(1, oneString.length() - 1);
 	}
 
 }

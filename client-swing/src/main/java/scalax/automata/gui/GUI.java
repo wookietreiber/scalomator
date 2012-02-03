@@ -27,6 +27,8 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 
 import com.mxgraph.canvas.mxGraphics2DCanvas;
 import com.mxgraph.model.mxCell;
@@ -68,6 +70,7 @@ public class GUI extends JFrame {
 	public GUI (String name) {
 		super(name);
 		top = getContentPane();
+		
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (Exception e) {
@@ -307,6 +310,13 @@ public class GUI extends JFrame {
 		statesPanel.add(stateTable);
 		subPanel.add(statesPanel);
 		JTable transitionTable = new JTable(transitionDataModel);
+		transitionDataModel.addTableModelListener(new TableModelListener() {
+			@Override
+			public void tableChanged(TableModelEvent e) {
+				setAlphabet(transitionDataModel.getTransitionValues());
+			}
+		});
+		
 		transitionsPanel.add(transitionTable);
 		subPanel.add(transitionsPanel);
 		subPanel.add(infoPanel);
