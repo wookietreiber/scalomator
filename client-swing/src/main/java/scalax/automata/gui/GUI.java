@@ -295,9 +295,7 @@ public class GUI extends JFrame {
 		alphabetField.setEditable(false);
 		testField = new JTextField();
 
-		alphabetPanel.setBorder(BorderFactory.createTitledBorder("Alphabet:"));
 		alphabetPanel.add(alphabetField);
-		testwordPanel.setBorder(BorderFactory.createTitledBorder("Word to test:"));
 		testwordPanel.add(testField);
 		
 		runButton = new JButton("Run");
