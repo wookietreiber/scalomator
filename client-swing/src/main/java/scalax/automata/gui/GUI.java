@@ -40,6 +40,7 @@ import com.mxgraph.view.mxGraph;
 
 @SuppressWarnings("serial")
 public class GUI extends JFrame {
+	public static final String EPSILON = "\u03b5";
 	public static final String CELLS = "cells";
 	public static final String SHAPE = "shape";
 	private static final String EDGE = "connector";
@@ -408,6 +409,9 @@ public class GUI extends JFrame {
 							}
 							else if (shape.toString().equals(EDGE)) {
 								// add an edge to list
+								if (((mxCell)cell).getValue().equals(""))
+									((mxCell)cell).setValue(EPSILON);
+								
 								transitionDataModel.appendValue((mxCell) cell);
 							}
 						}
@@ -456,7 +460,7 @@ public class GUI extends JFrame {
 			public void invoke(Object sender, mxEventObject evt) {
 				mxCell cell = (mxCell) evt.getProperty("cell");
 				if (cell.getValue().equals(""))
-					cell.setValue("\u03b5");
+					cell.setValue(EPSILON);
 
 				stateDataModel.fireTableDataChanged();
 				transitionDataModel.fireTableDataChanged();
