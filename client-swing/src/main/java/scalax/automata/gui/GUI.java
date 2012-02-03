@@ -454,6 +454,10 @@ public class GUI extends JFrame {
 	    graphComponent.addListener(mxEvent.LABEL_CHANGED, new mxIEventListener() {
 			@Override
 			public void invoke(Object sender, mxEventObject evt) {
+				mxCell cell = (mxCell) evt.getProperty("cell");
+				if (cell.getValue().equals(""))
+					cell.setValue("\u03b5");
+
 				stateDataModel.fireTableDataChanged();
 				transitionDataModel.fireTableDataChanged();
 			}
