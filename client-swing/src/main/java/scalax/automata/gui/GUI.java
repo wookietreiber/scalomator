@@ -64,11 +64,11 @@ public class GUI extends JFrame {
 	private boolean hasInitialState = false;
 	private JPopupMenu popup;
 	private Point popupPosition = new Point();
-	private mxGraphComponent graphComponent = null;
+	public mxGraphComponent graphComponent = null;
 	private JTextField alphabetField, testField;
 	private JLabel status;
-	private StateTableModel stateDataModel = new StateTableModel();
-	private TransitionTableModel transitionDataModel = new TransitionTableModel();
+	private StateTableModel stateDataModel = new StateTableModel(this);
+	private TransitionTableModel transitionDataModel = new TransitionTableModel(this);
 	
 	public GUI (String name) {
 		super(name);

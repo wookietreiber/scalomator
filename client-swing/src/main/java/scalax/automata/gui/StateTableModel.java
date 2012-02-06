@@ -13,7 +13,12 @@ public class StateTableModel extends AbstractTableModel {
 
 //	private static final String SHAPE_STYLE = SHAPE;
 	private ArrayList<mxCell> data = new ArrayList<mxCell>();
+	private GUI gui;
 	
+	public StateTableModel(GUI gui) {
+		this.gui = gui;
+	}
+
 	@Override
 	public int getColumnCount() {
 		return 2;
@@ -64,5 +69,22 @@ public class StateTableModel extends AbstractTableModel {
 	
 	public mxCell getCellAt(int index) {
 		return data.get(index);
+	}
+	
+	@Override
+	public boolean isCellEditable(int rowIndex, int columnIndex) {
+		if (columnIndex == 1) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	@Override
+	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+		mxCell cell = data.get(rowIndex);
+		if (columnIndex == 1) {
+			gui.graphComponent.labelChanged(cell, aValue, null);
+		}
 	}
 }

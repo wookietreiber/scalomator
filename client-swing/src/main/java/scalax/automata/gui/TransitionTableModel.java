@@ -15,6 +15,11 @@ import com.mxgraph.model.mxCell;
 public class TransitionTableModel extends AbstractTableModel {
 
 	private ArrayList<mxCell> edge = new ArrayList<mxCell>();
+	private GUI gui;
+
+	public TransitionTableModel(GUI gui) {
+		this.gui = gui;
+	}
 
 	@Override
 	public int getColumnCount() {
@@ -63,6 +68,27 @@ public class TransitionTableModel extends AbstractTableModel {
 
 	public mxCell getCellAt(int index) {
 		return edge.get(index);
+	}
+
+	public int getIndexOf(mxCell cell) {
+		return edge.indexOf(cell);
+	}
+	
+	@Override
+	public boolean isCellEditable(int rowIndex, int columnIndex) {
+		if (columnIndex == 1) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	@Override
+	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+		mxCell cell = edge.get(rowIndex);
+		if (columnIndex == 1) {
+			gui.graphComponent.labelChanged(cell, aValue, null);
+		}
 	}
 
 }

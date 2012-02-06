@@ -21,15 +21,18 @@ public class TableSelectionListener implements ListSelectionListener {
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
 		Object source = e.getSource();
+		if (e.getValueIsAdjusting()) {
+
+		}
 		// row selected
-		if (source.equals(table.getSelectionModel()) &&
-				table.getRowSelectionAllowed()) {
+		if (source.equals(table.getSelectionModel())
+				&& table.getRowSelectionAllowed()) {
 			TableModel tableModel = table.getModel();
 			int[] selectedRows = table.getSelectedRows();
 			gui.graph.clearSelection();
 			if (tableModel instanceof StateTableModel) {
 				StateTableModel stateTableModel = (StateTableModel) tableModel;
-				for (int i:selectedRows) {
+				for (int i : selectedRows) {
 					mxCell cell = stateTableModel.getCellAt(i);
 					gui.graph.getSelectionModel().addCell(cell);
 				}
@@ -37,16 +40,16 @@ public class TableSelectionListener implements ListSelectionListener {
 			if (tableModel instanceof TransitionTableModel) {
 				gui.graph.clearSelection();
 				TransitionTableModel transitionTableModel = (TransitionTableModel) tableModel;
-				for (int i:selectedRows) {
+				for (int i : selectedRows) {
 					mxCell cell = transitionTableModel.getCellAt(i);
 					gui.graph.getSelectionModel().addCell(cell);
 				}
 			}
-		} 
+		}
 		// column selected
-		else if (source.equals(table.getColumnModel()) &&
-				table.getColumnSelectionAllowed()) {
-			
+		else if (source.equals(table.getColumnModel())
+				&& table.getColumnSelectionAllowed()) {
+
 		}
 	}
 }
