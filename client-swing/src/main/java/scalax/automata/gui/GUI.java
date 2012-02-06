@@ -487,9 +487,13 @@ public class GUI extends JFrame {
 			@Override
 			public void invoke(Object sender, mxEventObject evt) {
 				mxCell cell = (mxCell) evt.getProperty("cell");
-				if (cell.getValue().equals(""))
-					cell.setValue(EPSILON);
-
+				if (cell.getValue().equals("")) {
+					if (cell.isEdge())
+						cell.setValue(EPSILON);
+					else {
+						cell.setValue(new StringBuilder("S_").append(nextInt++));
+					}
+				}
 				stateDataModel.fireTableDataChanged();
 				transitionDataModel.fireTableDataChanged();
 			}
