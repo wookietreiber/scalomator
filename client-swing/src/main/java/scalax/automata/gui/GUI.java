@@ -325,6 +325,7 @@ public class GUI extends JFrame {
 		JTable stateTable = new JTable(stateDataModel);
 		stateTable.getColumnModel().getColumn(0).setHeaderValue("Type");
 		stateTable.getColumnModel().getColumn(1).setHeaderValue("Name");
+		stateTable.getSelectionModel().addListSelectionListener(new TableSelectionListener(stateTable, this));
 		
 		JScrollPane stateScrollPane = new JScrollPane(stateTable);
 		stateScrollPane.setPreferredSize(new Dimension(200, 150));
@@ -335,6 +336,7 @@ public class GUI extends JFrame {
 		transitionTable.getColumnModel().getColumn(0).setHeaderValue("Source");
 		transitionTable.getColumnModel().getColumn(1).setHeaderValue("Input");
 		transitionTable.getColumnModel().getColumn(2).setHeaderValue("Target");
+		transitionTable.getSelectionModel().addListSelectionListener(new TableSelectionListener(transitionTable, this));
 		
 		JScrollPane transitionScrollPane = new JScrollPane(transitionTable);
 		transitionScrollPane.setPreferredSize(new Dimension(200, 150));

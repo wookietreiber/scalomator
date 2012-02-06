@@ -61,4 +61,8 @@ public class TransitionTableModel extends AbstractTableModel {
 		return oneString.substring(1, oneString.length() - 1);
 	}
 
+	public mxCell getCellAt(int index) {
+		return edge.get(index);
+	}
+
 }

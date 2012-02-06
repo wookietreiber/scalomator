@@ -61,4 +61,8 @@ public class StateTableModel extends AbstractTableModel {
 		fireTableDataChanged();
 		return removed;
 	}
+	
+	public mxCell getCellAt(int index) {
+		return data.get(index);
+	}
 }
