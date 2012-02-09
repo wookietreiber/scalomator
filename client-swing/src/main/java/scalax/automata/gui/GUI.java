@@ -650,12 +650,12 @@ public class GUI extends JFrame {
 		// TODO: loading from file or scala here
 		System.out.println("some loading happens here");
 		// FIXME: remove test automata with loaded stuff
-		Object v1 = addState("first", 50, 50, CELL_RADIUS, MULTI_STATE);
-		Object v2 = addState("second", 350, 50, CELL_RADIUS, NORMAL_STATE);
-		Object v3 = addState("third", 200, 200, CELL_RADIUS, END_STATE);
-		addTransition("E1", v1, v2);
-		addTransition("E1", v2, v3);
-		addTransition("E1", v3, v3);
+		Object v1 = addState("s_0", 50, 50, CELL_RADIUS, MULTI_STATE);
+		Object v2 = addState("s_1", 350, 50, CELL_RADIUS, NORMAL_STATE);
+		Object v3 = addState("s_2", 200, 200, CELL_RADIUS, END_STATE);
+		addTransition("a", v1, v2);
+		addTransition("a", v2, v3);
+		addTransition("a", v3, v3);
 	}
 	
 	public void saveAutomata() {
@@ -675,7 +675,13 @@ public class GUI extends JFrame {
 		}
 		else {
       extractData();
-      new RunSimulator(getInitialState(), getEndStates(), getTransitions()).run();
+      new RunSimulator(
+        getInitialState(),
+        getEndStates(),
+        getTransitions(),
+        getTestString(),
+        status
+      ).execute();
 		}
 	}
 	
@@ -760,11 +766,15 @@ public class GUI extends JFrame {
 	public void setTestString(String test) {
 		testField.setText(test);
 	}
+
+  public String getTestString() {
+    return testField.getText();
+  }
 	
 	public void setStatusMessage(String status) {
 		this.status.setText(status);
 	}
-	
+
 	/**
 	 * @param args
 	 */
