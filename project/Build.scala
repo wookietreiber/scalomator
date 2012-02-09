@@ -10,9 +10,10 @@ object BuildSettings {
   val buildScalaVersion = "2.9.1"
 
   val buildSettings = Defaults.defaultSettings ++ Seq (
-    organization := buildOrganization,
-    version      := buildVersion,
-    scalaVersion := buildScalaVersion
+    organization    := buildOrganization,
+    version         := buildVersion,
+    scalaVersion    := buildScalaVersion,
+    initialCommands := "import scalax.automata._"
   )
 }
 
@@ -24,8 +25,7 @@ object ScalomatorBuild extends Build {
 
   lazy val root = Project ( "scalomator", file ("."),
     settings = buildSettings ++ Seq (
-      libraryDependencies ++= Seq ( specs2 ),
-      initialCommands in Compile in console := "import scalax.automata._"
+      libraryDependencies ++= Seq ( specs2 )
     )
   )
 
