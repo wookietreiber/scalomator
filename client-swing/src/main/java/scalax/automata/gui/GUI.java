@@ -56,6 +56,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
+import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
@@ -77,7 +78,7 @@ public class GUI extends JFrame {
 	public static final String NORMAL_STATE = "ellipse";
 	public static final String INITIAL_STATE = "initialShape";
 	public static final String MULTI_STATE = "multiShape";
-	private static final int CELL_RADIUS = 80;
+	public static final int CELL_RADIUS = 80;
 	public mxGraph graph;
 	public Object root;
 	
@@ -647,15 +648,11 @@ public class GUI extends JFrame {
 	}
 	
 	public void loadAutomata() {
-		// TODO: loading from file or scala here
-		System.out.println("some loading happens here");
-		// FIXME: remove test automata with loaded stuff
-		Object v1 = addState("s_0", 50, 50, CELL_RADIUS, MULTI_STATE);
-		Object v2 = addState("s_1", 350, 50, CELL_RADIUS, NORMAL_STATE);
-		Object v3 = addState("s_2", 200, 200, CELL_RADIUS, END_STATE);
-		addTransition("a", v1, v2);
-		addTransition("a", v2, v3);
-		addTransition("a", v3, v3);
+		// TODO: get filename from jfilechooser
+    new AutomataLoader(
+      System.getProperty("user.home") + System.getProperty("file.separator") + "automata.xml",
+      this
+    ).execute();
 	}
 	
 	public void saveAutomata() {
@@ -783,16 +780,17 @@ public class GUI extends JFrame {
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {
-		GUI gui = new GUI("Scalomator - Simulate finite-state machines");
-		gui.initGUI(gui);
-		
-		// FIXME: remove test load and bogus status message
-		gui.loadAutomata();
-		gui.setStatusMessage("This is some status message.");
+  public static void main(String[] args) {
+    SwingUtilities.invokeLater(new Runnable() {
+      @Override
+      public void run() {
+        GUI gui = new GUI("Scalomator - Simulate finite-state machines");
+        gui.initGUI(gui);
 
-		gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		gui.setSize(700, 550);
-		gui.setVisible(true);
+        gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        gui.setSize(700, 550);
+        gui.setVisible(true);
+      }
+    });
 	}
 }
