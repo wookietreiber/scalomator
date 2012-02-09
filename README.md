@@ -78,26 +78,32 @@ Acceptance test for sequence 001:
 ```
 nfa.accepts(0,0,1)
 ```
+
 Convert the NFA into a deterministic finite automata (DFA) object 'dfa'.
 ```
 val dfa = nfa.toDFA
 ```
+
 Acceptance test for sequence 001:
 ```
 dfa.accepts(0,0,1)
 ```
+
 Minimize the DFA:
 ```
 val mindfa = dfa.minimize
 ```
+
 Acceptance test for sequence 001:
 ```
 mindfa.accepts(0,0,1)
 ```
+
 Create an XML structure:
 ```
 nfa.toXML
 ```
+
 Save the xml (root is the current project path):
 ```
 xml.XML.save("/path/to/somewhere/foo.xml",nfa.toXML)
