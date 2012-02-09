@@ -117,7 +117,7 @@ abstract class FiniteStateMachine[A,S,R] {
   def transitions: Map[(S,A),R]
 
   /** Returns true if the given word is accepted by this automaton. */
-  def accepts(word: Seq[A]): Boolean
+  def accepts(word: A*): Boolean
 
   // -----------------------------------------------------------------------
   // conversion within the domain

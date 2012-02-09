@@ -74,7 +74,7 @@ class NondeterministicFiniteAutomaton[A,S] private (
 
   override def states: Set[S] = finalStates ++ transitions.values.flatten.toSet + initialState
 
-  override def accepts(word: Seq[A]) = {
+  override def accepts(word: A*) = {
     def traverse(word: Seq[A], state: S): Boolean = {
       if ( word isEmpty )
         if ( finalStates contains state ) true else false

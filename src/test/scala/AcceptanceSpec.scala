@@ -39,22 +39,22 @@ class AcceptanceSpec extends Specification { def is =
   "Acceptance Specification"                                                  ^
                                                                              p^
   "DFA examples"                                                              ^
-    "1st example"                 ! dfaAccepts(List(0,0,0,1))                 ^
-    "2nd example"                 ! dfaRejects(List(0,0,0))                   ^
+    "1st example"                 ! dfaAccepts(0,0,0,1)                       ^
+    "2nd example"                 ! dfaRejects(0,0,0)                         ^
                                                                              p^
   "NFA examples"                                                              ^
-    "1st example"                 ! nfaAccepts(List(0,0,0))                   ^
-    "2nd example"                 ! nfaRejects(List(0,0))                     ^
+    "1st example"                 ! nfaAccepts(0,0,0)                         ^
+    "2nd example"                 ! nfaRejects(0,0)                           ^
                                                                             end
   // -----------------------------------------------------------------------
   // tests
   // -----------------------------------------------------------------------
 
-  def dfaAccepts(word: Seq[Int]) = dfa.accepts(word) must_== true
-  def dfaRejects(word: Seq[Int]) = dfa.accepts(word) must_== false
+  def dfaAccepts(word: Int*) = dfa.accepts(word: _*) must_== true
+  def dfaRejects(word: Int*) = dfa.accepts(word: _*) must_== false
 
-  def nfaAccepts(word: Seq[Int]) = nfa.accepts(word) must_== true
-  def nfaRejects(word: Seq[Int]) = nfa.accepts(word) must_== false
+  def nfaAccepts(word: Int*) = nfa.accepts(word: _*) must_== true
+  def nfaRejects(word: Int*) = nfa.accepts(word: _*) must_== false
 
   // -----------------------------------------------------------------------
   // sample automatons

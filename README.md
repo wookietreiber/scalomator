@@ -14,22 +14,56 @@ have to create a directory called "lib" directly in the base project directory,
 download this version of [jgraph][1], extract it and put the `jgraphx.jar` in
 the "lib" directory.
 
-To simply build and run the project [install sbt][2] go to the base project
+To simply build and run the GUI [install sbt][2] go to the base project
 directory and execute the following commands:
 
 ```
-$ cd /path/to/project/base/dir
+$ cd /path/to/scalomator
 $ sbt "; project scalomator-client-swing ; run"
 ```
 
-You may also start an sbt console and execute the following commands:
+You may also start the GUI with the sbt console and execute the following
+commands:
 
 ```
-$ cd /path/to/project/base/dir
+$ cd /path/to/scalomator
 $ sbt
 > project scalomator-client-swing
 > run
 ```
+
+If you like to work with the scala interpreter:
+
+```
+$ cd /path/to/scalomator
+$ sbt
+> console
+[info] Starting scala interpreter...
+[info]
+import scalax.automata._
+Welcome to Scala version 2.9.1.final (OpenJDK 64-Bit Server VM, Java 1.7.0_147-icedtea).
+Type in expressions to have them evaluated.
+Type :help for more information.
+
+scala> val nfa = NFA(0, Set(3), Map(
+     |   0 -> 0 -> Set(0,1), 0 -> 1 -> Set(0),
+     |   1 -> 0 -> Set(2),   1 -> 1 -> Set(2),
+     |   2 -> 0 -> Set(3),   2 -> 1 -> Set(3)
+     | ))
+nfa: scalax.automata.NondeterministicFiniteAutomaton[Int,Int] = ...
+
+scala> nfa accepts (0,0,1)
+res0: Boolean = true
+
+scala> val dfa = nfa toDFA
+dfa: scalax.automata.package.DFA[Int,Set[Int]] = ...
+
+scala> dfa accepts (0,0,1)
+res1: Boolean = true
+
+scala>
+```
+
 
 Acknowledgements
 ----------------
