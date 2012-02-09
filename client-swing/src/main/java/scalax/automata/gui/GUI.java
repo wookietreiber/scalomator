@@ -664,8 +664,13 @@ public class GUI extends JFrame {
 		}
 		else {
 			extractData();
-			// TODO: grab states and transitions through public methods
-			System.out.println("some saving happens here");
+			// TODO: get filename from jfilechooser
+      new AutomataSaver(
+        System.getProperty("user.home") + System.getProperty("file.separator") + "automata.xml",
+        getInitialState(),
+        getEndStates(),
+        getTransitions()
+      ).execute();
 		}
 	}
 	
