@@ -14,7 +14,18 @@ have to create a directory called "lib" directly in the base project directory,
 download this version of [jgraph][1], extract it and put the `jgraphx.jar` in
 the "lib" directory.
 
-To simply build and run the GUI [install sbt][2] go to the base project
+To build the project's documentation, execute the following commands:
+
+```
+$ cd /path/to/scalomator
+$ sbt
+> project scalomator
+> doc
+```
+The respective documentation can be found at /path/to/scalomator/target/scala-2.9.1/api/index.html
+
+
+To simply build and run the GUI [install sbt][2], navigate to the base project
 directory and execute the following commands:
 
 ```
@@ -23,7 +34,7 @@ $ sbt "; project scalomator-client-swing ; run"
 ```
 
 You may also start the GUI with the sbt console and execute the following
-commands:
+commands individually:
 
 ```
 $ cd /path/to/scalomator
@@ -32,7 +43,7 @@ $ sbt
 > run
 ```
 
-If you like to work with the scala interpreter:
+If you rather like to work with the scala interpreter instead:
 
 ```
 $ cd /path/to/scalomator
@@ -57,21 +68,48 @@ val nfa = NFA(0, Set(3), Map(
   2 -> 0 -> Set(3),   2 -> 1 -> Set(3)
 ))
 ```
+This will create a nondeterministic finite automata (NFA) object 'nfa'
+with which you can do everything you'd expect from an automaton:
+(The syntax can be found in the project's documentation at:
+/path/to/scalomator/target/scala-2.9.1/api/index.html#scalax.automata.NondeterministicFiniteAutomaton
+and /path/to/scalomator/target/scala-2.9.1/api/index.html#scalax.automata.NondeterministicFiniteAutomaton$)
 
-Then you can do everything with it what you expect from an automaton:
-
+Acceptance test for sequence 001:
 ```
 nfa.accepts(0,0,1)
+```
 
+Convert the NFA into a deterministic finite automata (DFA) object 'dfa'.
+```
 val dfa = nfa.toDFA
+```
 
+Acceptance test for sequence 001:
+```
 dfa.accepts(0,0,1)
+```
 
+Minimize the DFA:
+```
 val mindfa = dfa.minimize
+```
 
+Acceptance test for sequence 001:
+```
 mindfa.accepts(0,0,1)
 ```
 
+Create an XML structure:
+```
+nfa.toXML
+```
+
+Save the xml (root is the current project path):
+```
+xml.XML.save("/path/to/somewhere/foo.xml",nfa.toXML)
+```
+
+To exit the scala console when done press CTRL+D
 
 Acknowledgements
 ----------------
