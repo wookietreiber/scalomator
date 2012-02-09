@@ -45,23 +45,31 @@ Welcome to Scala version 2.9.1.final (OpenJDK 64-Bit Server VM, Java 1.7.0_147-i
 Type in expressions to have them evaluated.
 Type :help for more information.
 
-scala> val nfa = NFA(0, Set(3), Map(
-     |   0 -> 0 -> Set(0,1), 0 -> 1 -> Set(0),
-     |   1 -> 0 -> Set(2),   1 -> 1 -> Set(2),
-     |   2 -> 0 -> Set(3),   2 -> 1 -> Set(3)
-     | ))
-nfa: scalax.automata.NondeterministicFiniteAutomaton[Int,Int] = ...
-
-scala> nfa accepts (0,0,1)
-res0: Boolean = true
-
-scala> val dfa = nfa toDFA
-dfa: scalax.automata.package.DFA[Int,Set[Int]] = ...
-
-scala> dfa accepts (0,0,1)
-res1: Boolean = true
-
 scala>
+```
+
+And then paste the following into the console:
+
+```
+val nfa = NFA(0, Set(3), Map(
+  0 -> 0 -> Set(0,1), 0 -> 1 -> Set(0),
+  1 -> 0 -> Set(2),   1 -> 1 -> Set(2),
+  2 -> 0 -> Set(3),   2 -> 1 -> Set(3)
+))
+```
+
+Then you can do everything with it what you expect from an automaton:
+
+```
+nfa.accepts(0,0,1)
+
+val dfa = nfa.toDFA
+
+dfa.accepts(0,0,1)
+
+val mindfa = dfa.minimize
+
+mindfa.accepts(0,0,1)
 ```
 
 
