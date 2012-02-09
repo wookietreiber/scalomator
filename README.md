@@ -10,15 +10,19 @@ How to Run
 ----------
 
 Because, unfortunately, jgraph can not be downloaded from any repository you
-have to create a directory called "lib" directly in the base project directory
-and download this version of [jgraph][1].
+have to create a directory called "lib" directly in the base project directory,
+download this version of [jgraph][1], extract it and put the `jgraphx.jar` in
+the "lib" directory.
 
-To simply build and run the project install [sbt][2] go to the base project
-directory and execute the following command:
+To simply build and run the project [install sbt][2] go to the base project
+directory and execute the following commands:
 
-`sbt "; project scalomator-client-swing ; run"`
+```
+$ cd /path/to/project/base/dir
+$ sbt "; project scalomator-client-swing ; run"
+```
 
-You may also start an sbt console and run the following commands:
+You may also start an sbt console and execute the following commands:
 
 ```
 $ cd /path/to/project/base/dir
