@@ -25,7 +25,7 @@
  *                                                                          *
  ****************************************************************************/
 
-package main.java.scalax.automata.gui;
+package scalax.automata.gui;
 
 import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;

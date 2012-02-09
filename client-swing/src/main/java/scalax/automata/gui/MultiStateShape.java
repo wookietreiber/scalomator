@@ -25,7 +25,7 @@
  *                                                                          *
  ****************************************************************************/
 
-package main.java.scalax.automata.gui;
+package scalax.automata.gui;
 
 import java.awt.BasicStroke;
 import java.awt.Rectangle;

@@ -25,7 +25,7 @@
  *                                                                          *
  ****************************************************************************/
 
-package main.java.scalax.automata.gui;
+package scalax.automata.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -674,8 +674,8 @@ public class GUI extends JFrame {
 			JOptionPane.showMessageDialog(top, "You need an initial state to run the simulation!", "Warning", JOptionPane.WARNING_MESSAGE);
 		}
 		else {
-			// TODO: run the simulation
-			System.out.println("some simulation running happens here");
+      extractData();
+      new RunSimulator(getInitialState(), getEndStates(), getTransitions()).run();
 		}
 	}
 	
