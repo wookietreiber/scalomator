@@ -44,6 +44,7 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -648,11 +649,17 @@ public class GUI extends JFrame {
 	}
 	
 	public void loadAutomata() {
-		// TODO: get filename from jfilechooser
-    new AutomataLoader(
-      System.getProperty("user.home") + System.getProperty("file.separator") + "automata.xml",
-      this
-    ).execute();
+		JFileChooser jfc = new JFileChooser();
+		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		jfc.setMultiSelectionEnabled(false);
+		jfc.setName("Open definition");
+		int dialogOption = jfc.showOpenDialog(this);
+		if (dialogOption == JFileChooser.APPROVE_OPTION) {
+		    new AutomataLoader(
+		      jfc.getSelectedFile().getAbsolutePath(),
+		      this
+		    ).execute();
+		}
 	}
 	
 	public void saveAutomata() {
@@ -661,13 +668,19 @@ public class GUI extends JFrame {
 		}
 		else {
 			extractData();
-			// TODO: get filename from jfilechooser
-      new AutomataSaver(
-        System.getProperty("user.home") + System.getProperty("file.separator") + "automata.xml",
-        getInitialState(),
-        getEndStates(),
-        getTransitions()
-      ).execute();
+			JFileChooser jfc = new JFileChooser();
+			jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			jfc.setMultiSelectionEnabled(false);
+			jfc.setName("Save definition");
+			int dialogOption = jfc.showSaveDialog(this);
+			if (dialogOption == JFileChooser.APPROVE_OPTION) {
+		      new AutomataSaver(
+		        jfc.getSelectedFile().getAbsolutePath(),
+		        getInitialState(),
+		        getEndStates(),
+		        getTransitions()
+		      ).execute();
+				}
 		}
 	}
 	
