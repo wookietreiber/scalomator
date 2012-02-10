@@ -19,12 +19,17 @@ To build the project's documentation, execute the following commands:
 ```
 $ cd /path/to/scalomator
 $ sbt
+> project scalomator-client-swing
+> doc
 > project scalomator
 > doc
 ```
-The respective documentation can be found at /path/to/scalomator/target/scala-2.9.1/api/index.html
+The respective documentation can be found at:
+/path/to/scalomator/client-swing/target/scala-2.9.1/api/index.html
+and
+/path/to/scalomator/target/scala-2.9.1/api/index.html
 
-To build the Javadoc for the GUI, navigate to the subproject's base directory
+If you prefer to build the Javadoc for the GUI instead, navigate to the subproject's base directory
 
 ```
 $ cd /path/to/scalomator/client-swing
@@ -32,7 +37,8 @@ $ javadoc -d target/javadoc src/main/java/scalax/automatot/gui/*.java
 ```
 
 All warnings concerning com.mxgraph can be ignored. For the jgraph documentation consult its own [website][7].
-The javadoc can be found at /path/to/scalomator/client-swing/target/javadoc
+The javadoc can be found at:
+/path/to/scalomator/client-swing/target/javadoc
 
 To simply build and run the GUI [install sbt][2], navigate to the base project
 directory and execute the following commands:
@@ -81,7 +87,8 @@ This will create a nondeterministic finite automata (NFA) object 'nfa'
 with which you can do everything you'd expect from an automaton:
 (The syntax can be found in the project's documentation at:
 /path/to/scalomator/target/scala-2.9.1/api/index.html#scalax.automata.NondeterministicFiniteAutomaton
-and /path/to/scalomator/target/scala-2.9.1/api/index.html#scalax.automata.NondeterministicFiniteAutomaton$)
+and 
+/path/to/scalomator/target/scala-2.9.1/api/index.html#scalax.automata.NondeterministicFiniteAutomaton$)
 
 Acceptance test for sequence 001:
 ```
