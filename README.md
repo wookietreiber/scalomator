@@ -24,6 +24,15 @@ $ sbt
 ```
 The respective documentation can be found at /path/to/scalomator/target/scala-2.9.1/api/index.html
 
+To build the Javadoc for the GUI, navigate to the subproject's base directory
+
+```
+$ cd /path/to/scalomator/client-swing
+$ javadoc -d target/javadoc src/main/java/scalax/automatot/gui/*.java
+```
+
+All warnings concerning com.mxgraph can be ignored. For the jgraph documentation consult its own [website][7].
+The javadoc can be found at /path/to/scalomator/client-swing/target/javadoc
 
 To simply build and run the GUI [install sbt][2], navigate to the base project
 directory and execute the following commands:
