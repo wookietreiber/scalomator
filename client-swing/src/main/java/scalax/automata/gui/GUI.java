@@ -56,6 +56,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelEvent;
@@ -69,20 +70,61 @@ import com.mxgraph.util.mxEventObject;
 import com.mxgraph.util.mxEventSource.mxIEventListener;
 import com.mxgraph.view.mxGraph;
 
+/**
+ * This class represents the GUI for the Scalomator and handles GUI-related logic only.
+ * The program's logic is handled by the scala classes alone. 
+ */
 @SuppressWarnings("serial")
 public class GUI extends JFrame {
+	/**
+	 * Small greek letter epsilon.
+	 */
 	public static final String EPSILON = "\u03b5";
+	/**
+	 * Denotes a cell type.
+	 */
 	public static final String CELLS = "cells";
+	/**
+	 * Denotes a shape type.
+	 */
 	public static final String SHAPE = "shape";
+	/**
+	 * Type for edges.
+	 */
 	private static final String EDGE = "connector";
+	/**
+	 * Shape for an end state.
+	 */
 	public static final String END_STATE = "doubleEllipse";
+	/**
+	 * Shape for a normal state.
+	 */
 	public static final String NORMAL_STATE = "ellipse";
+	/**
+	 * Shape for an initial state.
+	 */
 	public static final String INITIAL_STATE = "initialShape";
+	/**
+	 * Shape for multi state.
+	 */
 	public static final String MULTI_STATE = "multiShape";
+	/**
+	 * Default shape radius.
+	 */
 	public static final int CELL_RADIUS = 80;
+	/**
+	 * Handler for the whole graph.
+	 */
 	public mxGraph graph;
+	/**
+	 * The graph's root cell.
+	 */
 	public Object root;
-	
+	/**
+	 * Handler for the graphic component.
+	 */
+	public mxGraphComponent graphComponent = null;
+
 	private HashMap<String, String> initialState = new HashMap<String, String>();
 	private ArrayList<HashMap<String, String>> endStates = new ArrayList<HashMap<String, String>>();
 	private ArrayList<HashMap<String, String>> states = new ArrayList<HashMap<String, String>>();
@@ -93,64 +135,71 @@ public class GUI extends JFrame {
 	private boolean hasInitialState = false;
 	private JPopupMenu popup;
 	private Point popupPosition = new Point();
-	public mxGraphComponent graphComponent = null;
 	private JTextField alphabetField, testField;
 	private JLabel status;
 	private StateTableModel stateDataModel = new StateTableModel(this);
 	private TransitionTableModel transitionDataModel = new TransitionTableModel(this);
-	
+
+	/**
+	 * Creates the window and sets local Look and Feel. 
+	 * @param name The window title.
+	 */
 	public GUI (String name) {
 		super(name);
 		top = getContentPane();
-		
+
 		setMinimumSize(new Dimension(700, 550));
-		
+
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (Exception e) {
 			// ignore if not successful 
 		}
 	}
-	
+
+	/**
+	 * This will initialize all the window's components.
+	 * @param gui The frame to initialize the components on
+	 */
 	public void initGUI(JFrame gui) {
 		JMenu menu;
 		JMenuItem menuItem;
 		JMenuBar menuBar = new JMenuBar();
 		JPanel sidePanel, statusBar, topSubPanel, statesPanel, transitionsPanel, 
-			alphabetPanel, testwordPanel, buttonPanel, bottomSubPanel;
+		alphabetPanel, testwordPanel, buttonPanel, bottomSubPanel;
 		JButton runButton, quitButton;
 
-	    //Create the pop-up menu.
-	    popup = new JPopupMenu();
-	    menuItem = new JMenuItem("Add state");
-	    menuItem.addActionListener(new ActionListener() {
+		//Create the pop-up menu.
+		popup = new JPopupMenu();
+		menuItem = new JMenuItem("Add state");
+		menuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// generate a new name for the cell
 				StringBuilder value = new StringBuilder("S_").append(nextInt);
 				addState(value.toString(), popupPosition.x, popupPosition.y, CELL_RADIUS, NORMAL_STATE);
 			}
-	    });
-	    popup.add(menuItem);
-	    
-	    menuItem = new JMenuItem("Remove");
-	    menuItem.addActionListener(new ActionListener() {
+		});
+		popup.add(menuItem);
+
+		menuItem = new JMenuItem("Remove");
+		menuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				Object cell[] = {graphComponent.getCellAt(popupPosition.x, popupPosition.y)};
 				graph.removeCells(cell, true);
 			}
-	    });
-	    popup.add(menuItem);
-	    popup.addSeparator();
-	    
-	    menuItem = new JMenuItem("Change to Initial state");
-	    menuItem.addActionListener(new ActionListener() {
+		});
+		popup.add(menuItem);
+		popup.addSeparator();
+
+		menuItem = new JMenuItem("Change to Initial state");
+		menuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				Object cell = graphComponent.getCellAt(popupPosition.x, popupPosition.y);
 				Object shape = graph.getCellStyle(cell).get(SHAPE);
-				
+
 				// check for situations where a change to initial shape is not allowed
 				if (hasInitialState && !shape.toString().equals(MULTI_STATE)) {
 					JOptionPane.showMessageDialog(top, "There can only be one initial state!\n" +
@@ -163,50 +212,50 @@ public class GUI extends JFrame {
 					stateDataModel.fireTableDataChanged();
 				}
 			}
-	    });
-	    popup.add(menuItem);
-	    
-	    menuItem = new JMenuItem("Change to Normal state");
-	    menuItem.addActionListener(new ActionListener() {
+		});
+		popup.add(menuItem);
+
+		menuItem = new JMenuItem("Change to Normal state");
+		menuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				Object cell = graphComponent.getCellAt(popupPosition.x, popupPosition.y);
 				Object shape = graph.getCellStyle(cell).get(SHAPE);
-				
+
 				if(shape.toString().equals(MULTI_STATE) || shape.toString().equals(INITIAL_STATE))
 					hasInitialState = false;
-				
+
 				graph.getModel().setStyle(cell, "shape=ellipse;perimeter=ellipsePerimeter");
 				graphComponent.refresh();
 				stateDataModel.fireTableDataChanged();
 			}
-	    });
-	    popup.add(menuItem);
-	    
-	    menuItem = new JMenuItem("Change to End state");
-	    menuItem.addActionListener(new ActionListener() {
+		});
+		popup.add(menuItem);
+
+		menuItem = new JMenuItem("Change to End state");
+		menuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				Object cell = graphComponent.getCellAt(popupPosition.x, popupPosition.y);
 				Object shape = graph.getCellStyle(cell).get(SHAPE);
-				
+
 				if(shape.toString().equals(MULTI_STATE) || shape.toString().equals(INITIAL_STATE))
 					hasInitialState = false;
-				
+
 				graph.getModel().setStyle(cell, "shape=doubleEllipse;perimeter=ellipsePerimeter");
 				graphComponent.refresh();
 				stateDataModel.fireTableDataChanged();
 			}
-	    });
-	    popup.add(menuItem);
-	    
-	    menuItem = new JMenuItem("Change to Initial+End state");
-	    menuItem.addActionListener(new ActionListener() {
+		});
+		popup.add(menuItem);
+
+		menuItem = new JMenuItem("Change to Initial+End state");
+		menuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				Object cell = graphComponent.getCellAt(popupPosition.x, popupPosition.y);
 				Object shape = graph.getCellStyle(cell).get(SHAPE);
-				
+
 				if (hasInitialState && !shape.toString().equals(INITIAL_STATE)) {
 					JOptionPane.showMessageDialog(top, "There can only be one initial state!\n" +
 							"Remove or change the existing initial state first.", "Warning", JOptionPane.WARNING_MESSAGE);
@@ -218,84 +267,85 @@ public class GUI extends JFrame {
 					stateDataModel.fireTableDataChanged();
 				}
 			}
-	    });
-	    popup.add(menuItem);
-		
-		// menus
+		});
+		popup.add(menuItem);
+
+		// create the window menus
 		menu = new JMenu("File");
 		menu.setMnemonic(KeyEvent.VK_F);
 		menuBar.add(menu);
 
 		menuItem = new JMenuItem("New");
 		menuItem.setMnemonic(KeyEvent.VK_N);
-	    menuItem.addActionListener(new ActionListener() {
+		menuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				removeAllCells();
 			}
-	    });
+		});
 		menu.add(menuItem);
-		
+
 		menuItem = new JMenuItem("Open");
 		menuItem.setMnemonic(KeyEvent.VK_O);
-	    menuItem.addActionListener(new ActionListener() {
+		menuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				removeAllCells();
 				loadAutomata();
 			}
-	    });
+		});
 		menu.add(menuItem);
-		
+
 		menuItem = new JMenuItem("Save");
 		menuItem.setMnemonic(KeyEvent.VK_S);
-	    menuItem.addActionListener(new ActionListener() {
+		menuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				saveAutomata();
 			}
-	    });
+		});
 		menu.add(menuItem);
 		menu.addSeparator();
-		
+
 		menuItem = new JMenuItem("Quit");
 		menuItem.setMnemonic(KeyEvent.VK_Q);
-	    menuItem.addActionListener(new ActionListener() {
+		menuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				quit();
 			}
-	    });
+		});
 		menu.add(menuItem);
-		
+
 		menu = new JMenu("Simulation");
 		menu.setMnemonic(KeyEvent.VK_S);
 		menuBar.add(menu);
-		
+
 		menuItem = new JMenuItem("Run");
 		menuItem.setMnemonic(KeyEvent.VK_R);
-	    menuItem.addActionListener(new ActionListener() {
+		menuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				runSimulation();
 			}
-	    });
+		});
 		menu.add(menuItem);
-		
+
 		menu = new JMenu("Info");
 		menu.setMnemonic(KeyEvent.VK_I);
 		menuBar.add(menu);
-		
+
 		menuItem = new JMenuItem("About");
 		menuItem.setMnemonic(KeyEvent.VK_A);
-	    menuItem.addActionListener(new ActionListener() {
+		menuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				displayAbout();
 			}
-	    });
+		});
 		menu.add(menuItem);
-		
+
+		// create all the panels
 		statusBar = new JPanel();
 		sidePanel = new JPanel();
 		topSubPanel = new JPanel();
@@ -305,7 +355,9 @@ public class GUI extends JFrame {
 		transitionsPanel = new JPanel();
 		alphabetPanel = new JPanel();
 		testwordPanel = new JPanel();
-		
+
+		// set all panel layouts and borders
+		statusBar.setLayout(new BoxLayout(statusBar, BoxLayout.Y_AXIS));
 		sidePanel.setLayout(new BorderLayout());
 		sidePanel.setBorder(BorderFactory.createEtchedBorder());
 		topSubPanel.setLayout(new BoxLayout(topSubPanel, BoxLayout.Y_AXIS));
@@ -319,54 +371,58 @@ public class GUI extends JFrame {
 		alphabetPanel.setBorder(BorderFactory.createTitledBorder("Alphabet:"));
 		testwordPanel.setLayout(new BoxLayout(testwordPanel, BoxLayout.Y_AXIS));
 		testwordPanel.setBorder(BorderFactory.createTitledBorder("Word to test:"));
-		
+
+		// create the textfields
 		alphabetField = new JTextField();
 		alphabetField.setEditable(false);
 		testField = new JTextField();
 
 		alphabetPanel.add(alphabetField);
 		testwordPanel.add(testField);
-		
+
+		// create the buttons
 		runButton = new JButton("Run");
-	    runButton.addActionListener(new ActionListener() {
+		runButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				runSimulation();
 			}
-	    });
+		});
 		quitButton = new JButton("Quit");
-	    quitButton.addActionListener(new ActionListener() {
+		quitButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				quit();
 			}
-	    });
+		});
+		
 		buttonPanel.add(runButton);
 		buttonPanel.add(quitButton);
-		
+
 		bottomSubPanel.add(alphabetPanel);
 		bottomSubPanel.add(testwordPanel);
 		bottomSubPanel.add(buttonPanel);
-		
+
 		sidePanel.add(topSubPanel, BorderLayout.CENTER);
 		sidePanel.add(bottomSubPanel, BorderLayout.SOUTH);
-		
+
+		// create the tables for states and transitions
 		JTable stateTable = new JTable(stateDataModel);
 		stateTable.getColumnModel().getColumn(0).setHeaderValue("Type");
 		stateTable.getColumnModel().getColumn(1).setHeaderValue("Name");
 		stateTable.getSelectionModel().addListSelectionListener(new TableSelectionListener(stateTable, this));
-		
+
 		JScrollPane stateScrollPane = new JScrollPane(stateTable);
 		stateScrollPane.setPreferredSize(new Dimension(200, 150));
 		statesPanel.add(stateScrollPane);
 		topSubPanel.add(statesPanel);
-		
+
 		JTable transitionTable = new JTable(transitionDataModel);
 		transitionTable.getColumnModel().getColumn(0).setHeaderValue("Source");
 		transitionTable.getColumnModel().getColumn(1).setHeaderValue("Input");
 		transitionTable.getColumnModel().getColumn(2).setHeaderValue("Target");
 		transitionTable.getSelectionModel().addListSelectionListener(new TableSelectionListener(transitionTable, this));
-		
+
 		JScrollPane transitionScrollPane = new JScrollPane(transitionTable);
 		transitionScrollPane.setPreferredSize(new Dimension(200, 150));
 		transitionDataModel.addTableModelListener(new TableModelListener() {
@@ -375,24 +431,30 @@ public class GUI extends JFrame {
 				setAlphabet(transitionDataModel.getTransitionValues());
 			}
 		});
-		
+
 		transitionsPanel.add(transitionScrollPane);
 		topSubPanel.add(transitionsPanel);
 
-		status = new JLabel("");
+		// set some status bar message
+		status = new JLabel("Status: ", SwingConstants.LEFT);
 		statusBar.add(status);	
-		
+
+		// lay it all out
 		gui.setJMenuBar(menuBar);
 		gui.setLayout(new BorderLayout());
 		gui.add(statusBar, BorderLayout.SOUTH);
 		gui.add(sidePanel, BorderLayout.EAST);
 		gui.add(initGraph(), BorderLayout.CENTER);
 	}
-	
+
+	/**
+	 * This will initialize the graph component to draw the shapes on.
+	 * @return The graph component which was drawn on.
+	 */
 	public JComponent initGraph() {
 		graph = new mxGraph();
 		graphComponent = new mxGraphComponent(graph);
-		
+
 		// dangling edges are bad and result in all kinds of nasty things
 		graph.setAllowDanglingEdges(false);
 		// edge source and target are the same
@@ -402,19 +464,19 @@ public class GUI extends JFrame {
 		// dragging edge to empty space creates a new shape
 		graphComponent.getConnectionHandler().setCreateTarget(true);
 		// make editing labels more comfortable
-	    graphComponent.setEnterStopsCellEditing(true);
-	    // antialiasing \o/
-	    graphComponent.setAntiAlias(true);
-	    
+		graphComponent.setEnterStopsCellEditing(true);
+		// antialiasing \o/
+		graphComponent.setAntiAlias(true);
+
 		root = graph.getDefaultParent();
-		
-	    // a cell add listener
-	    graph.addListener(mxEvent.CELLS_ADDED, new mxIEventListener() {
-	        @Override
-	        public void invoke(Object sender, mxEventObject evt) {
-	            if (sender instanceof mxGraph) {
-	            	// all cells concerning the add event
-	            	Object[] cells=(Object[]) evt.getProperty(CELLS);
+
+		// a cell add listener
+		graph.addListener(mxEvent.CELLS_ADDED, new mxIEventListener() {
+			@Override
+			public void invoke(Object sender, mxEventObject evt) {
+				if (sender instanceof mxGraph) {
+					// all cells concerning the add event
+					Object[] cells=(Object[]) evt.getProperty(CELLS);
 					for (Object cell : cells) {
 						if (cell instanceof mxCell) {
 							// iterate over all cells in the graph
@@ -429,7 +491,7 @@ public class GUI extends JFrame {
 									graph.getModel().setValue(cell, new StringBuilder("S_").append(nextInt++));
 								}
 							}
-							
+
 							Object shape = graph.getCellStyle(cell).get(SHAPE);
 							if (shape.toString().equals(INITIAL_STATE)) {
 								if (hasInitialState) {
@@ -468,21 +530,21 @@ public class GUI extends JFrame {
 								// add an edge to list
 								if (((mxCell)cell).getValue().equals(""))
 									((mxCell)cell).setValue(EPSILON);
-								
+
 								transitionDataModel.appendValue((mxCell) cell);
 							}
 						}
-	                }
-	            }
-	        }
-	    });
-	    
-	    // a cell remove listener
-	    graph.addListener(mxEvent.CELLS_REMOVED, new mxIEventListener() {
-	        @Override
-	        public void invoke(Object sender, mxEventObject evt) {
-	            if (sender instanceof mxGraph) {
-	            	Object[] cells=(Object[]) evt.getProperty(CELLS);
+					}
+				}
+			}
+		});
+
+		// a cell remove listener
+		graph.addListener(mxEvent.CELLS_REMOVED, new mxIEventListener() {
+			@Override
+			public void invoke(Object sender, mxEventObject evt) {
+				if (sender instanceof mxGraph) {
+					Object[] cells=(Object[]) evt.getProperty(CELLS);
 					for (Object cell : cells) {
 						if (cell instanceof mxCell) {
 							Object shape = graph.getCellStyle(cell).get(SHAPE);
@@ -506,13 +568,13 @@ public class GUI extends JFrame {
 								stateDataModel.removeValue((mxCell) cell);
 							}
 						}
-	                }
-	            }
-	        }
-	    });
-	    
-	    // update tables if a label is changed
-	    graphComponent.addListener(mxEvent.LABEL_CHANGED, new mxIEventListener() {
+					}
+				}
+			}
+		});
+
+		// update tables if a label is changed
+		graphComponent.addListener(mxEvent.LABEL_CHANGED, new mxIEventListener() {
 			@Override
 			public void invoke(Object sender, mxEventObject evt) {
 				mxCell cell = (mxCell) evt.getProperty("cell");
@@ -527,80 +589,89 @@ public class GUI extends JFrame {
 				transitionDataModel.fireTableDataChanged();
 			}
 		});
-	    
-	    // update tables if edge is connected or realigned
-	    graph.addListener(mxEvent.CONNECT_CELL, new mxIEventListener() {
+
+		// update tables if edge is connected or realigned
+		graph.addListener(mxEvent.CONNECT_CELL, new mxIEventListener() {
 			@Override
 			public void invoke(Object sender, mxEventObject evt) {
 				transitionDataModel.fireTableDataChanged();
 			}
 		});
-	    
-	    // handle mouse right-click events for adding cells or changing cells
-	    graphComponent.getGraphControl().addMouseListener(new MouseAdapter() {
-	    	@Override
-	    	public void mousePressed(MouseEvent e) {
-	    		if ((e.getModifiers() & InputEvent.BUTTON3_MASK) == InputEvent.BUTTON3_MASK) {
-	    			Object cell = graphComponent.getCellAt(e.getX(), e.getY());
-	    			if (cell != null) {
-	    				
-	    				Object shape = graph.getCellStyle(cell).get(SHAPE);
-	    				
-	    				if (shape.toString().equals(EDGE)) {
-	    					popup.getComponent(0).setEnabled(false);
-	    					popup.getComponent(1).setEnabled(true);
-	    					popup.getComponent(2).setEnabled(false);
-	    					popup.getComponent(3).setEnabled(false);
-	    					popup.getComponent(4).setEnabled(false);
-	    					popup.getComponent(5).setEnabled(false);
-	    					popup.getComponent(6).setEnabled(false);
-	    				}
-	    				else {
-	    					popup.getComponent(0).setEnabled(false);
-	    					popup.getComponent(1).setEnabled(true);
-	    					popup.getComponent(2).setEnabled(true);
-	    					if (shape.toString().equals(INITIAL_STATE))
-	    						popup.getComponent(3).setEnabled(false);
-	    					else
-	    						popup.getComponent(3).setEnabled(true);
-	    					
-	    					if (shape.toString().equals(NORMAL_STATE))
-	    						popup.getComponent(4).setEnabled(false);
-	    					else
-	    						popup.getComponent(4).setEnabled(true);
-	    					
-	    					if (shape.toString().equals(END_STATE))
-	    						popup.getComponent(5).setEnabled(false);
-	    					else
-	    						popup.getComponent(5).setEnabled(true);
-	    					
-	    					if (shape.toString().equals(MULTI_STATE))
-	    						popup.getComponent(6).setEnabled(false);
-	    					else
-	    						popup.getComponent(6).setEnabled(true);
-	    				}
-	    			}
-	    			else {
-	    				popup.getComponent(0).setEnabled(true);
-	    				popup.getComponent(1).setEnabled(false);
-	    				popup.getComponent(2).setEnabled(false);
-	    				popup.getComponent(3).setEnabled(false);
-	    				popup.getComponent(4).setEnabled(false);
-	    				popup.getComponent(5).setEnabled(false);
-	    			}
-	    			popupPosition = e.getPoint();
-    				popup.show(e.getComponent(), e.getX(), e.getY());
-	    		}
-	    	}
-	    });
-	    
-	    // add customized shapes to list of available shapes
-	    mxGraphics2DCanvas.putShape(INITIAL_STATE, new InitialStateShape());
-	    mxGraphics2DCanvas.putShape(MULTI_STATE, new MultiStateShape());
+
+		// handle mouse right-click events for adding cells or changing cells
+		graphComponent.getGraphControl().addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				if ((e.getModifiers() & InputEvent.BUTTON3_MASK) == InputEvent.BUTTON3_MASK) {
+					Object cell = graphComponent.getCellAt(e.getX(), e.getY());
+					if (cell != null) {
+
+						Object shape = graph.getCellStyle(cell).get(SHAPE);
+
+						if (shape.toString().equals(EDGE)) {
+							popup.getComponent(0).setEnabled(false);
+							popup.getComponent(1).setEnabled(true);
+							popup.getComponent(2).setEnabled(false);
+							popup.getComponent(3).setEnabled(false);
+							popup.getComponent(4).setEnabled(false);
+							popup.getComponent(5).setEnabled(false);
+							popup.getComponent(6).setEnabled(false);
+						}
+						else {
+							popup.getComponent(0).setEnabled(false);
+							popup.getComponent(1).setEnabled(true);
+							popup.getComponent(2).setEnabled(true);
+							if (shape.toString().equals(INITIAL_STATE))
+								popup.getComponent(3).setEnabled(false);
+							else
+								popup.getComponent(3).setEnabled(true);
+
+							if (shape.toString().equals(NORMAL_STATE))
+								popup.getComponent(4).setEnabled(false);
+							else
+								popup.getComponent(4).setEnabled(true);
+
+							if (shape.toString().equals(END_STATE))
+								popup.getComponent(5).setEnabled(false);
+							else
+								popup.getComponent(5).setEnabled(true);
+
+							if (shape.toString().equals(MULTI_STATE))
+								popup.getComponent(6).setEnabled(false);
+							else
+								popup.getComponent(6).setEnabled(true);
+						}
+					}
+					else {
+						popup.getComponent(0).setEnabled(true);
+						popup.getComponent(1).setEnabled(false);
+						popup.getComponent(2).setEnabled(false);
+						popup.getComponent(3).setEnabled(false);
+						popup.getComponent(4).setEnabled(false);
+						popup.getComponent(5).setEnabled(false);
+					}
+					popupPosition = e.getPoint();
+					popup.show(e.getComponent(), e.getX(), e.getY());
+				}
+			}
+		});
+
+		// add customized shapes to list of available shapes
+		mxGraphics2DCanvas.putShape(INITIAL_STATE, new InitialStateShape());
+		mxGraphics2DCanvas.putShape(MULTI_STATE, new MultiStateShape());
 
 		return graphComponent;
 	}
-	
+
+	/**
+	 * This will create one state.
+	 * @param name The state's label.
+	 * @param x Horizontal position on the graph component.
+	 * @param y Vertical position on the graph component.
+	 * @param radius Radius of the shape.
+	 * @param type Type of the state.
+	 * @return The created state.
+	 */
 	Object addState(String name, int x, int y, int radius, String type) {
 		Object state = null;
 		graph.getModel().beginUpdate();
@@ -619,17 +690,23 @@ public class GUI extends JFrame {
 				state = graph.insertVertex(root, null, name, x, y, radius,
 						radius, "shape=multiShape;perimeter=ellipsePerimeter");
 			}
-			
+
 			nextInt++;
 		}
 		finally
 		{
 			graph.getModel().endUpdate();
 		}
-		
+
 		return state;
 	}
-	
+
+	/**
+	 * This will create an edge between two states.
+	 * @param name The edge's label.
+	 * @param source The state the edge will connect from.
+	 * @param target The state the edge will connect to.
+	 */
 	public void addTransition(String name, Object source, Object target) {
 		graph.getModel().beginUpdate();
 		try
@@ -641,13 +718,16 @@ public class GUI extends JFrame {
 			graph.getModel().endUpdate();
 		}
 	}
-	
+
 	public void removeAllCells() {
 		graph.removeCells(graph.getChildVertices(root), true);
 		// reset next integer available
 		nextInt = 1;
 	}
-	
+
+	/**
+	 * This will load an automata from an XML file.
+	 */
 	public void loadAutomata() {
 		JFileChooser jfc = new JFileChooser();
 		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -655,13 +735,16 @@ public class GUI extends JFrame {
 		jfc.setName("Open definition");
 		int dialogOption = jfc.showOpenDialog(this);
 		if (dialogOption == JFileChooser.APPROVE_OPTION) {
-		    new AutomataLoader(
-		      jfc.getSelectedFile().getAbsolutePath(),
-		      this
-		    ).execute();
+			new AutomataLoader(
+					jfc.getSelectedFile().getAbsolutePath(),
+					this
+					).execute();
 		}
 	}
-	
+
+	/**
+	 * This will save the current automata to an XML file.
+	 */
 	public void saveAutomata() {
 		if (!hasInitialState) {
 			JOptionPane.showMessageDialog(top, "You need an initial state to save the automata!", "Warning", JOptionPane.WARNING_MESSAGE);
@@ -674,41 +757,47 @@ public class GUI extends JFrame {
 			jfc.setName("Save definition");
 			int dialogOption = jfc.showSaveDialog(this);
 			if (dialogOption == JFileChooser.APPROVE_OPTION) {
-		      new AutomataSaver(
-		        jfc.getSelectedFile().getAbsolutePath(),
-		        getInitialState(),
-		        getEndStates(),
-		        getTransitions()
-		      ).execute();
-				}
+				new AutomataSaver(
+						jfc.getSelectedFile().getAbsolutePath(),
+						getInitialState(),
+						getEndStates(),
+						getTransitions()
+						).execute();
+			}
 		}
 	}
-	
+
+	/**
+	 * This will run the simulation.
+	 */
 	public void runSimulation() {
 		if (!hasInitialState) {
 			JOptionPane.showMessageDialog(top, "You need an initial state to run the simulation!", "Warning", JOptionPane.WARNING_MESSAGE);
 		}
 		else {
-      extractData();
-      new RunSimulator(
-        getInitialState(),
-        getEndStates(),
-        getTransitions(),
-        getTestString(),
-        status
-      ).execute();
+			extractData();
+			new RunSimulator(
+					getInitialState(),
+					getEndStates(),
+					getTransitions(),
+					getTestString(),
+					status
+					).execute();
 		}
 	}
-	
+
+	/**
+	 * This method extracts the current graph into readable collections.
+	 */
 	void extractData() {
 		Object[] vertices = graph.getChildCells(root, true, false);
 		Object[] edges = graph.getChildCells(root, false, true);
-		
+
 		initialState = new HashMap<String, String>();
 		endStates = new ArrayList<HashMap<String, String>>();
 		states = new ArrayList<HashMap<String, String>>();
 		transitions = new ArrayList<HashMap<String, String>>();
-		
+
 		for (Object vertex : vertices) {
 			Object cell = graph.getCellStyle(vertex).get(SHAPE);
 			if (cell.toString().equals(INITIAL_STATE)) {
@@ -739,7 +828,7 @@ public class GUI extends JFrame {
 				initialState.putAll(endState);
 			}
 		}
-		
+
 		for (Object edge : edges) {
 			HashMap<String, String> transition = new HashMap<String, String>();
 			transition.put("source", String.valueOf(graph.getLabel(((mxCell)edge).getSource())));
@@ -748,62 +837,111 @@ public class GUI extends JFrame {
 			transitions.add(transition);
 		}
 	}
-	
+
+	/**
+	 * This method will return the initial state which is filled with {@link #extractData()}.
+	 * @return The initial state.
+	 */
 	HashMap<String, String> getInitialState() {
 		return initialState;
 	}
-	
+
+	/**
+	 * This method will return a list of end states which is filled with {@link #extractData()}.
+	 * @return The list of end states.
+	 */
 	ArrayList<HashMap<String, String>> getEndStates() {
 		return endStates;
 	}
-	
+
+	/**
+	 * This method will return a list of states which are neither initial nor end state and is filled with {@link #extractData()}.
+	 * @return The list of end states.
+	 */
 	ArrayList<HashMap<String, String>> getStates() {
 		return states;
 	}
-	
+
+	/**
+	 * This method will return a list transitions which is filled with {@link #extractData()}.
+	 * @return The list of end states.
+	 */
 	ArrayList<HashMap<String, String>> getTransitions() {
 		return transitions;
 	}
-	
+
+	/**
+	 * This will display an info messagebox.
+	 */
 	public void displayAbout() {
-		JOptionPane.showMessageDialog(top, "Some About message", "About", JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showMessageDialog(top, "Copyright (C)  2011-2012  Peter Kossek, Nils Foken, Christian Krause \n\n"
+				+ "Peter Kossek\tpeter.kossek@it2009.ba-leipzig.de"
+				+ " Nils Foken\tnils.foken@it2009.ba-leipzig.de"
+				+ "Christian Krause\tchristian.krause@it2009.ba-leipzig.de", "About", JOptionPane.INFORMATION_MESSAGE);
 	}
-	
+
+	/**
+	 * This will close the program.
+	 */
 	public void quit() {
 		setVisible(false);
 		dispose();
 	}
-	
+
+	/**
+	 * This will fill the alphabet textfield.
+	 * @param alphabet A String representing the alphabet.
+	 */
 	public void setAlphabet(String alphabet) {
 		alphabetField.setText(alphabet);
 	}
-	
+
+	/**
+	 * This will fill the test textfield.
+	 * @param alphabet A String representing the test sequence.
+	 */
 	public void setTestString(String test) {
 		testField.setText(test);
 	}
 
-  public String getTestString() {
-    return testField.getText();
-  }
-	
-	public void setStatusMessage(String status) {
-		this.status.setText(status);
+	/**
+	 * This will return the test sequence
+	 * @return A String representation of the sequence to test.
+	 */
+	public String getTestString() {
+		return testField.getText();
 	}
 
 	/**
-	 * @param args
+	 * This will set the status bar's message.
+	 * @param status Some status message
 	 */
-  public static void main(String[] args) {
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        GUI gui = new GUI("Scalomator - Simulate finite-state machines");
-        gui.initGUI(gui);
+	public void setStatusMessage(String status) {
+		this.status.setText("Status: " + status);
+	}
 
-        gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        gui.setSize(700, 550);
-        gui.setVisible(true);
-      }
-    });
+	/**
+	 * This will clear the status bar's message.
+	 */
+	public void clearStatus() {
+		setStatusMessage("");
+	}
+
+	/**
+	 * The programs main method. It will create a new window, initialize it's contents and make it visible.
+	 * @param args Program arguments - not used
+	 */
+	public static void main(String[] args) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				GUI gui = new GUI("Scalomator - Simulate finite-state machines");
+				gui.initGUI(gui);
+
+				gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				gui.setSize(700, 550);
+				gui.setVisible(true);
+			}
+		});
 	}
 }

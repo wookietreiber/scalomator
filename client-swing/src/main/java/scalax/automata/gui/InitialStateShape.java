@@ -37,6 +37,9 @@ import com.mxgraph.util.mxRectangle;
 import com.mxgraph.util.mxUtils;
 import com.mxgraph.view.mxCellState;
 
+/** 
+ * This class extends an elliptical shape with an arrow, indicating an initial state.
+ */
 public class InitialStateShape extends mxEllipseShape {
 
 	@Override

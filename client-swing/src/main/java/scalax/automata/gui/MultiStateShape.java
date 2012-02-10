@@ -37,6 +37,9 @@ import com.mxgraph.util.mxRectangle;
 import com.mxgraph.util.mxUtils;
 import com.mxgraph.view.mxCellState;
 
+/** 
+ * This class extends an double-elliptical shape with an arrow, indicating a state which is both an initial and an end state.
+ */
 public class MultiStateShape extends mxDoubleEllipseShape {
 
 	@Override
