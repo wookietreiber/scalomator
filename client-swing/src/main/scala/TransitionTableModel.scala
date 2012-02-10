@@ -38,18 +38,16 @@ import scala.collection.immutable.TreeSet
   */
 class TransitionTableModel(gui: GUI) extends AbstractTableModel {
 
-  private val edges = collection.mutable.ListBuffer[mxCell]()
+  private val edges = collection.mutable.ArrayBuffer[mxCell]()
 
   override def getColumnCount = 3
   override def getRowCount    = edges.size
 
-  override def getValueAt(row: Int, col: Int) =
-    if (col == 0)
-      edges(row).getSource.asInstanceOf[mxCell].getValue
-    else if (col == 1)
-      edges(row).getValue
-    else
-      edges(row).getTarget.asInstanceOf[mxCell].getValue
+  override def getValueAt(row: Int, col: Int) = col match {
+    case 0 => edges(row).getSource.asInstanceOf[mxCell].getValue
+    case 1 => edges(row).getValue
+    case _ => edges(row).getTarget.asInstanceOf[mxCell].getValue
+  }
 
   def appendValue(edge: mxCell) {
     edges += edge
@@ -62,20 +60,16 @@ class TransitionTableModel(gui: GUI) extends AbstractTableModel {
   }
 
   def getTransitionValues =
-    TreeSet(edges.map(_.getValue.toString): _*).mkString(" ")
+    TreeSet(edges.map(_.getValue.toString): _*) mkString " "
 
-  def getCellAt(index: Int) = edges(index)
+  def getCellAt(i: Int) = edges(i)
 
-  def getIndexOf(cell: mxCell) = edges.indexOf(cell)
+  def getIndexOf(c: mxCell) = edges indexOf c
 
   override def isCellEditable(row: Int, col: Int) =
     if (col == 1) true else false
 
-  override def setValueAt(aValue: Object, row: Int, col: Int) {
-    val cell = edges(row)
-
-    if (col == 1)
-      gui.graphComponent.labelChanged(cell, aValue, null)
-  }
+  override def setValueAt(aValue: Object, row: Int, col: Int) = if (col == 1)
+    gui.graphComponent.labelChanged(edges(row), aValue, null)
 
 }
