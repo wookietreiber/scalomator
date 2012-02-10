@@ -34,17 +34,30 @@ import javax.swing.table.TableModel;
 
 import com.mxgraph.model.mxCell;
 
+/**
+ * A Listener that handles selections inside a table.
+ * Selection a state or transition in a table highlights
+ * its representation in the graph.
+ */
 public class TableSelectionListener implements ListSelectionListener {
 
 	JTable table;
 	GUI gui;
 	
+	/**
+	 * Creates a new Listener that reacts on selections in a table.
+	 * @param table The table the listener belongs to.
+	 * @param gui The GUI the table is drawn on.
+	 */
 	public TableSelectionListener(JTable table, GUI gui) {
 		super();
 		this.table = table;
 		this.gui = gui;
 	}
 
+	/**
+	 * Highlights the selected item in the graph.
+	 */
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
 		Object source = e.getSource();
