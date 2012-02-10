@@ -48,13 +48,13 @@ class AutomataLoader(file: String, gui: GUI)
 
     fsm.states foreach { s =>
       val node = if (fsm.initialState == s && fsm.finalStates.contains(s))
-        gui.addState(s, 50, 50, CELL_RADIUS, MULTI_STATE)
+        gui.addState(s, -1, -1, CELL_RADIUS, MULTI_STATE)
       else if (fsm.initialState == s)
-        gui.addState(s, 50, 50, CELL_RADIUS, INITIAL_STATE)
+        gui.addState(s, -1, -1, CELL_RADIUS, INITIAL_STATE)
       else if (fsm.finalStates.contains(s))
-        gui.addState(s, 50, 50, CELL_RADIUS, END_STATE)
+        gui.addState(s, -1, -1, CELL_RADIUS, END_STATE)
       else
-        gui.addState(s, 50, 50, CELL_RADIUS, NORMAL_STATE)
+        gui.addState(s, -1, -1, CELL_RADIUS, NORMAL_STATE)
 
       nodes += (s -> node)
     }
