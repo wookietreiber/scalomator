@@ -35,8 +35,7 @@ import javax.swing.table.AbstractTableModel;
 import com.mxgraph.model.mxCell;
 
 /**
- * A table model that contains the names of the source and target states as well
- * as the name of the transition
+ * A table model that contains the data of the transitions
  */
 @SuppressWarnings("serial")
 public class TransitionTableModel extends AbstractTableModel {
@@ -44,6 +43,10 @@ public class TransitionTableModel extends AbstractTableModel {
 	private ArrayList<mxCell> edge = new ArrayList<mxCell>();
 	private GUI gui;
 
+	/**
+	 * Creates a new TransitionTableModel.
+	 * @param gui The GUI where this TableModel is used.
+	 */
 	public TransitionTableModel(GUI gui) {
 		this.gui = gui;
 	}
@@ -70,16 +73,28 @@ public class TransitionTableModel extends AbstractTableModel {
 
 	}
 
+	/**
+	 * Appends a transition to the model.
+	 * @param edge The transtition to add.
+	 */
 	public void appendValue(mxCell edge) {
 		this.edge.add(edge);
 		fireTableDataChanged();
 	}
 
+	/**
+	 * Removes a transition from the model.
+	 * @param edge The transition to remove.
+	 */
 	public void removeValue(mxCell edge) {
 		this.edge.remove(edge);
 		fireTableDataChanged();
 	}
 	
+	/**
+	 * Creates a set of the labels of all transitions in this model (automaton's alphabet).
+	 * @return Set of labels of all transitions.
+	 */
 	public String getTransitionValues() {
 		HashSet<String> transitionValues = new HashSet<String>();
 		for (mxCell cell : edge) {
@@ -93,14 +108,31 @@ public class TransitionTableModel extends AbstractTableModel {
 		return oneString.substring(1, oneString.length() - 1);
 	}
 
+	/**
+	 * Returns transition at specific index in model.
+	 * @param index Position of the transition to return.
+	 * @return Transition at the index.
+	 */
 	public mxCell getCellAt(int index) {
 		return edge.get(index);
 	}
 
+	/**
+	 * Returns the index of the transition.
+	 * @param cell Transition whose index shall be returned.
+	 * @return Index of the transition inside the model.
+	 *         <code>-1</code> if the transition is not element of this model.
+	 */
 	public int getIndexOf(mxCell cell) {
 		return edge.indexOf(cell);
 	}
 	
+	/**
+	 * If the cell is editable.
+	 * @param rowIndex Row in the table.
+	 * @param columnIndex Column in the table.
+	 * @return <code>true</code> if the cell is editable, <code>false</code> otherwise.
+	 */
 	@Override
 	public boolean isCellEditable(int rowIndex, int columnIndex) {
 		if (columnIndex == 1) {
@@ -110,6 +142,12 @@ public class TransitionTableModel extends AbstractTableModel {
 		}
 	}
 	
+	/**
+	 * Replaces the label of the transition.
+	 * @param aValue The new label.
+	 * @param rowIndex Row in the table.
+	 * @param columnIndex Column in the table.
+	 */
 	@Override
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 		mxCell cell = edge.get(rowIndex);
