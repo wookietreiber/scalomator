@@ -33,7 +33,7 @@ If you prefer to build the Javadoc for the GUI instead, navigate to the subproje
 
 ```
 $ cd /path/to/scalomator/client-swing
-$ javadoc -d target/javadoc src/main/java/scalax/automatot/gui/*.java
+$ javadoc -d target/javadoc src/main/java/scalax/automata/gui/*.java
 ```
 
 All warnings concerning com.mxgraph can be ignored. For the jgraph documentation consult its own [website][7].
@@ -58,7 +58,7 @@ $ sbt
 > run
 ```
 
-If you rather like to work with the scala interpreter instead:
+If you would rather like to work with the scala interpreter instead:
 
 ```
 $ cd /path/to/scalomator
