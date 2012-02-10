@@ -38,7 +38,7 @@ class RunSimulator(
     fs: ArrayList[HashMap[String,String]],
     ts: ArrayList[HashMap[String,String]],
     word: String,
-    status: JLabel
+    gui: GUI
   ) extends SwingWorker[Boolean,Unit] {
 
   override def doInBackground() = {
@@ -58,7 +58,7 @@ class RunSimulator(
   }
 
   override protected def done() {
-    status.setText(
+    gui.setStatusMessage(
       if (get) "Word is accepted." else "Word is not accepted."
     )
   }

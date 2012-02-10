@@ -775,14 +775,14 @@ public class GUI extends JFrame {
 			JOptionPane.showMessageDialog(top, "You need an initial state to run the simulation!", "Warning", JOptionPane.WARNING_MESSAGE);
 		}
 		else {
-			extractData();
-			new RunSimulator(
-					getInitialState(),
-					getEndStates(),
-					getTransitions(),
-					getTestString(),
-					status
-					).execute();
+      extractData();
+      new RunSimulator(
+        getInitialState(),
+        getEndStates(),
+        getTransitions(),
+        getTestString(),
+        this
+      ).execute();
 		}
 	}
 
