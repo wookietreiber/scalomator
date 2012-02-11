@@ -673,6 +673,13 @@ public class GUI extends JFrame {
 	 * @return The created state.
 	 */
 	Object addState(String name, int x, int y, int radius, String type) {
+		// automated placement
+		if (x == -1 || y == -1) {
+			int columns = 1 + graphComponent.getBounds().width / (3 * radius);
+			x = radius + 2 * radius * ((nextInt - 1) % columns);
+			y = radius + 2 * radius * ((nextInt - 1) / columns);
+		}
+
 		Object state = null;
 		graph.getModel().beginUpdate();
 		try
