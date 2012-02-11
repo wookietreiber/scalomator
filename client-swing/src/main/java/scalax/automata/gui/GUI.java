@@ -39,6 +39,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -63,12 +64,15 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
 import com.mxgraph.canvas.mxGraphics2DCanvas;
+import com.mxgraph.layout.mxParallelEdgeLayout;
 import com.mxgraph.model.mxCell;
 import com.mxgraph.swing.mxGraphComponent;
+import com.mxgraph.util.mxConstants;
 import com.mxgraph.util.mxEvent;
 import com.mxgraph.util.mxEventObject;
 import com.mxgraph.util.mxEventSource.mxIEventListener;
 import com.mxgraph.view.mxGraph;
+import com.mxgraph.view.mxStylesheet;
 
 /**
  * This class represents the GUI for the Scalomator and handles GUI-related logic only.
@@ -124,6 +128,10 @@ public class GUI extends JFrame {
 	 * Handler for the graphic component.
 	 */
 	public mxGraphComponent graphComponent = null;
+	/**
+	 * A handler for the graph's layout.
+	 */
+	public mxParallelEdgeLayout layout;
 
 	private HashMap<String, String> initialState = new HashMap<String, String>();
 	private ArrayList<HashMap<String, String>> endStates = new ArrayList<HashMap<String, String>>();
@@ -467,8 +475,17 @@ public class GUI extends JFrame {
 		graphComponent.setEnterStopsCellEditing(true);
 		// antialiasing \o/
 		graphComponent.setAntiAlias(true);
-
+		
 		root = graph.getDefaultParent();
+		// define a parallel layout for the edges
+		layout = new mxParallelEdgeLayout(graph);
+		
+		// change the default edge style to rounded
+		mxStylesheet styleSheet = graph.getStylesheet();
+		Map<String, Object> edgeStyle = styleSheet.getDefaultEdgeStyle();
+		edgeStyle.put(mxConstants.STYLE_ROUNDED, true);
+		styleSheet.setDefaultEdgeStyle(edgeStyle);
+		graph.setStylesheet(styleSheet);
 
 		// a cell add listener
 		graph.addListener(mxEvent.CELLS_ADDED, new mxIEventListener() {
@@ -533,12 +550,25 @@ public class GUI extends JFrame {
 
 								transitionDataModel.appendValue((mxCell) cell);
 							}
+							// apply chosen layout
+							layout.execute(root);
 						}
 					}
 				}
 			}
 		});
 
+		// need to apply the layout when a cell is moved
+		graph.addListener(mxEvent.CELLS_MOVED, new mxIEventListener() {
+			@Override
+			public void invoke(Object sender, mxEventObject evt) {
+				if (sender instanceof mxGraph) {
+					// apply chosen layout
+					layout.execute(root);
+				}
+			}
+		});
+		
 		// a cell remove listener
 		graph.addListener(mxEvent.CELLS_REMOVED, new mxIEventListener() {
 			@Override
@@ -567,6 +597,8 @@ public class GUI extends JFrame {
 							else if (shape.toString().equals(MULTI_STATE)) {
 								stateDataModel.removeValue((mxCell) cell);
 							}
+							// apply chosen layout
+							layout.execute(root);
 						}
 					}
 				}
@@ -704,7 +736,6 @@ public class GUI extends JFrame {
 		{
 			graph.getModel().endUpdate();
 		}
-
 		return state;
 	}
 
