@@ -60,6 +60,8 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
@@ -289,6 +291,7 @@ public class GUI extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				removeAllCells();
+				clearStatus();
 			}
 		});
 		menu.add(menuItem);
@@ -349,6 +352,7 @@ public class GUI extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				displayAbout();
+				clearStatus();
 			}
 		});
 		menu.add(menuItem);
@@ -384,7 +388,21 @@ public class GUI extends JFrame {
 		alphabetField = new JTextField();
 		alphabetField.setEditable(false);
 		testField = new JTextField();
+		// listen to changes to the textfield and clear status message
+		testField.getDocument().addDocumentListener(new DocumentListener() {
+			public void changedUpdate(DocumentEvent e) {
+				clearStatus();
+			}
 
+			public void removeUpdate(DocumentEvent e) {
+				clearStatus();
+			}
+
+			public void insertUpdate(DocumentEvent e) {
+				clearStatus();
+			}
+		});
+		
 		alphabetPanel.add(alphabetField);
 		testwordPanel.add(testField);
 
@@ -552,6 +570,7 @@ public class GUI extends JFrame {
 							}
 							// apply chosen layout
 							layout.execute(root);
+							clearStatus();
 						}
 					}
 				}
@@ -565,6 +584,7 @@ public class GUI extends JFrame {
 				if (sender instanceof mxGraph) {
 					// apply chosen layout
 					layout.execute(root);
+					clearStatus();
 				}
 			}
 		});
@@ -599,6 +619,7 @@ public class GUI extends JFrame {
 							}
 							// apply chosen layout
 							layout.execute(root);
+							clearStatus();
 						}
 					}
 				}
@@ -619,6 +640,7 @@ public class GUI extends JFrame {
 				}
 				stateDataModel.fireTableDataChanged();
 				transitionDataModel.fireTableDataChanged();
+				clearStatus();
 			}
 		});
 
@@ -627,6 +649,7 @@ public class GUI extends JFrame {
 			@Override
 			public void invoke(Object sender, mxEventObject evt) {
 				transitionDataModel.fireTableDataChanged();
+				clearStatus();
 			}
 		});
 
@@ -684,6 +707,7 @@ public class GUI extends JFrame {
 					}
 					popupPosition = e.getPoint();
 					popup.show(e.getComponent(), e.getX(), e.getY());
+					clearStatus();
 				}
 			}
 		});
@@ -778,6 +802,7 @@ public class GUI extends JFrame {
 					this
 					).execute();
 		}
+		clearStatus();
 	}
 
 	/**
@@ -801,7 +826,9 @@ public class GUI extends JFrame {
 						getEndStates(),
 						getTransitions()
 						).execute();
+				setStatusMessage("Saving definition successful.");
 			}
+			else clearStatus();
 		}
 	}
 
@@ -912,10 +939,10 @@ public class GUI extends JFrame {
 	 * This will display an info messagebox.
 	 */
 	public void displayAbout() {
-		JOptionPane.showMessageDialog(top, "Copyright (C)  2011-2012  Peter Kossek, Nils Foken, Christian Krause \n\n"
-				+ "Peter Kossek\tpeter.kossek@it2009.ba-leipzig.de"
-				+ " Nils Foken\tnils.foken@it2009.ba-leipzig.de"
-				+ "Christian Krause\tchristian.krause@it2009.ba-leipzig.de", "About", JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showMessageDialog(top, "Copyright (C)  2011-2012  Peter Kossek, Nils Foken, Christian Krause\n"
+				+ "\nPeter Kossek - peter.kossek@it2009.ba-leipzig.de"
+				+ "\nNils Foken - nils.foken@it2009.ba-leipzig.de"
+				+ "\nChristian Krause - christian.krause@it2009.ba-leipzig.de", "About", JOptionPane.INFORMATION_MESSAGE);
 	}
 
 	/**
@@ -979,6 +1006,7 @@ public class GUI extends JFrame {
 				gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				gui.setSize(700, 550);
 				gui.setVisible(true);
+				gui.setStatusMessage("Initialisation complete.");
 			}
 		});
 	}
