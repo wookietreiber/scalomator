@@ -61,10 +61,10 @@ class AutomataLoader(file: String, gui: GUI)
 
     fsm.transitions foreach { t =>
       t._2 foreach { end =>
-		    gui.addTransition(t._1._2, nodes(t._1._1), nodes(end))
+        gui.addTransition(t._1._2, nodes(t._1._1), nodes(end))
       }
     }
- } catch {
+  } catch {
     case e => gui.setStatusMessage(e.getMessage)
   }
 

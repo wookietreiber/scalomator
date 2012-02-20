@@ -82,7 +82,7 @@ class Minimizer(
     }
 
     dfa.transitions foreach { t =>
-		  gui.addTransition(t._1._2, nodes(t._1._1.toString), nodes(t._2.toString))
+      gui.addTransition(t._1._2, nodes(t._1._1.toString), nodes(t._2.toString))
     }
   } catch {
     case e => gui.setStatusMessage(e.getMessage)
