@@ -57,6 +57,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.SwingUtilities;
@@ -134,6 +135,11 @@ public class GUI extends JFrame {
 	 * A handler for the graph's layout.
 	 */
 	public mxParallelEdgeLayout layout;
+	
+	/**
+	 * Default path for open and save actions.
+	 */
+	private String defaultPath = "";
 
 	private HashMap<String, String> initialState = new HashMap<String, String>();
 	private ArrayList<HashMap<String, String>> endStates = new ArrayList<HashMap<String, String>>();
@@ -287,6 +293,7 @@ public class GUI extends JFrame {
 
 		menuItem = new JMenuItem("New");
 		menuItem.setMnemonic(KeyEvent.VK_N);
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
 		menuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -298,6 +305,7 @@ public class GUI extends JFrame {
 
 		menuItem = new JMenuItem("Open");
 		menuItem.setMnemonic(KeyEvent.VK_O);
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
 		menuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -309,6 +317,7 @@ public class GUI extends JFrame {
 
 		menuItem = new JMenuItem("Save");
 		menuItem.setMnemonic(KeyEvent.VK_S);
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
 		menuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -320,6 +329,7 @@ public class GUI extends JFrame {
 
 		menuItem = new JMenuItem("Quit");
 		menuItem.setMnemonic(KeyEvent.VK_Q);
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
 		menuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -334,6 +344,7 @@ public class GUI extends JFrame {
 
 		menuItem = new JMenuItem("Minimize");
 		menuItem.setMnemonic(KeyEvent.VK_M);
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, ActionEvent.CTRL_MASK | ActionEvent.SHIFT_MASK));
 		menuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -344,6 +355,7 @@ public class GUI extends JFrame {
 		
 		menuItem = new JMenuItem("Convert NFA to DFA");
 		menuItem.setMnemonic(KeyEvent.VK_C);
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK | ActionEvent.SHIFT_MASK));
 		menuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -354,6 +366,7 @@ public class GUI extends JFrame {
 		
 		menuItem = new JMenuItem("Run");
 		menuItem.setMnemonic(KeyEvent.VK_R);
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, ActionEvent.CTRL_MASK | ActionEvent.SHIFT_MASK));
 		menuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -364,10 +377,12 @@ public class GUI extends JFrame {
 
 		menu = new JMenu("Info");
 		menu.setMnemonic(KeyEvent.VK_I);
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, ActionEvent.CTRL_MASK | ActionEvent.SHIFT_MASK));
 		menuBar.add(menu);
 
 		menuItem = new JMenuItem("About");
 		menuItem.setMnemonic(KeyEvent.VK_A);
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK | ActionEvent.SHIFT_MASK));
 		menuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -811,12 +826,13 @@ public class GUI extends JFrame {
 	 * This will load an automata from an XML file.
 	 */
 	public void loadAutomata() {
-		JFileChooser jfc = new JFileChooser();
+		JFileChooser jfc = new JFileChooser(defaultPath);
 		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		jfc.setMultiSelectionEnabled(false);
 		jfc.setName("Open definition");
 		int dialogOption = jfc.showOpenDialog(this);
 		if (dialogOption == JFileChooser.APPROVE_OPTION) {
+			defaultPath = jfc.getSelectedFile().getParent();
 			new AutomataLoader(
 					jfc.getSelectedFile().getAbsolutePath(),
 					this
@@ -834,12 +850,13 @@ public class GUI extends JFrame {
 		}
 		else {
 			extractData();
-			JFileChooser jfc = new JFileChooser();
+			JFileChooser jfc = new JFileChooser(defaultPath);
 			jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 			jfc.setMultiSelectionEnabled(false);
 			jfc.setName("Save definition");
 			int dialogOption = jfc.showSaveDialog(this);
 			if (dialogOption == JFileChooser.APPROVE_OPTION) {
+				defaultPath = jfc.getSelectedFile().getParent();
 				new AutomataSaver(
 						jfc.getSelectedFile().getAbsolutePath(),
 						getInitialState(),
