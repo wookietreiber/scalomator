@@ -332,6 +332,26 @@ public class GUI extends JFrame {
 		menu.setMnemonic(KeyEvent.VK_S);
 		menuBar.add(menu);
 
+		menuItem = new JMenuItem("Minimize");
+		menuItem.setMnemonic(KeyEvent.VK_M);
+		menuItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				minimize();
+			}
+		});
+		menu.add(menuItem);
+		
+		menuItem = new JMenuItem("Convert NFA to DFA");
+		menuItem.setMnemonic(KeyEvent.VK_C);
+		menuItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				convertNFA2DFA();
+			}
+		});
+		menu.add(menuItem);
+		
 		menuItem = new JMenuItem("Run");
 		menuItem.setMnemonic(KeyEvent.VK_R);
 		menuItem.addActionListener(new ActionListener() {
@@ -832,6 +852,32 @@ public class GUI extends JFrame {
 		}
 	}
 
+	/**
+	 * This will attempt to minimize the automaton.
+	 */
+	public void minimize() {
+		extractData();
+		new Minimizer(
+				getInitialState(),
+				getEndStates(),
+				getTransitions(),
+				this
+				).execute();
+	}
+
+	/**
+	 * This will attempt to convert the NFA to DFA.
+	 */
+	public void convertNFA2DFA() {
+		extractData();
+		new NFAtoDFAConverter(
+				getInitialState(),
+				getEndStates(),
+				getTransitions(),
+				this
+				).execute();
+	}
+	
 	/**
 	 * This will run the simulation.
 	 */
