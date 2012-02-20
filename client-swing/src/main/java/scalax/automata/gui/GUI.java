@@ -850,7 +850,7 @@ public class GUI extends JFrame {
 		}
 		else {
 			extractData();
-			JFileChooser jfc = new JFileChooser();
+			JFileChooser jfc = new JFileChooser(defaultPath);
 			jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 			jfc.setMultiSelectionEnabled(false);
 			jfc.setName("Save definition");
