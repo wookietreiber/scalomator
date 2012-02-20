@@ -51,7 +51,7 @@ class NFAtoDFAConverter(
       x -> (tx filter { _._1 == x } map { _._2 } toSet)
     } toMap
 
-    if (!(tfs.values.forall { _.size == 1 }))
+    if (tfs.values.forall { _.size == 1 })
       sys.error("This is already a deterministic finite automaton!")
 
     NFA[String,String](
