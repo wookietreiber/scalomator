@@ -135,6 +135,11 @@ public class GUI extends JFrame {
 	 * A handler for the graph's layout.
 	 */
 	public mxParallelEdgeLayout layout;
+	
+	/**
+	 * Default path for open and save actions.
+	 */
+	private String defaultPath = "";
 
 	private HashMap<String, String> initialState = new HashMap<String, String>();
 	private ArrayList<HashMap<String, String>> endStates = new ArrayList<HashMap<String, String>>();
@@ -821,12 +826,13 @@ public class GUI extends JFrame {
 	 * This will load an automata from an XML file.
 	 */
 	public void loadAutomata() {
-		JFileChooser jfc = new JFileChooser();
+		JFileChooser jfc = new JFileChooser(defaultPath);
 		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		jfc.setMultiSelectionEnabled(false);
 		jfc.setName("Open definition");
 		int dialogOption = jfc.showOpenDialog(this);
 		if (dialogOption == JFileChooser.APPROVE_OPTION) {
+			defaultPath = jfc.getSelectedFile().getParent();
 			new AutomataLoader(
 					jfc.getSelectedFile().getAbsolutePath(),
 					this
@@ -850,6 +856,7 @@ public class GUI extends JFrame {
 			jfc.setName("Save definition");
 			int dialogOption = jfc.showSaveDialog(this);
 			if (dialogOption == JFileChooser.APPROVE_OPTION) {
+				defaultPath = jfc.getSelectedFile().getParent();
 				new AutomataSaver(
 						jfc.getSelectedFile().getAbsolutePath(),
 						getInitialState(),
