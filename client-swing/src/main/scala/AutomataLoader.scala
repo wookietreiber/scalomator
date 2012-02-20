@@ -30,6 +30,7 @@ package scalax.automata
 package gui
 
 import java.io._
+import java.util.concurrent.ExecutionException
 import javax.swing._
 import scala.collection.JavaConversions._
 import scala.xml._
@@ -65,7 +66,8 @@ class AutomataLoader(file: String, gui: GUI)
       }
     }
   } catch {
-    case e => gui.setStatusMessage(e.getMessage)
+    case e: ExecutionException => gui.setStatusMessage(e.getCause.getMessage)
+    case e                     => gui.setStatusMessage(e.getMessage)
   }
 
 }

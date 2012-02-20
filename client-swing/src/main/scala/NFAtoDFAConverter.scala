@@ -30,6 +30,7 @@ package scalax.automata
 package gui
 
 import java.util.{HashMap, ArrayList}
+import java.util.concurrent.ExecutionException
 import javax.swing._
 import scala.collection.JavaConversions._
 import scala.xml._
@@ -85,6 +86,8 @@ class NFAtoDFAConverter(
       gui.addTransition(t._1._2, nodes(t._1._1.toString), nodes(t._2.toString))
     }
   } catch {
+    case e: ExecutionException => gui.setStatusMessage(e.getCause.getMessage)
+    case e                     => gui.setStatusMessage(e.getMessage)
     case e => gui.setStatusMessage(e.getMessage)
   }
 
