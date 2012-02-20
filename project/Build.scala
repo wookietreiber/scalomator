@@ -1,6 +1,7 @@
 import sbt._
 import Keys._
 
+import Resolvers._
 import Dependencies._
 import BuildSettings._
 
@@ -13,7 +14,8 @@ object BuildSettings {
     organization    := buildOrganization,
     version         := buildVersion,
     scalaVersion    := buildScalaVersion,
-    initialCommands := "import scalax.automata._"
+    initialCommands := "import scalax.automata._",
+    resolvers       += sonatype
   )
 }
 
@@ -40,5 +42,9 @@ object ScalomatorBuild extends Build {
 
 object Dependencies {
   lazy val swing  = "org.scala-lang" %  "scala-swing" % buildScalaVersion
-  lazy val specs2 = "org.specs2"     %% "specs2"      % "1.7.1" % "test"
+  lazy val specs2 = "org.specs2"     %% "specs2"      % "1.8.2" % "test"
+}
+
+object Resolvers {
+  lazy val sonatype = "releases" at "http://oss.sonatype.org/content/repositories/releases"
 }

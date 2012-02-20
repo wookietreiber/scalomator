@@ -26,49 +26,68 @@
  ****************************************************************************/
 
 
-package scalax
+package scalax.automata
+package gui
 
-import scala.collection.immutable.Queue
+import java.util.{HashMap, ArrayList}
+import javax.swing._
+import scala.collection.JavaConversions._
+import scala.xml._
+import GUI._
 
-/** A scala API for automata simulation. */
-package object automata {
+class Minimizer(
+    init: HashMap[String,String],
+    fs: ArrayList[HashMap[String,String]],
+    ts: ArrayList[HashMap[String,String]],
+    gui: GUI
+  ) extends SwingWorker[DeterministicFiniteAutomaton[String,Set[String]],Unit] {
 
-  object Dequeue {
-    def unapply[A](q: Queue[A]) = q match {
-      case Queue() => None
-      case q       => Some(q dequeue)
+  override def doInBackground() = {
+    val tx = ts map { t =>
+      t.get("source") -> t.get("input") -> t.get("target")
     }
+    val sis = tx map { _._1 } toSet
+    val tfs = sis map { x =>
+      x -> (tx filter { _._1 == x } map { _._2 } toSet)
+    } toMap
+
+    if (!(tfs.values.forall { _.size == 1 }))
+      sys.error("This is not a deterministic finite automaton!")
+
+    DFA[String,String](
+      init.get("name"),
+      fs map { _.get("name") } toSet,
+      tfs mapValues { _.head }
+    ).minimize
   }
 
-  // -----------------------------------------------------------------------
-  // aliases
-  // -----------------------------------------------------------------------
+  override protected def done() = try {
+    val dfa = get();
 
-  type FSM[A,S,R] = scalax.automata.FiniteStateMachine[A,S,R]
-  val  FSM        = scalax.automata.FiniteStateMachine
+    gui.removeAllCells();
 
-  type NFA[A,S] = scalax.automata.NondeterministicFiniteAutomaton[A,S]
-  val  NFA      = scalax.automata.NondeterministicFiniteAutomaton
+    var nodes = Map[String,Object]();
 
-  type DFA[A,S] = scalax.automata.DeterministicFiniteAutomaton[A,S]
-  val  DFA      = scalax.automata.DeterministicFiniteAutomaton
+    dfa.states foreach { s =>
+      val node = if (dfa.initialState == s && dfa.finalStates.contains(s))
+        gui.addState(s.toString, -1, -1, CELL_RADIUS, MULTI_STATE)
+      else if (dfa.initialState == s)
+        gui.addState(s.toString, -1, -1, CELL_RADIUS, INITIAL_STATE)
+      else if (dfa.finalStates.contains(s))
+        gui.addState(s.toString, -1, -1, CELL_RADIUS, END_STATE)
+      else
+        gui.addState(s.toString, -1, -1, CELL_RADIUS, NORMAL_STATE)
 
-  // -----------------------------------------------------------------------
-  // implicits
-  // -----------------------------------------------------------------------
+      nodes += (s.toString -> node)
+    }
 
-  implicit def any2input[A](a: A) = Input(a)
-
-  // -----------------------------------------------------------------------
-  // implicits
-  // -----------------------------------------------------------------------
-
-  object does {
-    def the[A](fsm: FiniteStateMachine[A,_,_]) = new Pimp(fsm)
-  }
-
-  class Pimp[A](fsm: FiniteStateMachine[A,_,_]) {
-    def accept(word: A*) = fsm.accepts(word: _*)
+    dfa.transitions foreach { t =>
+      t._2 foreach { end =>
+		    gui.addTransition(t._1._2, nodes(t._1._1.toString), nodes(end))
+      }
+    }
+  } catch {
+    case e => gui.setStatusMessage(e.getMessage)
   }
 
 }

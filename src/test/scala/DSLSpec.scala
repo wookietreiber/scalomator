@@ -26,49 +26,33 @@
  ****************************************************************************/
 
 
-package scalax
+package scalax.automata
 
-import scala.collection.immutable.Queue
+import org.specs2._
 
-/** A scala API for automata simulation. */
-package object automata {
-
-  object Dequeue {
-    def unapply[A](q: Queue[A]) = q match {
-      case Queue() => None
-      case q       => Some(q dequeue)
-    }
-  }
+class DSLSpec extends Specification { def is =
 
   // -----------------------------------------------------------------------
-  // aliases
+  // fragments
   // -----------------------------------------------------------------------
 
-  type FSM[A,S,R] = scalax.automata.FiniteStateMachine[A,S,R]
-  val  FSM        = scalax.automata.FiniteStateMachine
-
-  type NFA[A,S] = scalax.automata.NondeterministicFiniteAutomaton[A,S]
-  val  NFA      = scalax.automata.NondeterministicFiniteAutomaton
-
-  type DFA[A,S] = scalax.automata.DeterministicFiniteAutomaton[A,S]
-  val  DFA      = scalax.automata.DeterministicFiniteAutomaton
-
+  "DSL Specification"                                                         ^
+                                                                             p^
+  """"Does Accept" example"""            ! e1                                 ^
+                                                                            end
   // -----------------------------------------------------------------------
-  // implicits
+  // tests
   // -----------------------------------------------------------------------
 
-  implicit def any2input[A](a: A) = Input(a)
+  def e1 = {
+    val dfa = DFA(1, Set(1), Map(
+      1 -> 0 -> 2,
+      1 -> 1 -> 1,
+      2 -> 0 -> 1,
+      2 -> 1 -> 2
+    ))
 
-  // -----------------------------------------------------------------------
-  // implicits
-  // -----------------------------------------------------------------------
-
-  object does {
-    def the[A](fsm: FiniteStateMachine[A,_,_]) = new Pimp(fsm)
-  }
-
-  class Pimp[A](fsm: FiniteStateMachine[A,_,_]) {
-    def accept(word: A*) = fsm.accepts(word: _*)
+    does the dfa accept (1,0,0,1) must_== true
   }
 
 }

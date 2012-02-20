@@ -98,11 +98,12 @@ object FiniteStateMachine {
   *
   * @tparam A alphabet type
   * @tparam S state type
+  * @tparam R transition end type
   */
 abstract class FiniteStateMachine[A,S,R] {
 
   /** Returns the input alphabet of this automaton. */
-  def alphabet: Set[A] = transitions.keySet map { _._2 }
+  lazy val alphabet: Set[A] = transitions.keySet map { _._2 }
 
   /** Returns the states of this automaton. */
   def states: Set[S]
@@ -116,19 +117,11 @@ abstract class FiniteStateMachine[A,S,R] {
   /** Returns the state-transition function of this automaton. */
   def transitions: Map[(S,A),R]
 
+  /** Returns the transition function delta as a partial function. */
+  final def delta: PartialFunction[(S,A),R] = transitions
+
   /** Returns true if the given word is accepted by this automaton. */
   def accepts(word: A*): Boolean
-
-  // -----------------------------------------------------------------------
-  // conversion within the domain
-  // -----------------------------------------------------------------------
-
-  /** Returns the equivalent deterministic finite automaton.
-    *
-    * The algorithm uses
-    * [[http://en.wikipedia.org/wiki/Powerset_construction powerset construction]].
-    */
-  def toDFA: DeterministicFiniteAutomaton[A,R]
 
   // -----------------------------------------------------------------------
   // serialization

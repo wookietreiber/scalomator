@@ -72,7 +72,7 @@ class NondeterministicFiniteAutomaton[A,S] private (
     override val transitions: Map[(S,A),Set[S]])
   extends FiniteStateMachine[A,S,Set[S]] {
 
-  override def states: Set[S] = finalStates ++ transitions.values.flatten.toSet + initialState
+  override lazy val states: Set[S] = finalStates ++ transitions.values.flatten.toSet + initialState
 
   override def accepts(word: A*) = {
     def traverse(word: Seq[A], state: S): Boolean = {
@@ -94,7 +94,12 @@ class NondeterministicFiniteAutomaton[A,S] private (
   // conversion within the domain
   // -----------------------------------------------------------------------
 
-  override def toDFA = {
+  /** Returns the equivalent deterministic finite automaton.
+    *
+    * The algorithm uses
+    * [[http://en.wikipedia.org/wiki/Powerset_construction powerset construction]].
+    */
+  def toDFA: DeterministicFiniteAutomaton[A,Set[S]] = {
     val init = Set(initialState)
 
     @tailrec // recursive powerset construction

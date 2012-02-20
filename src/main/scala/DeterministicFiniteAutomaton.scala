@@ -78,15 +78,17 @@ class DeterministicFiniteAutomaton[A,S] private (
     override val transitions: Map[(S,A),S])
   extends FiniteStateMachine[A,S,S] {
 
-  override def states: Set[S] = finalStates ++ transitions.values.toSet + initialState
+  override lazy val states = finalStates ++ transitions.values.toSet + initialState
 
   override def accepts(word: A*) = {
     @tailrec
     def traverse(word: Seq[A], state: S): Boolean = {
       if ( word isEmpty )
         if ( finalStates contains state ) true else false
+
       else {
         val move = state -> word.head
+
         if ( transitions isDefinedAt move )
           traverse(word.tail, transitions(move))
         else
@@ -100,8 +102,6 @@ class DeterministicFiniteAutomaton[A,S] private (
   // -----------------------------------------------------------------------
   // conversion within the domain
   // -----------------------------------------------------------------------
-
-  override def toDFA = this
 
   /** Returns the equivalent [[http://en.wikipedia.org/wiki/DFA_minimization minimum DFA]].
     *
