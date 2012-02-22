@@ -65,6 +65,9 @@ class AutomataLoader(file: String, gui: GUI)
         gui.addTransition(t._1._2, nodes(t._1._1), nodes(end))
       }
     }
+    
+    gui.clearStatus()
+    gui.graphComponent.refresh()
   } catch {
     case e: ExecutionException => gui.setStatusMessage(e.getCause.getMessage)
     case e                     => gui.setStatusMessage(e.getMessage)

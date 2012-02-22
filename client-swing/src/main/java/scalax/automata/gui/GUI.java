@@ -820,6 +820,7 @@ public class GUI extends JFrame {
 		graph.removeCells(graph.getChildVertices(root), true);
 		// reset next integer available
 		nextInt = 1;
+		hasInitialState = false;
 	}
 
 	/**
@@ -838,7 +839,6 @@ public class GUI extends JFrame {
 					this
 					).execute();
 		}
-		clearStatus();
 	}
 
 	/**
