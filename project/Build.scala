@@ -6,19 +6,19 @@ import Dependencies._
 import BuildSettings._
 
 object BuildSettings {
-  val buildOrganization = "com.github.scalomator"
-  val buildVersion      = "0.2.0-SNAPSHOT"
-  val buildScalaVersion = "2.9.2-RC2"
+  lazy val buildOrganization = "com.github.scalomator"
+  lazy val buildVersion      = "0.2.0-SNAPSHOT"
+  lazy val buildScalaVersion = "2.9.2"
 
-  val baseSettings = Defaults.defaultSettings ++ Seq (
-    crossScalaVersions := Seq ( "2.9.1", "2.9.1-1", "2.9.2-RC2" )
+  lazy val baseSettings = Defaults.defaultSettings ++ Seq (
+    crossScalaVersions := Seq ( "2.9.1", "2.9.1-1", "2.9.2" )
   )
 
-  val buildSettings = baseSettings ++ Seq (
-    organization     := buildOrganization,
-    version          := buildVersion,
-    scalaVersion     := buildScalaVersion,
-    resolvers       ++= Seq ( sonatype )
+  lazy val buildSettings = baseSettings ++ Seq (
+    organization   := buildOrganization,
+    version        := buildVersion,
+    scalaVersion   := buildScalaVersion,
+    resolvers     ++= Seq ( sonatype )
   )
 }
 
